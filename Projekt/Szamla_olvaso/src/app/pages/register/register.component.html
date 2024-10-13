@@ -1,0 +1,65 @@
+<div class="register-container">
+    <div class="register-content">
+        <form [formGroup]="registerForm" (submit)="registerWithEmailAndPassword()">
+
+        <p class="title">Regisztráció</p>
+        <p class="title-intro">Még nincs felhasználód? Csinálj egyet!</p>
+
+        <!-- Email mező -->
+        <mat-form-field appearance="outline">
+            <mat-label for="email">Email</mat-label>
+            <input formControlName="email" matInput type="email" placeholder="pat@example.com">
+
+            <mat-error *ngIf="registerForm.controls['email'].hasError('required')">
+                Nem adtál meg email címet!
+            </mat-error>
+            <mat-error *ngIf="registerForm.controls['email'].hasError('email')">
+                Hibás email cím!
+            </mat-error>
+        </mat-form-field>
+
+        <!-- Jelszó mező -->
+        <mat-form-field appearance="outline">
+            <mat-label for="password">Jelszó</mat-label>
+            <input formControlName="password" matInput [type]="hidePassword?'password':'text'">
+
+            <mat-icon (click)="hidePassword=!hidePassword" matSuffix>{{hidePassword
+                ?'visibility_off':'visibility_on'}}</mat-icon>
+
+            <mat-error *ngIf="registerForm.controls['password'].hasError('required')">
+                Nem adtál meg jelszót!
+            </mat-error>
+
+        </mat-form-field>
+
+          <!-- Jelszó mégegyszer -->
+          <mat-form-field appearance="outline">
+            <mat-label for="passwordAgain">Jelszó mégegyszer</mat-label>
+            <input formControlName="passwordAgain" matInput [type]="hidePasswordAgain?'password':'text'">
+            <mat-icon (click)="hidePasswordAgain=!hidePasswordAgain" matSuffix>{{hidePasswordAgain
+                ?'visibility_off':'visibility_on'}}</mat-icon>
+
+            <mat-error *ngIf="registerForm.controls['passwordAgain'].hasError('required')">
+                Írd be mégegyszer a jelszavadat!
+            </mat-error>
+
+        </mat-form-field>
+
+         <!--Regisztráció gomb-->
+         <button mat-raised-button color="primary" type="submit">Regisztráció</button>
+
+        </form>
+        <!-- Bejelentkezés -->
+        <p class="alternative">Már van felhasználód? <span [routerLink]="['/bejelentkezes']">Bejelentkezés</span></p>
+
+        <!-- Vagy -->
+        <div class="or-line-divider">
+            <p>Vagy</p>
+        </div>
+
+        <!-- Google login -->
+        <div class="google-card" (click)="loginWithGoogle()">
+            <app-google-login-card></app-google-login-card>
+        </div>
+    </div>
+</div>
