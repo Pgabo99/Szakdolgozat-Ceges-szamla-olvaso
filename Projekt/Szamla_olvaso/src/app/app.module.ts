@@ -15,6 +15,7 @@ import { environment } from '../environments/environment';
 import { LoginComponent } from './pages/login/login.component';
 import { RegisterComponent } from './pages/register/register.component';
 import { HomeComponent } from './pages/home/home.component';
+import { SidenavComponent } from './component/sidenav/sidenav.component';
 
 import {ReactiveFormsModule} from '@angular/forms';
 import {MatInputModule} from '@angular/material/input';
@@ -22,11 +23,9 @@ import {MatFormFieldModule,MatLabel} from '@angular/material/form-field';
 import { GoogleLoginCardComponent } from './component/google-login-card/google-login-card.component';
 import {MatIconModule} from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
-
-
-
-
-
+import { MatSidenav, MatSidenavModule } from '@angular/material/sidenav'
+import { MatToolbarModule } from '@angular/material/toolbar'
+import {MatListModule} from '@angular/material/list'
 
 const firebaseConfig = {
   apiKey: "AIzaSyA_AiToCNllRHkVkleW9E6P_sp3RuXmY5E",
@@ -47,7 +46,8 @@ const analytics = getAnalytics(app);
     LoginComponent,
     RegisterComponent,
     HomeComponent,
-    GoogleLoginCardComponent
+    GoogleLoginCardComponent,
+    SidenavComponent
   ],
   imports: [
     BrowserModule,
@@ -60,7 +60,11 @@ const analytics = getAnalytics(app);
     MatFormFieldModule,
     MatIconModule,
     MatButtonModule,
-    MatLabel
+    MatLabel,
+    MatToolbarModule,
+    MatIconModule,
+    MatSidenavModule,
+    MatListModule
     
   ],
   providers: [

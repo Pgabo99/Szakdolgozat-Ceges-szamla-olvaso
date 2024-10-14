@@ -17,14 +17,12 @@ export class LoginComponent implements OnInit{
     password:new FormControl('', Validators.required)
   });
   constructor(private authService:AuthService, private router:Router){
-    if (this.authService.IsLoggenIn())
-      this.router.navigate(['/home']);
   }
 
   loginWithGoogle(){
     this.authService.signInWithGoogle().then((res:any)=>{
       localStorage.setItem('token', 'true');
-      this.router.navigateByUrl('home');
+      this.router.navigateByUrl('kezdooldal');
     })
     .catch((error:any)=>{console.error(error);})
   }
@@ -44,7 +42,7 @@ export class LoginComponent implements OnInit{
     }
     const userData=Object.assign(this.loginForm.value);
     this.authService.signInWithEmailAndPassword(userData).then((res:any)=>{
-      this.router.navigateByUrl('home');
+      this.router.navigateByUrl('regisztracio');
     })
     .catch((error:any)=>{ alert("Sikertelen bejelentkezés");})
   }

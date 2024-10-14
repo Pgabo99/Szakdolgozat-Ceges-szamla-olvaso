@@ -1,8 +1,13 @@
-<div>
-    <a routerLink="/login">Login</a>
-    <a routerLink="/register">Regisztráció</a>
-</div>
-<div>
-    <span (click)="logout()">Kijelentkezés</span>
-</div>
-<router-outlet></router-outlet>
+<mat-toolbar class="mat-elevation-z3">
+    <button mat-icon-button (click)="collapsed.set(!collapsed())" >
+        <mat-icon>menu</mat-icon>
+    </button>
+</mat-toolbar>
+<mat-sidenav-container>
+    <mat-sidenav opened mode="side" [style.width]="sidenavWidth()">
+        <app-sidenav [collapsed]="collapsed()" ></app-sidenav>
+    </mat-sidenav>
+    <mat-sidenav-content class="content" [style.margin-left]="sidenavWidth()">
+        <router-outlet></router-outlet>
+    </mat-sidenav-content>
+</mat-sidenav-container>

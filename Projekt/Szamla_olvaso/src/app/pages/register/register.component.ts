@@ -18,12 +18,13 @@ export class RegisterComponent {
     passwordAgain: new FormControl('', Validators.required)
   });
 
-  constructor(private authService: AuthService, private router: Router) { }
+  constructor(private authService: AuthService, private router: Router) {
+  }
 
   loginWithGoogle() {
     this.authService.signInWithGoogle().then((res: any) => {
       localStorage.setItem('token', 'true');
-      this.router.navigateByUrl('home');
+      this.router.navigateByUrl('kezdooldal');
     })
       .catch((error: any) => { console.error(error); })
   }
@@ -33,12 +34,16 @@ export class RegisterComponent {
       alert('Add meg az email címedet');
       return;
     }
-    if (this.registerForm.value.password == '' && this.registerForm.value.passwordagain == '') {
+    else if (this.registerForm.value.password === '' && this.registerForm.value.passwordagain === '') {
       alert('Add meg kétszer a jelszavadat');
       return;
     }
-    if (this.registerForm.value.password !== this.registerForm.value.passwordAgain) {
+    else if (this.registerForm.value.password !== this.registerForm.value.passwordAgain) {
       alert('Kérlek ugyanazt a jelszót add meg!');
+      return;
+    }
+    else if (this.registerForm.invalid) {
+      alert('Kérlek töltsd ki az összes kötelező mezőt!');
       return;
     }
     else {
