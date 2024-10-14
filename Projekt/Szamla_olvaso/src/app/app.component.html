@@ -3,8 +3,8 @@
         <mat-icon>menu</mat-icon>
     </button>
 </mat-toolbar>
-<mat-sidenav-container>
-    <mat-sidenav opened mode="side" [style.width]="sidenavWidth()">
+<mat-sidenav-container >
+    <mat-sidenav  opened mode="side" [style.width]="sidenavWidth()" class="mat-elevation-z3">
         <app-sidenav [collapsed]="collapsed()" ></app-sidenav>
     </mat-sidenav>
     <mat-sidenav-content class="content" [style.margin-left]="sidenavWidth()">

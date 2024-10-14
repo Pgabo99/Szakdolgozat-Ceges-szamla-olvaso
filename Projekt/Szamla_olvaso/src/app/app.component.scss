@@ -6,9 +6,18 @@ mat-toolbar{
 
 mat-sidenav-container{
     height: calc(100vh - 64px);
+    background: inherit;
+    border-radius: 0%;
+
 }
 mat-sidenav, mat-sidenav-content{
     transition: all 500ms ease-in-out;
+   
+   
+}
+mat-sidenav{
+    box-shadow: var(--mat-app-elevation-shadow-level-3, none);
+    border-radius: 0%;
 }
 .content{
     padding: 24px;

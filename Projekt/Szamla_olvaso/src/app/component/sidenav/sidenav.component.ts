@@ -1,5 +1,5 @@
 import { Component, computed, Input, signal } from '@angular/core';
-import { AuthService } from '../../services/auth.service';
+import { AuthService } from '../../shared/services/auth.service';
 
 
 export type MenuItem = {
@@ -56,7 +56,7 @@ export class SidenavComponent {
   menuItemsNotLoggedIn = signal<MenuItem[]>([
     {
       icon: 'home',
-      label: 'Kezdőoldal',
+      label: 'Kezdőlap',
       route: 'kezdooldal',
       click: ''
     },
@@ -69,7 +69,7 @@ export class SidenavComponent {
     },
     {
       icon: 'person_add',
-      label: 'Regisztrácio',
+      label: 'Regisztráció',
       route: '/regisztracio',
       click: ''
     }

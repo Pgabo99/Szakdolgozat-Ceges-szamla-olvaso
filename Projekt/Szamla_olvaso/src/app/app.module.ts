@@ -5,12 +5,15 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 
-import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
+//import { initializeApp } from "firebase/app";
+//import { getAnalytics } from "firebase/analytics";
 
 import { AngularFireModule } from '@angular/fire/compat';
 import { AngularFireAuthModule } from '@angular/fire/compat/auth';
 import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
+import { provideAuth, getAuth } from '@angular/fire/auth';
+import { provideStorage, getStorage } from '@angular/fire/storage';
+
 import { environment } from '../environments/environment';
 import { LoginComponent } from './pages/login/login.component';
 import { RegisterComponent } from './pages/register/register.component';
@@ -23,11 +26,12 @@ import {MatFormFieldModule,MatLabel} from '@angular/material/form-field';
 import { GoogleLoginCardComponent } from './component/google-login-card/google-login-card.component';
 import {MatIconModule} from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
-import { MatSidenav, MatSidenavModule } from '@angular/material/sidenav'
+import {MatSidenavModule } from '@angular/material/sidenav'
 import { MatToolbarModule } from '@angular/material/toolbar'
-import {MatListModule} from '@angular/material/list'
+import {MatListModule} from '@angular/material/list';
+import { ProfileComponent } from './pages/profile/profile.component'
 
-const firebaseConfig = {
+/*const firebaseConfig = {
   apiKey: "AIzaSyA_AiToCNllRHkVkleW9E6P_sp3RuXmY5E",
   authDomain: "szamla-olvaso.firebaseapp.com",
   projectId: "szamla-olvaso",
@@ -35,10 +39,10 @@ const firebaseConfig = {
   messagingSenderId: "819730583747",
   appId: "1:819730583747:web:d073a177738b5e28685276",
   measurementId: "G-EQ19F5P25H"
-};
+};*/
 
-const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
+//const app = initializeApp(firebaseConfig);
+//const analytics = getAnalytics(app);
 
 @NgModule({
   declarations: [
@@ -47,12 +51,14 @@ const analytics = getAnalytics(app);
     RegisterComponent,
     HomeComponent,
     GoogleLoginCardComponent,
-    SidenavComponent
+    SidenavComponent,
+    ProfileComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     AngularFireModule.initializeApp(environment.firebase),
+    provideStorage(() => getStorage()),
     AngularFireAuthModule,
     AngularFirestoreModule,
     ReactiveFormsModule,
@@ -60,12 +66,10 @@ const analytics = getAnalytics(app);
     MatFormFieldModule,
     MatIconModule,
     MatButtonModule,
-    MatLabel,
     MatToolbarModule,
     MatIconModule,
     MatSidenavModule,
     MatListModule
-    
   ],
   providers: [
     provideAnimationsAsync()

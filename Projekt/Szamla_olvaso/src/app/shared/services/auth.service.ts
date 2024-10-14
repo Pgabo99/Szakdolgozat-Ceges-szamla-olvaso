@@ -1,18 +1,24 @@
 import { Injectable } from '@angular/core';
+import { Auth, authState } from '@angular/fire/auth';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { Router } from '@angular/router';
-import { GoogleAuthProvider } from 'firebase/auth';
-import { map } from 'rxjs';
+import { GoogleAuthProvider, updateProfile, UserInfo } from 'firebase/auth';
+import { concatMap, from, map, Observable, of, switchMap } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
 
-  constructor(private afs: AngularFireAuth, private router: Router) { }
+  currentUser$:Observable<any>;
+
+  constructor(private afs: AngularFireAuth, private router: Router) { 
+    this.currentUser$=authState(this.afs);
+  }
   signInWithGoogle() {
     return this.afs.signInWithPopup(new GoogleAuthProvider()).then((result) => {
       localStorage.setItem('token', 'true');
+      this.currentUser$=this.afs.authState;
     }).catch(error => {
       console.error('Google sign-in error:', error);
       alert('Google bejelentkezés sikertelen: ' + error.message);
@@ -33,6 +39,7 @@ export class AuthService {
   signInWithEmailAndPassword(user: { email: string, password: string }) {
     return this.afs.signInWithEmailAndPassword(user.email, user.password)
     .then(() => {
+      this.currentUser$=this.afs.authState;
       localStorage.setItem('token', 'true');
     })
     .catch((error) => {
@@ -41,6 +48,7 @@ export class AuthService {
     });
   }
   logout() {
+    this.afs.signOut();
     return this.afs.signOut().then(() => {
       localStorage.clear();
       this.router.navigate(['/bejelentkezes']);
@@ -68,5 +76,26 @@ export class AuthService {
     });
     localStorage.clear();
   }
+
+  currentUser():Observable<any> {
+    return this.afs.authState;
+  }
+
+
+  updateProfileData(displayName: string, photoURL: string): Observable<void> {
+    return from(this.afs.currentUser).pipe(
+      concatMap(user => {
+        if (!user) throw new Error('Nincs bejelentkezve');
+        
+        return from(updateProfile(user, { displayName, photoURL }));
+      })
+    );
+  }
+
+  updateUserEmail(newEmail: string, password:string, oldEmail:string){
+    return from(this.afs.signInWithEmailAndPassword(oldEmail, password).then(userCredentials => {
+                return userCredentials.user!.updateEmail(newEmail);
+    }))
+}
 
 }
