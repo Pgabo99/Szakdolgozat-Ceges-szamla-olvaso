@@ -50,7 +50,7 @@ export class AuthService {
     this.afs.signOut();
     return this.afs.signOut().then(() => {
       localStorage.clear();
-      this.router.navigate(['/bejelentkezes']);
+      location.reload()
       alert('Sikeres kijelentkezés!');
     }).catch((err) => {
       alert(err.message);

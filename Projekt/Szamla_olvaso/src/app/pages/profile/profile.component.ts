@@ -3,6 +3,7 @@ import { AuthService } from '../../shared/services/auth.service';
 import { concatMap, Observable } from 'rxjs';
 import { User } from 'firebase/auth';
 import { ProfileUploadService } from '../../shared/services/profile-upload.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-profile',
@@ -14,7 +15,7 @@ export class ProfileComponent implements OnInit{
   user$:Observable<any>;
   downloadURL: string;
 
-  constructor(private authService:AuthService, private imageUploadService:ProfileUploadService){
+  constructor(private authService:AuthService, private imageUploadService:ProfileUploadService, private router:Router){
    this.user$=this.authService.currentUser$;
    this.downloadURL=""
    this.fetchDownloadURL()
@@ -38,7 +39,8 @@ export class ProfileComponent implements OnInit{
         this.imageUploadService.uploadImage(file, `images/profile/${user.uid}`).pipe(
           concatMap((photoURL: string) => this.authService.updateProfileData(user.displayName!, photoURL))
         ).subscribe({
-          next: () => console.log('Profile updated successfully'),
+          next: () => location.reload(),
+            //this.router.navigateByUrl('/kezooldal', { skipLocationChange: true }).then(()=>this.router.navigateByUrl('/profil')),
           error: (err) => console.error('Error updating profile:', err)
         });
       }
