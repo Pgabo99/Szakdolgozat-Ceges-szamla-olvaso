@@ -1,7 +1,8 @@
 <div class="form-container mat-elevation-z5 text-center" *ngIf="user$ | async as user">
-    <h1>Felhasználó {{user$}}</h1>
+    <h1>Felhasználó</h1>
     <div class="profile-image">
-        <img width="120" height="120" [src]="user.photoUrl??'assets/user.png'">
+        <img width="120" height="120" [src]="downloadURL" *ngIf="!!downloadURL">
+        <img width="120" height="120" src="/assets/user.png" *ngIf="!downloadURL">
     </div>
     <button mat-mini-fab (click)="inputField.click()">
         <mat-icon>edit</mat-icon>

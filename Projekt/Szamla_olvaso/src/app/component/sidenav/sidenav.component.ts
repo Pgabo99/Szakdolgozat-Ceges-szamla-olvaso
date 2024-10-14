@@ -1,5 +1,7 @@
-import { Component, computed, Input, signal } from '@angular/core';
+import { Component, computed, Input, OnInit, signal } from '@angular/core';
 import { AuthService } from '../../shared/services/auth.service';
+import { Observable } from 'rxjs';
+import { ProfileUploadService } from '../../shared/services/profile-upload.service';
 
 
 export type MenuItem = {
@@ -14,8 +16,11 @@ export type MenuItem = {
   templateUrl: './sidenav.component.html',
   styleUrl: './sidenav.component.scss'
 })
-export class SidenavComponent {
+export class SidenavComponent implements OnInit{
   sideNavCollapsed = signal(false);
+
+  user$:Observable<any>;
+  downloadURL: string;
 
   @Input() set collapsed(val: boolean) {
     this.sideNavCollapsed.set(val);
@@ -75,7 +80,13 @@ export class SidenavComponent {
     }
   ])
 
-  constructor(private authService: AuthService) {
+  constructor(private authService: AuthService, private imageUploadService:ProfileUploadService) {
+    this.user$=this.authService.currentUser$;
+    this.downloadURL=""
+    
+  }
+  ngOnInit(): void {
+    this.fetchDownloadURL()
   }
 
   logout() {
@@ -87,4 +98,19 @@ export class SidenavComponent {
   }
 
   profilePicSize = computed(() => this.sideNavCollapsed() ? '32' : '100')
+
+  fetchDownloadURL() {
+    this.user$.subscribe(user => {
+      if (user) {
+        const filePath = `images/profile/${user.uid}`; // A fájl tárolási útvonala
+
+        this.imageUploadService.getFileDownloadURL(filePath).subscribe(url => {
+          this.downloadURL = url; // A letöltési URL tárolása
+          console.log('Fájl letöltési URL:', this.downloadURL); // URL kiírása a konzolra
+        });
+      } else {
+        console.log('A felhasználó nem elérhető.');
+      }
+    });
+  }
 }

@@ -12,13 +12,16 @@ import { ProfileUploadService } from '../../shared/services/profile-upload.servi
 export class ProfileComponent implements OnInit{
 
   user$:Observable<any>;
+  downloadURL: string;
 
   constructor(private authService:AuthService, private imageUploadService:ProfileUploadService){
    this.user$=this.authService.currentUser$;
+   this.downloadURL=""
+   this.fetchDownloadURL()
   }
 
   ngOnInit(): void {
-   
+    this.fetchDownloadURL()
   }
 
   /*uploadImage(event:any, user:User){
@@ -30,7 +33,7 @@ export class ProfileComponent implements OnInit{
     uploadImage(event: Event, user: User) {
       const input = event.target as HTMLInputElement;
       
-      if (input.files && input.files[0]) {
+     if (input.files && input.files[0]) {
         const file = input.files[0];
         this.imageUploadService.uploadImage(file, `images/profile/${user.uid}`).pipe(
           concatMap((photoURL: string) => this.authService.updateProfileData(user.displayName!, photoURL))
@@ -39,6 +42,21 @@ export class ProfileComponent implements OnInit{
           error: (err) => console.error('Error updating profile:', err)
         });
       }
+    }
+
+    fetchDownloadURL() {
+      this.user$.subscribe(user => {
+        if (user) {
+          const filePath = `images/profile/${user.uid}`; // A fájl tárolási útvonala
+
+          this.imageUploadService.getFileDownloadURL(filePath).subscribe(url => {
+            this.downloadURL = url; // A letöltési URL tárolása
+            console.log('Fájl letöltési URL:', this.downloadURL); // URL kiírása a konzolra
+          });
+        } else {
+          console.log('A felhasználó nem elérhető.');
+        }
+      });
     }
 
 }

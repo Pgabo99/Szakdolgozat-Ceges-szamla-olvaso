@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { Auth, authState } from '@angular/fire/auth';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { Router } from '@angular/router';
 import { GoogleAuthProvider, updateProfile, UserInfo } from 'firebase/auth';
@@ -10,10 +9,10 @@ import { concatMap, from, map, Observable, of, switchMap } from 'rxjs';
 })
 export class AuthService {
 
-  currentUser$:Observable<any>;
+  currentUser$;
 
   constructor(private afs: AngularFireAuth, private router: Router) { 
-    this.currentUser$=authState(this.afs);
+    this.currentUser$=this.afs.authState;
   }
   signInWithGoogle() {
     return this.afs.signInWithPopup(new GoogleAuthProvider()).then((result) => {
