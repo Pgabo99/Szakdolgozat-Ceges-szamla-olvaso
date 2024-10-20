@@ -29,7 +29,11 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatListModule } from '@angular/material/list';
+import { MatDialogModule } from '@angular/material/dialog';
 import { getStorage, provideStorage } from '@angular/fire/storage';
+import { ChangeProfileComponent } from './component/change-profile/change-profile.component';
+import { AddProfileComponent } from './component/add-profile/add-profile.component';
+import { UploadFileComponent } from './pages/upload-file/upload-file.component';
 
 @NgModule({
   declarations: [
@@ -39,7 +43,10 @@ import { getStorage, provideStorage } from '@angular/fire/storage';
     HomeComponent,
     GoogleLoginCardComponent,
     SidenavComponent,
-    ProfileComponent
+    ProfileComponent,
+    ChangeProfileComponent,
+    AddProfileComponent,
+    UploadFileComponent
   ],
   imports: [
     BrowserModule,
@@ -57,7 +64,8 @@ import { getStorage, provideStorage } from '@angular/fire/storage';
     MatToolbarModule,
     MatIconModule,
     MatSidenavModule,
-    MatListModule
+    MatListModule,
+    MatDialogModule
   ],
   providers: [
     provideAnimationsAsync()

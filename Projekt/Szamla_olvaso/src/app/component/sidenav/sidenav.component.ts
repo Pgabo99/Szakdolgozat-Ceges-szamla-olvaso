@@ -20,6 +20,7 @@ export class SidenavComponent implements OnInit{
   sideNavCollapsed = signal(false);
 
   user$:Observable<any>;
+  email;
   downloadURL: string;
 
   @Input() set collapsed(val: boolean) {
@@ -83,6 +84,7 @@ export class SidenavComponent implements OnInit{
   constructor(private authService: AuthService, private imageUploadService:ProfileUploadService) {
     this.user$=this.authService.currentUser$;
     this.downloadURL=""
+    this.email=this.authService.getUserEmail();
     
   }
   ngOnInit(): void {

@@ -1,11 +1,12 @@
 .form-container {
     display: block;
-    max-width: 300px;
+    max-width: 600px;
     margin: auto;
 
     background: #eceff1;
     padding: 48px;
     border-radius: 16px;
+
 }
 
 .form-container mat-form-field {
@@ -32,11 +33,30 @@
 }
 
 .profile-image {
+    width: 120px;
     position: relative;
+    margin: auto;
+    margin-bottom: 20px;
 
     button {
+        margin: 0;
         position: absolute;
-        bottom: 10px;
-        right: 25%;
+        bottom: 0;
+        right: -8%;
     }
 }
+h2{
+    font-size: 30px;
+}
+
+.forgot-label {
+    margin-top: 10px;
+    font-size: 2vh;
+    color: #005cbb;
+    text-align: center;
+    cursor: pointer;
+}
+
+
+
+

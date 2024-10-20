@@ -1,0 +1,44 @@
+.addProfile{
+
+    min-height: 50vh;
+    align-items: center;
+    justify-content: center;
+    margin: auto;
+
+    width: 90%;
+    max-width: 600px;
+    display: flex;
+    flex-direction: column;
+    form {
+       
+        mat-form-field{
+            width: 100%;
+            margin: auto;
+            justify-content: center;
+        }
+        .title {
+            font-size: 3rem;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+    
+        .title-intro {
+            font-size: 3vh;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 16px;
+        }
+    
+        mat-icon {
+            cursor: pointer;
+        }
+        button {
+            width: 100%;
+            padding: 1vw;
+            margin-top: 20px;
+            font-size: 2vh;
+        }
+    
+    }
+}

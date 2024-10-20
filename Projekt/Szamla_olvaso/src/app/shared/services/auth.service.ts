@@ -10,14 +10,20 @@ import { concatMap, from, map, Observable, of, switchMap } from 'rxjs';
 export class AuthService {
 
   currentUser$;
+  userEmail$: string | null | undefined;
 
-  constructor(private afs: AngularFireAuth, private router: Router) { 
-    this.currentUser$=this.afs.authState;
+  constructor(private afs: AngularFireAuth, private router: Router) {
+    this.currentUser$ = this.afs.authState;
+    this.afs.authState.subscribe(auth=>{
+      if(auth){
+       this.userEmail$  = auth.email; 
+       }
+    })
   }
   signInWithGoogle() {
     return this.afs.signInWithPopup(new GoogleAuthProvider()).then((result) => {
       localStorage.setItem('token', 'true');
-      this.currentUser$=this.afs.authState;
+      this.currentUser$ = this.afs.authState;
     }).catch(error => {
       console.error('Google sign-in error:', error);
       alert('Google bejelentkezés sikertelen: ' + error.message);
@@ -26,25 +32,25 @@ export class AuthService {
 
   registerWithEmailAndPassword(user: { email: string, password: string }) {
     return this.afs.createUserWithEmailAndPassword(user.email, user.password)
-    .then(() => {
-      alert('Regisztráció sikeres!');
-    })
-    .catch((error) => {
-      console.error('Registration error:', error);
-      alert('Regisztráció sikertelen: ' + error.message);
-    });
+      .then(() => {
+        alert('Regisztráció sikeres!');
+      })
+      .catch((error) => {
+        console.error('Registration error:', error);
+        alert('Regisztráció sikertelen: ' + error.message);
+      });
   }
 
   signInWithEmailAndPassword(user: { email: string, password: string }) {
     return this.afs.signInWithEmailAndPassword(user.email, user.password)
-    .then(() => {
-      this.currentUser$=this.afs.authState;
-      localStorage.setItem('token', 'true');
-    })
-    .catch((error) => {
-      console.error('Sign-in error:', error);
-      alert('Bejelentkezés sikertelen: ' + error.message);
-    });
+      .then(() => {
+        this.currentUser$ = this.afs.authState;
+        localStorage.setItem('token', 'true');
+      })
+      .catch((error) => {
+        console.error('Sign-in error:', error);
+        alert('Bejelentkezés sikertelen: ' + error.message);
+      });
   }
   logout() {
     this.afs.signOut();
@@ -76,7 +82,7 @@ export class AuthService {
     localStorage.clear();
   }
 
-  currentUser():Observable<any> {
+  currentUser(): Observable<any> {
     return this.afs.authState;
   }
 
@@ -85,16 +91,17 @@ export class AuthService {
     return from(this.afs.currentUser).pipe(
       concatMap(user => {
         if (!user) throw new Error('Nincs bejelentkezve');
-        
+
         return from(updateProfile(user, { displayName, photoURL }));
       })
     );
   }
 
-  updateUserEmail(newEmail: string, password:string, oldEmail:string){
-    return from(this.afs.signInWithEmailAndPassword(oldEmail, password).then(userCredentials => {
-                return userCredentials.user!.updateEmail(newEmail);
-    }))
-}
+   getUserEmail(){
+    return this.userEmail$;
+  }
 
+  passwordReset(email:string){
+    return this.afs.sendPasswordResetEmail(email);
+  }
 }

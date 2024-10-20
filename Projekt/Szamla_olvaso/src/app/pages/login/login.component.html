@@ -19,9 +19,9 @@
         </mat-form-field>
 
         <!-- Jelszó mező -->
-        <mat-form-field appearance="outline">
+        <mat-form-field appearance="outline" >
             <mat-label>Jelszó</mat-label>
-            <input formControlName="password" matInput [type]="hidePassword?'password':'text'">
+            <input formControlName="password" matInput >
             <mat-icon (click)="hidePassword=!hidePassword" matSuffix>{{hidePassword
                 ?'visibility_off':'visibility_on'}}</mat-icon>
 
@@ -35,7 +35,7 @@
          <button mat-raised-button color="primary" type="submit">Bejelentkezés</button>
         </form>
         <!-- Elfelejtett jelszó link -->
-        <p class="forgot-label">Elfelejtett jelszó?</p>
+        <p class="forgot-label" (click)="ForgotPassword()">Elfelejtett jelszó?</p>
 
         <!-- Regisztráció -->
         <p class="alternative">Még nincs felhasználód? <span [routerLink]="['/regisztracio']">Regisztráció</span></p>

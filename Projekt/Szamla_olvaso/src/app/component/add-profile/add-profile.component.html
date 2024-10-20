@@ -1,0 +1,61 @@
+<div class="addProfile">
+    <form [formGroup]="addProfileForm" (submit)="addUser()">
+
+        <p class="title">Adatok hozzáadása</p>
+        <p class="title-intro">Nem kell mindent kitölteni</p>
+        <!-- Email mező -->
+        <mat-form-field appearance="outline">
+            <mat-label>Email</mat-label>
+            <input formControlName="email" matInput type="email" [readonly]="true">
+        </mat-form-field>
+
+         <!-- Név mező -->
+         <mat-form-field appearance="outline">
+            <mat-label>Név</mat-label>
+            <input formControlName="name" matInput type="text" >
+        </mat-form-field>
+
+         <!-- Cégnév mező -->
+         <mat-form-field appearance="outline">
+            <mat-label>Cégnév</mat-label>
+            <input formControlName="companyName" matInput type="text" >
+        </mat-form-field>
+
+
+         <!-- Telefonszám mező -->
+         <mat-form-field appearance="outline">
+            <mat-label>Telefonszám</mat-label>
+            <input formControlName="phoneNumber" matInput type="tel" >
+        </mat-form-field>
+
+
+         <!-- Adószám mező -->
+         <mat-form-field appearance="outline">
+            <mat-label>Adószám</mat-label>
+            <input formControlName="taxNumber" matInput type="text" >
+        </mat-form-field>
+
+
+         <!-- Ország mező -->
+         <mat-form-field appearance="outline">
+            <mat-label>Ország</mat-label>
+            <input formControlName="country" matInput type="text" >
+        </mat-form-field>
+
+         <!-- Irányítószám mező -->
+         <mat-form-field appearance="outline">
+            <mat-label>Irányítószám</mat-label>
+            <input formControlName="zipCode" matInput type="number" >
+        </mat-form-field>
+
+         <!-- Utca, Házszám mező -->
+         <mat-form-field appearance="outline">
+            <mat-label>Utca és házszám</mat-label>
+            <input formControlName="site" matInput type="text" >
+        </mat-form-field>
+
+
+        <!--Mentés gomb-->
+        <button mat-raised-button color="primary" type="submit" mat-dialog-close>Adatok mentése</button>
+    </form>
+</div>

@@ -1,11 +1,95 @@
 <div class="form-container mat-elevation-z5 text-center" *ngIf="user$ | async as user">
-    <h1>Felhasználó</h1>
     <div class="profile-image">
         <img width="120" height="120" [src]="downloadURL" *ngIf="!!downloadURL">
         <img width="120" height="120" src="/assets/user.png" *ngIf="!downloadURL">
+        <button mat-mini-fab (click)="inputField.click()">
+            <mat-icon>edit</mat-icon>
+        </button>
     </div>
-    <button mat-mini-fab (click)="inputField.click()">
-        <mat-icon>edit</mat-icon>
-    </button>
-    <input #inputField type="file" hidden (change)="uploadImage($event,user)"/>
+    <input #inputField type="file" hidden (change)="uploadImage($event,user)" />
+    <div>
+
+        <!-- Email mező -->
+        <form [formGroup]="profileForm">
+            <div class="profile-change">
+                <div class="inputbutton">
+                    <mat-form-field appearance="outline" class="input-field">
+                        <mat-label>Email</mat-label>
+                        <input formControlName="email" matInput type="email" [readonly]="true">
+                    </mat-form-field>
+                </div>
+
+                <p class="forgot-label" (click)="ResetPassword()">Jelszó váltás</p>
+            </div>
+        </form>
+
+        <!-- User info -->
+        <form [formGroup]="userForm">
+            <div class="profile-change" *ngIf="loggenUser!=null">
+                <h2>Szerkesztés <button mat-mini-fab (click)="szerkeszt()">
+                        <mat-icon>edit</mat-icon>
+                    </button></h2>
+
+                <!-- Email mező -->
+                <mat-form-field appearance="outline" class="input-field">
+                    <mat-label>Email</mat-label>
+                    <input formControlName="email" matInput type="email" [readonly]="true">
+                </mat-form-field>
+
+                <!-- Név mező -->
+                <mat-form-field appearance="outline">
+                    <mat-label>Név</mat-label>
+                    <input formControlName="name" matInput type="text" [readonly]="true">
+                </mat-form-field>
+
+                <!-- Cégnév mező -->
+                <mat-form-field appearance="outline">
+                    <mat-label>Cégnév</mat-label>
+                    <input formControlName="companyName" matInput type="text" [readonly]="true">
+                </mat-form-field>
+
+
+                <!-- Telefonszám mező -->
+                <mat-form-field appearance="outline">
+                    <mat-label>Telefonszám</mat-label>
+                    <input formControlName="phoneNumber" matInput type="tel" [readonly]="true">
+                </mat-form-field>
+
+
+                <!-- Adószám mező -->
+                <mat-form-field appearance="outline">
+                    <mat-label>Adószám</mat-label>
+                    <input formControlName="taxNumber" matInput type="text" [readonly]="true">
+                </mat-form-field>
+
+
+                <!-- Ország mező -->
+                <mat-form-field appearance="outline">
+                    <mat-label>Ország</mat-label>
+                    <input formControlName="country" matInput type="text" [readonly]="true">
+                </mat-form-field>
+
+                <!-- Irányítószám mező -->
+                <mat-form-field appearance="outline">
+                    <mat-label>Irányítószám</mat-label>
+                    <input formControlName="zipCode" matInput type="number" [readonly]="true">
+                </mat-form-field>
+
+                <!-- Utca, Házszám mező -->
+                <mat-form-field appearance="outline">
+                    <mat-label>Utca és házszám</mat-label>
+                    <input formControlName="site" matInput type="text" [readonly]="true">
+                </mat-form-field>
+            </div>
+
+            <div class="profile-change" *ngIf="loggenUser==null">
+                <h2 (click)="hozzaad()">Adatok hozzáadása(opcionális)</h2>
+            </div>
+
+
+        </form>
+
+
+
+    </div>
 </div>

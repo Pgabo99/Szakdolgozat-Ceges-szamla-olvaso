@@ -32,7 +32,6 @@ export class LoginComponent implements OnInit{
 
   loginWithEmailAndPassword(){
     if (this.loginForm.value.email == '') {
-      localStorage.setItem('token', 'true');
       alert('Add meg az email címedet');
       return;
     }
@@ -47,4 +46,12 @@ export class LoginComponent implements OnInit{
     .catch((error:any)=>{ alert("Sikertelen bejelentkezés");})
   }
   
+  async ForgotPassword(){
+    if (this.loginForm.value.email == '') {
+      alert('Add meg az email címedet');
+      return;
+    }
+    this.authService.passwordReset(this.loginForm.value.email);
+    alert('Nézd meg az email fiókodat');
+  }
 }
