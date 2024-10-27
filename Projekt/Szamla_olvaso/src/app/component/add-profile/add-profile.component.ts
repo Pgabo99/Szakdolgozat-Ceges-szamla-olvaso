@@ -32,8 +32,8 @@ export class AddProfileComponent {
     taxNumber: '',
     country: '',
     zipCode: 0,
-    site: ''
-
+    site: '',
+    files:{}
   }
 
   constructor(@Inject(MAT_DIALOG_DATA) public data: { userEmail: string }, private userService: UserInfoService) {

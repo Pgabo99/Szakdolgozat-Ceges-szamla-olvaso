@@ -20,7 +20,11 @@ export class ProfileUploadService {
   }
 
   getFileDownloadURL(path: string): Observable<string> {
-    const storageRef = this.storage.ref(path); // Az AngularFireStorage ref() metódusa
-    return storageRef.getDownloadURL(); // Letöltési URL lekérése
+    const storageRef = this.storage.ref(path);
+    return storageRef.getDownloadURL(); 
+  }
+
+  async uploadBill(bill:File,path:string):Promise<any>{
+    return await this.storage.upload(path,bill)
   }
 }

@@ -36,4 +36,14 @@ export class UserInfoService {
       }
     );
   }
+
+  userUploadFile(user:Users){
+    return this.angularFirestore.collection('Users', (ref) => ref.where('email', '==', user.email)).get().subscribe(
+      (querySnapshot) => {
+        querySnapshot.forEach((doc: any) => {
+          doc.ref.update({ files: user.files });
+        });
+      }
+    );
+  }
 }

@@ -30,7 +30,7 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatListModule } from '@angular/material/list';
 import { MatDialogModule } from '@angular/material/dialog';
-import { getStorage, provideStorage } from '@angular/fire/storage';
+import {MatTableModule} from '@angular/material/table';
 import { ChangeProfileComponent } from './component/change-profile/change-profile.component';
 import { AddProfileComponent } from './component/add-profile/add-profile.component';
 import { UploadFileComponent } from './pages/upload-file/upload-file.component';
@@ -65,7 +65,8 @@ import { UploadFileComponent } from './pages/upload-file/upload-file.component';
     MatIconModule,
     MatSidenavModule,
     MatListModule,
-    MatDialogModule
+    MatDialogModule,
+    MatTableModule
   ],
   providers: [
     provideAnimationsAsync()

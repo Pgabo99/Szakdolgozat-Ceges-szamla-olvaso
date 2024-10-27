@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
 import { AuthService } from '../../shared/services/auth.service';
 import { concatMap, Observable, Subscription } from 'rxjs';
 import { User } from 'firebase/auth';
@@ -24,7 +24,7 @@ import { AddProfileComponent } from '../../component/add-profile/add-profile.com
     ]),
   ]
 })
-export class ProfileComponent implements OnInit, OnDestroy {
+export class ProfileComponent implements OnInit, OnDestroy, OnChanges {
 
   private subscriptions = new Subscription();
 
@@ -32,7 +32,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
   downloadURL: string;
   loggenUser?: Users;
   userForm = new FormGroup({
-    email: new FormControl('', [Validators.required, Validators.email]),
+    email: new FormControl(''),
     name: new FormControl(''),
     companyName: new FormControl(''),
     phoneNumber: new FormControl(''),
@@ -43,7 +43,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
   });
 
   profileForm: FormGroup = new FormGroup({
-    email: new FormControl('', [Validators.required, Validators.email]),
+    email: new FormControl(''),
     password: new FormControl('')
   });
 
@@ -51,29 +51,32 @@ export class ProfileComponent implements OnInit, OnDestroy {
     this.user$ = this.authService.currentUser$;
     this.downloadURL = ""
     this.fetchDownloadURL()
-    this.profileForm.setValue({ email: this.authService.getUserEmail(), password: '' });
     this.subscriptions.add(this.userService.getUserByEmail(this.authService.getUserEmail() as string).subscribe(data => {
-      if (data[0] != null) {
-        this.loggenUser = data[0];
-        this.userForm.setValue({
-          email: this.loggenUser.email, name: this.loggenUser.name,
-          companyName: this.loggenUser.companyName, phoneNumber: this.loggenUser.phoneNumber,
-          taxNumber: this.loggenUser.taxNumber, country: this.loggenUser.country,
-          zipCode: this.loggenUser.zipCode as unknown as string, site: this.loggenUser.site
-        })
-      }
-    }));
+      this.loggenUser = data[0];
+      this.profileForm.setValue({ email: this.loggenUser?.email, password: '' });
+    }))
+    
+
+      this.subscriptions.add(this.userService.getUserByEmail(this.authService.getUserEmail() as string).subscribe(data => {
+        if (data[0] != null) {
+          this.loggenUser = data[0];
+          this.userForm.setValue({
+            email: this.loggenUser.email, name: this.loggenUser.name,
+            companyName: this.loggenUser.companyName, phoneNumber: this.loggenUser.phoneNumber,
+            taxNumber: this.loggenUser.taxNumber, country: this.loggenUser.country,
+            zipCode: this.loggenUser.zipCode as unknown as string, site: this.loggenUser.site
+          })
+        }
+      }));
 
 
-
+  }
+  ngOnChanges(changes: SimpleChanges): void {
+    this.fetchDownloadURL()
   }
 
   ngOnInit(): void {
     this.fetchDownloadURL();
-    this.subscriptions.add(this.userService.getUserByEmail(this.authService.getUserEmail() as string).subscribe(data => {
-      this.loggenUser = data[0];
-
-    }))
   }
   ngOnDestroy(): void {
     this.subscriptions.unsubscribe();
@@ -101,7 +104,6 @@ export class ProfileComponent implements OnInit, OnDestroy {
 
         this.imageUploadService.getFileDownloadURL(filePath).subscribe(url => {
           this.downloadURL = url; // A letöltési URL tárolása
-          console.log('Fájl letöltési URL:', this.downloadURL); // URL kiírása a konzolra
         });
       } else {
         console.log('A felhasználó nem elérhető.');

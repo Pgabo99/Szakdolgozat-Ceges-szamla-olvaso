@@ -1,4 +1,4 @@
-import { Component, computed, Input, OnInit, signal } from '@angular/core';
+import { Component, computed, Input, OnChanges, OnInit, signal, SimpleChanges } from '@angular/core';
 import { AuthService } from '../../shared/services/auth.service';
 import { Observable } from 'rxjs';
 import { ProfileUploadService } from '../../shared/services/profile-upload.service';
@@ -16,7 +16,7 @@ export type MenuItem = {
   templateUrl: './sidenav.component.html',
   styleUrl: './sidenav.component.scss'
 })
-export class SidenavComponent implements OnInit{
+export class SidenavComponent implements OnInit, OnChanges{
   sideNavCollapsed = signal(false);
 
   user$:Observable<any>;
@@ -87,6 +87,9 @@ export class SidenavComponent implements OnInit{
     this.email=this.authService.getUserEmail();
     
   }
+  ngOnChanges(changes: SimpleChanges): void {
+    this.fetchDownloadURL()
+  }
   ngOnInit(): void {
     this.fetchDownloadURL()
   }
@@ -104,11 +107,10 @@ export class SidenavComponent implements OnInit{
   fetchDownloadURL() {
     this.user$.subscribe(user => {
       if (user) {
-        const filePath = `images/profile/${user.uid}`; // A fájl tárolási útvonala
+        const filePath = `images/profile/${user.uid}`;
 
         this.imageUploadService.getFileDownloadURL(filePath).subscribe(url => {
-          this.downloadURL = url; // A letöltési URL tárolása
-          console.log('Fájl letöltési URL:', this.downloadURL); // URL kiírása a konzolra
+          this.downloadURL = url;
         });
       } else {
         console.log('A felhasználó nem elérhető.');

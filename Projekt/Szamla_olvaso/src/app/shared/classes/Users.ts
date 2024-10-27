@@ -1,3 +1,5 @@
+import { UploadedFile } from "./uploaded-file";
+
 export interface Users {
     email:string,
     name: string,
@@ -7,4 +9,5 @@ export interface Users {
     country:string,
     zipCode: number,
     site:string,
+    files:{ [key: string]: UploadedFile };
 }

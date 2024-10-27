@@ -34,7 +34,8 @@ export class ChangeProfileComponent {
     taxNumber: '',
     country: '',
     zipCode: 0,
-    site: ''
+    site: '',
+    files:{}
 
   }
 
