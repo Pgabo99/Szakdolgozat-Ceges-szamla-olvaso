@@ -34,6 +34,8 @@ import {MatTableModule} from '@angular/material/table';
 import { ChangeProfileComponent } from './component/change-profile/change-profile.component';
 import { AddProfileComponent } from './component/add-profile/add-profile.component';
 import { UploadFileComponent } from './pages/upload-file/upload-file.component';
+import { HttpClientModule } from '@angular/common/http';
+
 
 @NgModule({
   declarations: [
@@ -51,6 +53,7 @@ import { UploadFileComponent } from './pages/upload-file/upload-file.component';
   imports: [
     BrowserModule,
     AppRoutingModule,
+    HttpClientModule,
     AngularFireModule.initializeApp(environment.firebase),
     //provideStorage(() => getStorage()),
     AngularFireAuthModule,

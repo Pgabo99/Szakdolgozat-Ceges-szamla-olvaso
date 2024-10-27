@@ -8,6 +8,8 @@ import { UserInfoService } from '../../shared/services/user-info.service';
 import { User } from 'firebase/auth';
 import { Users } from '../../shared/classes/Users';
 import { UploadedFile } from '../../shared/classes/uploaded-file';
+import * as Tesseract from 'tesseract.js';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-upload-file',
@@ -23,7 +25,9 @@ export class UploadFileComponent implements OnInit, OnDestroy {
   uid: any;
   downloadURL: string;
   loggenUser?: Users;
-  constructor(private authService: AuthService, private imageUploadService: ProfileUploadService, private router: Router, private dialog: MatDialog, private userService: UserInfoService) {
+  textResult: string = '';
+
+  constructor(private authService: AuthService, private imageUploadService: ProfileUploadService, private router: Router, private dialog: MatDialog, private userService: UserInfoService,private http: HttpClient) {
     this.user$ = this.authService.currentUser$;
     this.downloadURL = ""
     this.getUserUid()
@@ -37,13 +41,11 @@ export class UploadFileComponent implements OnInit, OnDestroy {
           for (let key in this.loggenUser.files) {
             if (count != 0) {
               if (this.loggenUser.files.hasOwnProperty(key)) {
-                console.log('Fájl neve:', key);
                 const seged = {
                   url: key || 'default-url',
                   fileName: this.loggenUser.files[key].fileName,
                   uploadDate: this.loggenUser.files[key].uploadDate
                 }
-                console.log(seged)
                 count--;
                 this.dataSource[count] = (seged);
               }
@@ -83,7 +85,13 @@ export class UploadFileComponent implements OnInit, OnDestroy {
     else {
       const path = `files/${this.uid}/${input.name}`
       const uploadTask = await this.imageUploadService.uploadBill(input, path)
-      const url = await uploadTask.ref.getDownloadURL()
+      const url = await uploadTask.ref.getDownloadURL();
+      if(fileExtension=='pdf'){
+        this.convertToBase64(url)
+      }else{
+        this.processImage(event)
+      }
+
       if (this.loggenUser?.files) {
         this.loggenUser.files[url] = {
           url: url,
@@ -95,5 +103,38 @@ export class UploadFileComponent implements OnInit, OnDestroy {
     }
 
   }
+
+  processImage(event: any) {
+    const image = event.target.files[0];
+
+    Tesseract.recognize(image, 'hun', {
+      logger: (progress) => {
+        console.log(progress); // You can log the progress or show a progress bar
+      }
+    })
+    .then(result => {
+      this.textResult = result.data.text;
+      console.log(result.data.text);
+    })
+    .catch(err => {
+      console.error(err);
+    });
+  }
+
+  convertToBase64(url: string) {
+    this.http.get(url, { responseType: "blob" }).subscribe(blob => {
+      const reader = new FileReader();
+      const binaryString = reader.readAsDataURL(blob);
+      reader.onload = (event: any) => {
+        //Here you can do whatever you want with the base64 String
+        console.log("File in Base64: ", event.target.result);
+      };
+
+      reader.onerror = (event: any) => {
+        console.log("File could not be read: " + event.target.error.code);
+      };
+    });
+}
+  
 
 }
