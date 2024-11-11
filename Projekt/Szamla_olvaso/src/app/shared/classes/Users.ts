@@ -8,6 +8,7 @@ export interface Users {
     taxNumber:string,
     country:string,
     zipCode: number,
+    city:string,
     site:string,
     files:{ [key: string]: UploadedFile };
 }

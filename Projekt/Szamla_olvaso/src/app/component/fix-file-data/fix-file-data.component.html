@@ -1,0 +1,109 @@
+<div class="fixFile">
+    <form [formGroup]="fixFileForm" (submit)="fixFile()">
+
+        <p class="title">Adatok áttekintése</p>
+        <p class="title-intro">Kérlek nézd át hogy jók e</p>
+        <!-- Email mező -->
+        <mat-form-field appearance="outline">
+            <mat-label>Email</mat-label>
+            <input formControlName="email" matInput type="email" [readonly]="true">
+        </mat-form-field>
+
+        <!-- Fájlnév mező -->
+        <mat-form-field appearance="outline">
+            <mat-label>Fájlnév</mat-label>
+            <input formControlName="fajlNev" matInput type="text" [readonly]="true">
+        </mat-form-field>
+
+        <!-- Számlaszám mező -->
+        <mat-form-field appearance="outline">
+            <mat-label>Számlaszám</mat-label>
+            <input formControlName="szamlaszam" matInput type="text">
+        </mat-form-field>
+
+
+        <!-- Szállitó Név mező -->
+        <mat-form-field appearance="outline">
+            <mat-label>Szállitó Név</mat-label>
+            <input formControlName="szallitoNev" matInput type="text">
+        </mat-form-field>
+
+
+        <!--Szállító Adószám mező -->
+        <mat-form-field appearance="outline">
+            <mat-label>Szállító Adószám</mat-label>
+            <input formControlName="szallitoAdo" matInput type="text">
+        </mat-form-field>
+
+        <!--Szállító Irányítószám mező -->
+        <mat-form-field appearance="outline">
+            <mat-label>Szállító Irányítószám</mat-label>
+            <input formControlName="szallitoIrsz" matInput type="number">
+        </mat-form-field>
+
+        <!-- Szállító Település mező -->
+        <mat-form-field appearance="outline">
+            <mat-label>Szállító Település</mat-label>
+            <input formControlName="szallitoTelepules" matInput type="text">
+        </mat-form-field>
+
+        <!-- Szállitó Cim mező -->
+        <mat-form-field appearance="outline">
+            <mat-label>Szállitó Cím</mat-label>
+            <input formControlName="szallitoCim" matInput type="text">
+        </mat-form-field>
+
+         <!-- Szállitó egybe mező -->
+         <mat-form-field appearance="outline">
+            <mat-label>Szállitó egybe</mat-label>
+            <input formControlName="szallitoEgybe" matInput type="text">
+        </mat-form-field>
+
+          <!-- Számla Kelte mező -->
+          <mat-form-field appearance="outline">
+            <mat-label>Számla Kelte</mat-label>
+            <input formControlName="fizKelt" matInput type="text">
+        </mat-form-field>
+
+          <!-- Fizetés Teljesítése mező -->
+          <mat-form-field appearance="outline">
+            <mat-label>Fizetés Teljesítése</mat-label>
+            <input formControlName="fizTeljesites" matInput type="text">
+        </mat-form-field>
+
+          <!-- Fizetési Határidő mező -->
+          <mat-form-field appearance="outline">
+            <mat-label>Fizetési Határidő</mat-label>
+            <input formControlName="fizHatarido" matInput type="text">
+        </mat-form-field>
+
+          <!-- Fizetési Mód mező -->
+          <mat-form-field appearance="outline">
+            <mat-label>Fizetési Mód</mat-label>
+            <input formControlName="fizMod" matInput type="text">
+        </mat-form-field>
+
+         <!-- Nettó mező -->
+         <mat-form-field appearance="outline">
+            <mat-label>Nettó</mat-label>
+            <input formControlName="netto" matInput type="text">
+        </mat-form-field>
+
+         <!-- Bruttó mező -->
+         <mat-form-field appearance="outline">
+            <mat-label>Bruttó</mat-label>
+            <input formControlName="brutto" matInput type="text">
+        </mat-form-field>
+
+         <!-- Áfa mező -->
+         <mat-form-field appearance="outline">
+            <mat-label>Áfa</mat-label>
+            <input formControlName="afa" matInput type="text">
+        </mat-form-field>
+
+
+        <!--Mentés gomb-->
+        <button mat-raised-button color="primary" type="submit">Adatok módosítása</button>
+        <button mat-raised-button color="secondary" mat-dialog-close>Bezárás</button>
+    </form>
+</div>

@@ -30,11 +30,17 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatListModule } from '@angular/material/list';
 import { MatDialogModule } from '@angular/material/dialog';
-import {MatTableModule} from '@angular/material/table';
+import { MatTableModule } from '@angular/material/table';
+import { MatSortModule } from '@angular/material/sort';
+import { FormsModule } from '@angular/forms';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { ChangeProfileComponent } from './component/change-profile/change-profile.component';
 import { AddProfileComponent } from './component/add-profile/add-profile.component';
 import { UploadFileComponent } from './pages/upload-file/upload-file.component';
 import { HttpClientModule } from '@angular/common/http';
+import { TablesComponent } from './pages/tables/tables.component';
+import { FixFileDataComponent } from './component/fix-file-data/fix-file-data.component';
+import { TableColumnsComponent } from './component/table-columns/table-columns.component';
 
 
 @NgModule({
@@ -48,7 +54,10 @@ import { HttpClientModule } from '@angular/common/http';
     ProfileComponent,
     ChangeProfileComponent,
     AddProfileComponent,
-    UploadFileComponent
+    UploadFileComponent,
+    TablesComponent,
+    FixFileDataComponent,
+    TableColumnsComponent
   ],
   imports: [
     BrowserModule,
@@ -61,6 +70,7 @@ import { HttpClientModule } from '@angular/common/http';
     AngularFireStorageModule,  // Ensure you include the storage module
     ReactiveFormsModule,
     MatInputModule,
+    FormsModule,
     MatFormFieldModule,
     MatIconModule,
     MatButtonModule,
@@ -69,7 +79,9 @@ import { HttpClientModule } from '@angular/common/http';
     MatSidenavModule,
     MatListModule,
     MatDialogModule,
-    MatTableModule
+    MatTableModule,
+    MatProgressBarModule,
+    MatSortModule
   ],
   providers: [
     provideAnimationsAsync()

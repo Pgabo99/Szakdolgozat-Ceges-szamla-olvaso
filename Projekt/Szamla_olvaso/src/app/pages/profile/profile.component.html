@@ -75,6 +75,12 @@
                     <input formControlName="zipCode" matInput type="number" [readonly]="true">
                 </mat-form-field>
 
+                <!-- Település mező -->
+                <mat-form-field appearance="outline">
+                    <mat-label>Település</mat-label>
+                    <input formControlName="city" matInput type="text">
+                </mat-form-field>
+
                 <!-- Utca, Házszám mező -->
                 <mat-form-field appearance="outline">
                     <mat-label>Utca és házszám</mat-label>
@@ -83,7 +89,7 @@
             </div>
 
             <div class="profile-change" *ngIf="loggenUser==null">
-                <h2 (click)="hozzaad()">Adatok hozzáadása(opcionális)</h2>
+                <h2 (click)="hozzaad()">Adatok hozzáadása</h2>
             </div>
 
 

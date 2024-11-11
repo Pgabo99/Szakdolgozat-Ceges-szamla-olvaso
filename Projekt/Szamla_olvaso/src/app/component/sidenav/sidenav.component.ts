@@ -16,10 +16,10 @@ export type MenuItem = {
   templateUrl: './sidenav.component.html',
   styleUrl: './sidenav.component.scss'
 })
-export class SidenavComponent implements OnInit, OnChanges{
+export class SidenavComponent implements OnInit, OnChanges {
   sideNavCollapsed = signal(false);
 
-  user$:Observable<any>;
+  user$: Observable<any>;
   email;
   downloadURL: string;
 
@@ -66,7 +66,7 @@ export class SidenavComponent implements OnInit, OnChanges{
       route: 'kezdooldal',
       click: ''
     },
-   
+
     {
       icon: 'login',
       label: 'Bejelentkezés',
@@ -81,11 +81,11 @@ export class SidenavComponent implements OnInit, OnChanges{
     }
   ])
 
-  constructor(private authService: AuthService, private imageUploadService:ProfileUploadService) {
-    this.user$=this.authService.currentUser$;
-    this.downloadURL=""
-    this.email=this.authService.getUserEmail();
-    
+  constructor(private authService: AuthService, private imageUploadService: ProfileUploadService) {
+    this.user$ = this.authService.currentUser$;
+    this.downloadURL = ""
+    this.email = this.authService.getUserEmail();
+
   }
   ngOnChanges(changes: SimpleChanges): void {
     this.fetchDownloadURL()
@@ -105,16 +105,16 @@ export class SidenavComponent implements OnInit, OnChanges{
   profilePicSize = computed(() => this.sideNavCollapsed() ? '32' : '100')
 
   fetchDownloadURL() {
-    this.user$.subscribe(user => {
-      if (user) {
-        const filePath = `images/profile/${user.uid}`;
-
-        this.imageUploadService.getFileDownloadURL(filePath).subscribe(url => {
-          this.downloadURL = url;
-        });
-      } else {
-        console.log('A felhasználó nem elérhető.');
-      }
-    });
+      this.user$.subscribe(user => {
+        if (user) {
+          const filePath = `images/profile/${user.uid}`;
+          this.imageUploadService.getFileDownloadURL(filePath).subscribe(url => {
+            this.downloadURL = url;
+          });
+        } else {
+          console.log('A felhasználó nem elérhető.');
+        }
+      });
+   
   }
 }

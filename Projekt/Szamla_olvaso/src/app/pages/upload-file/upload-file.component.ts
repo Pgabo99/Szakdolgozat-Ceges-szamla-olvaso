@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
-import { concatMap, Observable, Subscription } from 'rxjs';
+import { concatMap, elementAt, Observable, Subscription } from 'rxjs';
 import { AuthService } from '../../shared/services/auth.service';
 import { ProfileUploadService } from '../../shared/services/profile-upload.service';
 import { UserInfoService } from '../../shared/services/user-info.service';
@@ -10,6 +10,10 @@ import { Users } from '../../shared/classes/Users';
 import { UploadedFile } from '../../shared/classes/uploaded-file';
 import * as Tesseract from 'tesseract.js';
 import { HttpClient } from '@angular/common/http';
+import { Buffer } from 'buffer';
+import { FileServiceService } from '../../shared/services/file-service.service';
+import { Bills } from '../../shared/classes/Bill';
+import { FixFileDataComponent } from '../../component/fix-file-data/fix-file-data.component';
 
 @Component({
   selector: 'app-upload-file',
@@ -26,8 +30,10 @@ export class UploadFileComponent implements OnInit, OnDestroy {
   downloadURL: string;
   loggenUser?: Users;
   textResult: string = '';
+  feltolt = false;
+  megjelenitheto=true;
 
-  constructor(private authService: AuthService, private imageUploadService: ProfileUploadService, private router: Router, private dialog: MatDialog, private userService: UserInfoService,private http: HttpClient) {
+  constructor(private authService: AuthService, private imageUploadService: ProfileUploadService, private router: Router, private dialog: MatDialog, private userService: UserInfoService, private http: HttpClient, private fileService: FileServiceService) {
     this.user$ = this.authService.currentUser$;
     this.downloadURL = ""
     this.getUserUid()
@@ -52,6 +58,9 @@ export class UploadFileComponent implements OnInit, OnDestroy {
             }
           }
         }
+      }else{
+        alert("Mielőtt feltöltenél bármit is kérlek töltsd ki a profilodat!")
+        this.megjelenitheto=false;
       }
     }));
   }
@@ -73,35 +82,49 @@ export class UploadFileComponent implements OnInit, OnDestroy {
   }
 
   async uploadImage(event: any) {
+    this.feltolt = true;
     const input = event.target.files[0];
     const allowedExtensions = ['pdf', 'png', 'jpeg', 'jpg'];
     const fileExtension = input.name.split('.').pop()?.toLowerCase();
     if (!input) {
       alert("Nem választottál ki fájlt.")
+      this.feltolt = false;
     }
     else if (!fileExtension || !allowedExtensions.includes(fileExtension)) {
       alert("Rossz fájl formátum!")
+      this.feltolt = false;
     }
     else {
-      const path = `files/${this.uid}/${input.name}`
-      const uploadTask = await this.imageUploadService.uploadBill(input, path)
-      const url = await uploadTask.ref.getDownloadURL();
-      if(fileExtension=='pdf'){
-        this.convertToBase64(url)
-      }else{
-        this.processImage(event)
-      }
-
-      if (this.loggenUser?.files) {
-        this.loggenUser.files[url] = {
-          url: url,
-          fileName: input.name,
-          uploadDate: new Date()
+      let voltE = false;
+      this.dataSource.forEach(element => {
+        if (element.fileName == input.name) {
+          voltE = true;
         }
-        this.userService.userUploadFile(this.loggenUser)
+      });
+      if (voltE==false) {
+        const path = `files/${this.uid}/${input.name}`
+        const uploadTask = await this.imageUploadService.uploadBill(input, path)
+        const url = await uploadTask.ref.getDownloadURL();
+        if (fileExtension == 'pdf') {
+          console.log(event.target.files[0])
+          //this.convertToBase64(event.target.files[0])
+        } else {
+          this.processImage(event)
+        }
+
+        if (this.loggenUser?.files) {
+          this.loggenUser.files[url] = {
+            url: url,
+            fileName: input.name,
+            uploadDate: new Date()
+          }
+          this.userService.userUploadFile(this.loggenUser)
+        }
+      } else {
+        alert("Ezt már feltöltötted egyszer!")
+        this.feltolt = false;
       }
     }
-
   }
 
   processImage(event: any) {
@@ -109,32 +132,55 @@ export class UploadFileComponent implements OnInit, OnDestroy {
 
     Tesseract.recognize(image, 'hun', {
       logger: (progress) => {
-        console.log(progress); // You can log the progress or show a progress bar
       }
     })
-    .then(result => {
-      this.textResult = result.data.text;
-      console.log(result.data.text);
-    })
-    .catch(err => {
-      console.error(err);
-    });
+      .then(result => {
+        this.textResult = result.data.text;
+        this.feltolt = false;
+        const bill:Bills=this.fileService.processingImage(this.textResult, this.loggenUser!, image.name);
+        const dialogRef = this.dialog.open(FixFileDataComponent, {
+          data: { fileData: bill as Bills},
+          width: '95%',
+          height: '95%'
+        });
+      })
+      .catch(err => {
+        console.error(err);
+      });
   }
 
-  convertToBase64(url: string) {
-    this.http.get(url, { responseType: "blob" }).subscribe(blob => {
-      const reader = new FileReader();
-      const binaryString = reader.readAsDataURL(blob);
-      reader.onload = (event: any) => {
-        //Here you can do whatever you want with the base64 String
-        console.log("File in Base64: ", event.target.result);
-      };
-
-      reader.onerror = (event: any) => {
-        console.log("File could not be read: " + event.target.error.code);
-      };
-    });
-}
-  
+  /* convertToBase64(file: File) {
+     const reader = new FileReader();
+ 
+     // A FileReader API readAsDataURL metódusa aszinkron módon konvertálja a fájlt base64 formátumúra
+     reader.readAsDataURL(file);
+ 
+     // Eseménykezelő, ami lefut, amikor a fájl sikeresen beolvasásra került
+     reader.onload = (event: any) => {
+       // A base64 string a event.target.result értékében található
+       const base64String = event.target.result;
+       const base64Data = base64String.split(',')[1]; 
+       const text = new TextDecoder("utf-8").decode(this.decodeBase64(base64Data));
+ 
+       console.log("File in Base64: ", event.target.result);
+       console.log(text)
+       // További feldolgozáshoz itt használhatod a base64 stringet
+     };
+ 
+     // Hiba esetén ezt az eseménykezelőt hívjuk
+     reader.onerror = (event: any) => {
+       console.log("File could not be read: " + event.target.error.code);
+     };
+   }
+ 
+   decodeBase64(base64: string): Uint8Array {
+     const binaryString = window.atob(base64);
+     const len = binaryString.length;
+     const bytes = new Uint8Array(len);
+     for (let i = 0; i < len; i++) {
+       bytes[i] = binaryString.charCodeAt(i);
+     }
+     return bytes;
+   }*/
 
 }

@@ -8,7 +8,7 @@ import { Users } from '../classes/Users';
 })
 export class UserInfoService {
 
-  constructor(private angularFirestore:AngularFirestore,private router:Router) { }
+  constructor(private angularFirestore: AngularFirestore, private router: Router) { }
 
   //User infó hozzáadása
   addUser(user: Users) {
@@ -31,13 +31,14 @@ export class UserInfoService {
           doc.ref.update({ taxNumber: user.taxNumber });
           doc.ref.update({ country: user.country });
           doc.ref.update({ zipCode: user.zipCode });
+          doc.ref.update({ city: user.city });
           doc.ref.update({ site: user.site });
         });
       }
     );
   }
 
-  userUploadFile(user:Users){
+  userUploadFile(user: Users) {
     return this.angularFirestore.collection('Users', (ref) => ref.where('email', '==', user.email)).get().subscribe(
       (querySnapshot) => {
         querySnapshot.forEach((doc: any) => {

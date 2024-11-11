@@ -24,6 +24,7 @@ export class AuthService {
     return this.afs.signInWithPopup(new GoogleAuthProvider()).then((result) => {
       localStorage.setItem('token', 'true');
       this.currentUser$ = this.afs.authState;
+      
     }).catch(error => {
       console.error('Google sign-in error:', error);
       alert('Google bejelentkezés sikertelen: ' + error.message);

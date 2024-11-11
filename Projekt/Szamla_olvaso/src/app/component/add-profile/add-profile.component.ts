@@ -16,12 +16,13 @@ export class AddProfileComponent {
   addProfileForm = new FormGroup({
     email: new FormControl('', [Validators.required, Validators.email]),
     name: new FormControl(''),
-    companyName: new FormControl(''),
+    companyName: new FormControl('',[Validators.required]),
     phoneNumber: new FormControl(''),
-    taxNumber: new FormControl(''),
-    country: new FormControl(''),
-    zipCode: new FormControl(''),
-    site: new FormControl('')
+    taxNumber: new FormControl('',[Validators.required]),
+    country: new FormControl('',[Validators.required]),
+    zipCode: new FormControl('',[Validators.required]),
+    city: new FormControl('',[Validators.required]),
+    site: new FormControl('',[Validators.required])
   });
 
   profile: Users = {
@@ -32,16 +33,21 @@ export class AddProfileComponent {
     taxNumber: '',
     country: '',
     zipCode: 0,
+    city:'',
     site: '',
     files:{}
   }
 
   constructor(@Inject(MAT_DIALOG_DATA) public data: { userEmail: string }, private userService: UserInfoService) {
-    this.addProfileForm.setValue({ email: this.data.userEmail as string, name: '', companyName: '', phoneNumber: '', taxNumber: '', country: '', zipCode: '0', site: '' });
+    this.addProfileForm.setValue({ email: this.data.userEmail as string, name: '', companyName: '', phoneNumber: '', taxNumber: '', country: '', zipCode: '0', city:'',site: '' });
   }
 
 
   addUser() {
+    if(this.addProfileForm.value.companyName==''||this.addProfileForm.value.taxNumber==''||this.addProfileForm.value.country==''||this.addProfileForm.value.zipCode=='0'||this.addProfileForm.value.city==''||this.addProfileForm.value.site==''){
+      alert('Nem adtál meg minden adatot' );
+      return;
+    }
     this.profile.email=this.addProfileForm.value.email as string;
     this.profile.name=this.addProfileForm.value.name as string;
     this.profile.companyName=this.addProfileForm.value.companyName as string;
@@ -49,6 +55,7 @@ export class AddProfileComponent {
     this.profile.taxNumber=this.addProfileForm.value.taxNumber as string;
     this.profile.country=this.addProfileForm.value.country as string;
     this.profile.zipCode=this.addProfileForm.value.zipCode as unknown as number;
+    this.profile.city=this.addProfileForm.value.city as string;
     this.profile.site=this.addProfileForm.value.site as string;
     this.userService.addUser(this.profile);
   }

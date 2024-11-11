@@ -7,16 +7,17 @@ import { authGuardGuard } from './shared/guards/auth-guard.guard';
 import { loginRegisterGuard } from './shared/guards/login-register.guard';
 import { ProfileComponent } from './pages/profile/profile.component';
 import { UploadFileComponent } from './pages/upload-file/upload-file.component';
+import { TablesComponent } from './pages/tables/tables.component';
 
 const routes: Routes = [
-  { path: '', redirectTo: '/kezdooldal', pathMatch:'full' },
+  { path: '', redirectTo: 'kezdooldal', pathMatch:'full' },
   { path: 'bejelentkezes', component: LoginComponent,canActivate:[loginRegisterGuard] },
   { path: 'regisztracio', component: RegisterComponent,canActivate:[loginRegisterGuard] },
   { path: 'kezdooldal', component: HomeComponent},
   { path: 'profil', component: ProfileComponent, canActivate: [authGuardGuard]  },
-  { path: 'tablazatok', component: HomeComponent, canActivate: [authGuardGuard]  },
+  { path: 'tablazatok', component: TablesComponent, canActivate: [authGuardGuard]  },
   { path: 'fajlfeltoltes', component: UploadFileComponent, canActivate: [authGuardGuard]  },
-  { path: '**', redirectTo: '/kezdooldal'}];
+  { path: '**', redirectTo: 'kezdooldal'}];
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
