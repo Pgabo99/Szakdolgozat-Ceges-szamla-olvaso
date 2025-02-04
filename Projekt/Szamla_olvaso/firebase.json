@@ -8,5 +8,11 @@
   },
   "storage": {
     "rules": "storage.rules"
+  },
+  "hosting": {
+    "public": "dist/szamla-olvaso/browser",
+    "ignore": [
+      "**/.*"
+    ]
   }
 }
