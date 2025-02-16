@@ -23,14 +23,13 @@ export class TableColumnsComponent {
     @Inject(MAT_DIALOG_DATA) public inputData: Column[]  // A bemeneti adat típusa Column[]
   ) {
     // inputData-t hozzárendeljük a data tömbhöz
-    this.data = inputData || [];
+    this.data = inputData ?? [];
   }
 
   test() {
     // A data tömbön végzünk egy map műveletet, az indexOf használatával
-    this.data.map((col: Column) => {  // Column típusú elemek
-      // Ha a selectedOptions-ban szerepel a col.name, akkor show-t true-ra állítjuk
-      col.show = this.selectedOptions.indexOf(col.name) >= 0;
+    this.data = this.data.map((col: Column) => {
+      col.show = this.selectedOptions.includes(col.name); // Kicsit tisztább verzió
       return col;
     });
   }
