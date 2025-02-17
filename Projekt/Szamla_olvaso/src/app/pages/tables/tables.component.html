@@ -2,6 +2,8 @@
     <h2>Eddig feltöltött számlák</h2>
     <h3>Szerkesztéshez kattints a szerkesztendő sorba</h3>
     <button mat-button (click)="openDialog()">Oszlopok</button>
+    <button mat-button (click)="exportToXLSX()">Exportálás XLXS</button>
+    <button mat-button (click)="exportToText()">Exportálás text</button>
     <table mat-table [dataSource]="dataSource" class="mat-elevation-z8" matSort>
 
         <!-- Fájlneve Column -->
