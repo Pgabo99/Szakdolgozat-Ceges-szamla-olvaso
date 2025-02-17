@@ -25,7 +25,6 @@
     "firebase": "^10.14.1",
     "gulp": "^5.0.0",
     "http-proxy-middleware": "^3.0.3",
-    "pdfjs-dist": "^4.10.38",
     "rxjs": "~7.8.0",
     "text-extract-api-client": "^1.0.2",
     "tslib": "^2.3.0",
