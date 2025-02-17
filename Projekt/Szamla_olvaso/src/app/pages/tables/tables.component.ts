@@ -11,6 +11,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { MatSort } from '@angular/material/sort';
 import { TableColumnsComponent } from '../../component/table-columns/table-columns.component';
 import { FixFileDataComponent } from '../../component/fix-file-data/fix-file-data.component';
+import { ExportService } from '../../shared/services/exportService/export.service';
 
 @Component({
   selector: 'app-tables',
@@ -18,8 +19,6 @@ import { FixFileDataComponent } from '../../component/fix-file-data/fix-file-dat
   styleUrl: './tables.component.scss'
 })
 export class TablesComponent implements OnInit, OnDestroy, AfterViewInit {
-
-
 
   private subscriptions = new Subscription();
   user$: Observable<any>;
@@ -49,7 +48,7 @@ export class TablesComponent implements OnInit, OnDestroy, AfterViewInit {
 
   @ViewChild(MatSort) sort!: MatSort;
 
-  constructor(private authService: AuthService, private dialog: MatDialog, private userService: UserInfoService, private fileService: FileServiceService) {
+  constructor(private authService: AuthService, private dialog: MatDialog, private userService: UserInfoService, private fileService: FileServiceService, private exportService:ExportService) {
     this.user$ = this.authService.currentUser$;
 
     this.subscriptions.add(this.userService.getUserByEmail(this.authService.getUserEmail() as string).subscribe(data => {
@@ -106,6 +105,23 @@ export class TablesComponent implements OnInit, OnDestroy, AfterViewInit {
       this.dataSource.data = this.dataSource2;
     })
 
+  }
+
+  exportToXLSX() {
+    if (!Array.isArray(this.dataSource2)) {
+      console.error("Hiba: dataSource2 nem tömb!");
+      return;
+    }
+  
+    this.exportService.exportToExcel(this.dataSource2);
+  }
+  exportToText(){
+    if (!Array.isArray(this.dataSource2)) {
+      console.error("Hiba: dataSource2 nem tömb!");
+      return;
+    }
+  
+    this.exportService.exportToText(this.dataSource2);
   }
 
   fileSzerkesztes(bill:Bill.Bills) {
