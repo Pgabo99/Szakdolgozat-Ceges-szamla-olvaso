@@ -2,10 +2,10 @@ import { Component, Inject } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
 import { User } from 'firebase/auth';
-import { AuthService } from '../../shared/services/auth.service';
+import { AuthService } from '../../shared/services/userService/auth.service';
 import { Router } from '@angular/router';
 import { Users } from '../../shared/classes/Users';
-import { UserInfoService } from '../../shared/services/user-info.service';
+import { UserInfoService } from '../../shared/services/userService/user-info.service';
 
 @Component({
   selector: 'app-change-profile',

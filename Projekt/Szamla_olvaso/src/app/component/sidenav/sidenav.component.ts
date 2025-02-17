@@ -1,7 +1,7 @@
 import { Component, computed, Input, OnChanges, OnInit, signal, SimpleChanges } from '@angular/core';
-import { AuthService } from '../../shared/services/auth.service';
+import { AuthService } from '../../shared/services/userService/auth.service';
 import { Observable } from 'rxjs';
-import { ProfileUploadService } from '../../shared/services/profile-upload.service';
+import { ProfileUploadService } from '../../shared/services/userService/profile-upload.service';
 
 
 export type MenuItem = {

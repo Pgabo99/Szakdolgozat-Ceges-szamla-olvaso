@@ -2,7 +2,7 @@ import { Component, Inject } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { User } from 'firebase/auth';
-import { UserInfoService } from '../../shared/services/user-info.service';
+import { UserInfoService } from '../../shared/services/userService/user-info.service';
 import { Users } from '../../shared/classes/Users';
 
 @Component({

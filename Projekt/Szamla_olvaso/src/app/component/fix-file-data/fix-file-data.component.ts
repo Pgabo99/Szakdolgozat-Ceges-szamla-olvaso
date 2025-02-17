@@ -2,7 +2,7 @@ import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Bills } from '../../shared/classes/Bill';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { FileServiceService } from '../../shared/services/file-service.service';
+import { FileService } from '../../shared/services/fileService/file.service';
 
 @Component({
   selector: 'app-fix-file-data',
@@ -31,7 +31,7 @@ export class FixFileDataComponent {
     afa: new FormControl('')
   });
 
-  constructor(@Inject(MAT_DIALOG_DATA) public data: { fileData: Bills },private fileService:FileServiceService) {
+  constructor(@Inject(MAT_DIALOG_DATA) public data: { fileData: Bills },private fileService:FileService) {
     console.log(this.data.fileData)
    this.fixFileForm.setValue({
       email: data.fileData.email as string,

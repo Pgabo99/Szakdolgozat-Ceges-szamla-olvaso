@@ -1,17 +1,17 @@
 import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { AuthService } from '../../shared/services/auth.service';
+import { AuthService } from '../../shared/services/userService/auth.service';
 import { MatDialog } from '@angular/material/dialog';
-import { UserInfoService } from '../../shared/services/user-info.service';
+import { UserInfoService } from '../../shared/services/userService/user-info.service';
 import { Observable, Subscription } from 'rxjs';
 import { Users } from '../../shared/classes/Users';
 import * as Bill from '../../shared/classes/Bill';
 import { UploadedFile } from '../../shared/classes/uploaded-file';
-import { FileServiceService } from '../../shared/services/file-service.service';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSort } from '@angular/material/sort';
 import { TableColumnsComponent } from '../../component/table-columns/table-columns.component';
 import { FixFileDataComponent } from '../../component/fix-file-data/fix-file-data.component';
 import { ExportService } from '../../shared/services/exportService/export.service';
+import { FileService } from '../../shared/services/fileService/file.service';
 
 @Component({
   selector: 'app-tables',
@@ -48,7 +48,7 @@ export class TablesComponent implements OnInit, OnDestroy, AfterViewInit {
 
   @ViewChild(MatSort) sort!: MatSort;
 
-  constructor(private authService: AuthService, private dialog: MatDialog, private userService: UserInfoService, private fileService: FileServiceService, private exportService:ExportService) {
+  constructor(private authService: AuthService, private dialog: MatDialog, private userService: UserInfoService, private fileService: FileService, private exportService:ExportService) {
     this.user$ = this.authService.currentUser$;
 
     this.subscriptions.add(this.userService.getUserByEmail(this.authService.getUserEmail() as string).subscribe(data => {

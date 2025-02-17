@@ -1,15 +1,15 @@
 import { Component, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
-import { AuthService } from '../../shared/services/auth.service';
+import { AuthService } from '../../shared/services/userService/auth.service';
 import { concatMap, Observable, Subscription } from 'rxjs';
 import { User } from 'firebase/auth';
-import { ProfileUploadService } from '../../shared/services/profile-upload.service';
+import { ProfileUploadService } from '../../shared/services/userService/profile-upload.service';
 import { Router } from '@angular/router';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { MatDialog } from '@angular/material/dialog';
 import { ChangeProfileComponent } from '../../component/change-profile/change-profile.component';
 import { Users } from '../../shared/classes/Users';
-import { UserInfoService } from '../../shared/services/user-info.service';
+import { UserInfoService } from '../../shared/services/userService/user-info.service';
 import { AddProfileComponent } from '../../component/add-profile/add-profile.component';
 
 @Component({
