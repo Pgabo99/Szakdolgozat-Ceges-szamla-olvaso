@@ -40,3 +40,134 @@ body {
 button:disabled {
     background-color: rgba(black, 0.4);
 }
+
+.formClass {
+    min-height: fit-content;
+    align-items: center;
+    justify-content: center;
+    margin: auto;
+    margin-top: 20px;
+    width: 90%;
+    max-width: 600px;
+    display: flex;
+    flex-direction: column;
+
+    form {
+        mat-form-field {
+            width: 100%;
+            margin: auto;
+            justify-content: center;
+        }
+
+        .title {
+            font-size: 3rem;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .title-intro {
+            font-size: 3vh;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 16px;
+        }
+
+        mat-icon {
+            cursor: pointer;
+        }
+
+        button {
+            width: 100%;
+            padding: 1vw;
+            margin-top: 20px;
+            font-size: 2vh;
+        }
+    }
+}
+
+.register-login-container {
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    form {
+        mat-form-field {
+            width: 100%;
+        }
+
+        .title {
+            font-size: 3rem;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .title-intro {
+            font-size: 3vh;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 16px;
+        }
+
+        mat-icon {
+            cursor: pointer;
+        }
+
+        button {
+            width: 100%;
+            padding: 1vw;
+            margin-top: 20px;
+            font-size: 2vh;
+        }
+
+    }
+
+    .forgot-label {
+        margin-top: 20px;
+        font-size: 2vh;
+        color: #005cbb;
+        text-align: center;
+        cursor: pointer;
+    }
+
+    .alternative {
+        font-weight: 500;
+        font-size: 2vh;
+        text-align: center;
+        margin-top: 16px;
+
+        span {
+            color: #005cbb;
+            cursor: pointer;
+        }
+    }
+
+    .or-line-divider {
+        border-top: 1px solid rgba(0, 0, 0, 0.5);
+        position: relative;
+        margin-top: 2vh;
+
+        p {
+            position: absolute;
+            background: #fff;
+            width: 7vw;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            left: 50%;
+        }
+    }
+
+    .google-card {
+        margin-top: 4vh;
+    }
+
+    .register-login-content {
+        width: 90%;
+        max-width: 600px;
+        display: flex;
+        flex-direction: column;
+    }
+}

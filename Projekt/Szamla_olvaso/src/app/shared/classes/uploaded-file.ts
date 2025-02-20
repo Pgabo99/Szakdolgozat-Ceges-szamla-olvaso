@@ -1,5 +1,5 @@
 export interface UploadedFile {
-    url:string,
+    url: string,
     fileName: string,
-    uploadDate:Date
+    uploadDate: Date
 }

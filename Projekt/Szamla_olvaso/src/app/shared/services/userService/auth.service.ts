@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { Router } from '@angular/router';
-import { GoogleAuthProvider, updateProfile, UserInfo } from 'firebase/auth';
-import { concatMap, from, map, Observable, of, switchMap } from 'rxjs';
+import { GoogleAuthProvider, updateProfile } from 'firebase/auth';
+import { concatMap, from, Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -14,17 +14,18 @@ export class AuthService {
 
   constructor(private afs: AngularFireAuth, private router: Router) {
     this.currentUser$ = this.afs.authState;
-    this.afs.authState.subscribe(auth=>{
-      if(auth){
-       this.userEmail$  = auth.email; 
-       }
+    this.afs.authState.subscribe(auth => {
+      if (auth) {
+        this.userEmail$ = auth.email;
+      }
     })
   }
+
   signInWithGoogle() {
     return this.afs.signInWithPopup(new GoogleAuthProvider()).then((result) => {
       localStorage.setItem('token', 'true');
       this.currentUser$ = this.afs.authState;
-      
+
     }).catch(error => {
       console.error('Google sign-in error:', error);
       alert('Google bejelentkezés sikertelen: ' + error.message);
@@ -53,6 +54,7 @@ export class AuthService {
         alert('Bejelentkezés sikertelen: ' + error.message);
       });
   }
+
   logout() {
     this.afs.signOut();
     return this.afs.signOut().then(() => {
@@ -67,6 +69,7 @@ export class AuthService {
   IsLoggenIn() {
     return !!localStorage.getItem('token');
   }
+
   deleteUser() {
     this.afs.currentUser.then(user => {
       if (user) {
@@ -87,7 +90,6 @@ export class AuthService {
     return this.afs.authState;
   }
 
-
   updateProfileData(displayName: string, photoURL: string): Observable<void> {
     return from(this.afs.currentUser).pipe(
       concatMap(user => {
@@ -98,11 +100,11 @@ export class AuthService {
     );
   }
 
-   getUserEmail(){
+  getUserEmail() {
     return this.userEmail$;
   }
 
-  passwordReset(email:string){
+  passwordReset(email: string) {
     return this.afs.sendPasswordResetEmail(email);
   }
 }

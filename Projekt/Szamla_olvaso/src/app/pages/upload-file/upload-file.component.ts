@@ -1,28 +1,23 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
-import { elementAt, Observable, Subscription } from 'rxjs';
-import { AuthService } from '../../shared/services/auth.service';
-import { ProfileUploadService } from '../../shared/services/profile-upload.service';
-import { UserInfoService } from '../../shared/services/user-info.service';
-import { User } from 'firebase/auth';
+import { Observable, Subscription } from 'rxjs';
+import { AuthService } from '../../shared/services/userService/auth.service';
+import { ProfileUploadService } from '../../shared/services/userService/profile-upload.service';
+import { UserInfoService } from '../../shared/services/userService/user-info.service';
 import { Users } from '../../shared/classes/Users';
 import { UploadedFile } from '../../shared/classes/uploaded-file';
 import * as Tesseract from 'tesseract.js';
 import { HttpClient } from '@angular/common/http';
-import { FileServiceService } from '../../shared/services/file-service.service';
 import { Bills } from '../../shared/classes/Bill';
 import { FixFileDataComponent } from '../../component/fix-file-data/fix-file-data.component';
-
-
-
+import { FileService } from '../../shared/services/fileService/file.service';
 
 @Component({
   selector: 'app-upload-file',
   templateUrl: './upload-file.component.html',
   styleUrl: './upload-file.component.scss'
 })
-
 
 export class UploadFileComponent implements OnInit, OnDestroy {
 
@@ -37,7 +32,7 @@ export class UploadFileComponent implements OnInit, OnDestroy {
   feltolt = false;
   megjelenitheto = true;
 
-  constructor(private authService: AuthService, private imageUploadService: ProfileUploadService, private router: Router, private dialog: MatDialog, private userService: UserInfoService, private http: HttpClient, private fileService: FileServiceService) {
+  constructor(private authService: AuthService, private imageUploadService: ProfileUploadService, private router: Router, private dialog: MatDialog, private userService: UserInfoService, private http: HttpClient, private fileService: FileService) {
     this.user$ = this.authService.currentUser$;
     this.downloadURL = ""
     this.getUserUid()
@@ -68,6 +63,7 @@ export class UploadFileComponent implements OnInit, OnDestroy {
       }
     }));
   }
+
   ngOnInit(): void {
 
   }
@@ -122,7 +118,7 @@ export class UploadFileComponent implements OnInit, OnDestroy {
                 this.fileService.processingImage(response["text"] as string, this.loggenUser!, input.name)
               } else if ('images' in response && Array.isArray(response['images']) && 'path' in response['images'][0]) {
                 const imagePath = response['images'][0]['path'];
-                const uploadTask =this.imageUploadService.uploadBill(imagePath, path)
+                const uploadTask = this.imageUploadService.uploadBill(imagePath, path)
                 console.log('Kép elérési út:', imagePath);
                 // event.target.files[0]=path;
                 this.http.get(`http://localhost:3000/images/${imagePath}`, { responseType: 'blob' }).subscribe({
@@ -161,7 +157,6 @@ export class UploadFileComponent implements OnInit, OnDestroy {
   }
 
   processImage(image: File) {
-
     Tesseract.recognize(image, 'hun', {
       logger: (progress) => {
       }
@@ -180,5 +175,4 @@ export class UploadFileComponent implements OnInit, OnDestroy {
         console.error(err);
       });
   }
-
 }

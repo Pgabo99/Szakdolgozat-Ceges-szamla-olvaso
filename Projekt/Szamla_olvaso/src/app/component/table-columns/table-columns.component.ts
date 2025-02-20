@@ -12,24 +12,21 @@ interface Column {
   styleUrl: './table-columns.component.scss'
 })
 
-
-
 export class TableColumnsComponent {
-  selectedOptions: string[] = [];  // Az lehet egy string tömb
-  data: Column[] = [];  // A data változó egy Column típusú objektumokat tartalmazó tömb
-  
+  selectedOptions: string[] = [];
+  data: Column[] = [];
+
   constructor(
     public dialogRef: MatDialogRef<TableColumnsComponent>,
-    @Inject(MAT_DIALOG_DATA) public inputData: Column[]  // A bemeneti adat típusa Column[]
+    @Inject(MAT_DIALOG_DATA) public inputData: Column[]
   ) {
-    // inputData-t hozzárendeljük a data tömbhöz
+
     this.data = inputData ?? [];
   }
 
   test() {
-    // A data tömbön végzünk egy map műveletet, az indexOf használatával
     this.data = this.data.map((col: Column) => {
-      col.show = this.selectedOptions.includes(col.name); // Kicsit tisztább verzió
+      col.show = this.selectedOptions.includes(col.name);
       return col;
     });
   }

@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import {ref, uploadBytes, getDownloadURL } from '@angular/fire/storage';
 import { AngularFireStorage } from '@angular/fire/compat/storage';
 
 import { from, Observable, switchMap } from 'rxjs';
@@ -7,6 +6,7 @@ import { from, Observable, switchMap } from 'rxjs';
 @Injectable({
   providedIn: 'root'
 })
+
 export class ProfileUploadService {
 
   constructor(private storage: AngularFireStorage) { }

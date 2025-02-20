@@ -2,15 +2,15 @@ import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Bills } from '../../shared/classes/Bill';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { FileServiceService } from '../../shared/services/file-service.service';
+import { FileService } from '../../shared/services/fileService/file.service';
 
 @Component({
   selector: 'app-fix-file-data',
   templateUrl: './fix-file-data.component.html',
   styleUrl: './fix-file-data.component.scss'
 })
-export class FixFileDataComponent {
 
+export class FixFileDataComponent {
 
   fixFileForm = new FormGroup({
     email: new FormControl('', [Validators.required, Validators.email]),
@@ -31,9 +31,8 @@ export class FixFileDataComponent {
     afa: new FormControl('')
   });
 
-  constructor(@Inject(MAT_DIALOG_DATA) public data: { fileData: Bills },private fileService:FileServiceService) {
-    console.log(this.data.fileData)
-   this.fixFileForm.setValue({
+  constructor(@Inject(MAT_DIALOG_DATA) public data: { fileData: Bills }, private fileService: FileService) {
+    this.fixFileForm.setValue({
       email: data.fileData.email as string,
       fajlNev: data.fileData.fajlNev as string,
       szamlaszam: data.fileData.szamlaszam as string,
@@ -52,11 +51,14 @@ export class FixFileDataComponent {
       afa: data.fileData.afa as string
     });
   }
+
   fixFile() {
-    if(this.fixFileForm.value.email==""||this.fixFileForm.value.fajlNev==""||this.fixFileForm.value.szamlaszam==""||this.fixFileForm.value.szallitoNev==""||this.fixFileForm.value.szallitoAdo==""||this.fixFileForm.value.fizKelt==""||this.fixFileForm.value.fizTeljesites==""||this.fixFileForm.value.fizMod==""||this.fixFileForm.value.brutto=="")
+    if (this.fixFileForm.value.email == "" || this.fixFileForm.value.fajlNev == "" || this.fixFileForm.value.szamlaszam == "" ||
+      this.fixFileForm.value.szallitoNev == "" || this.fixFileForm.value.szallitoAdo == "" || this.fixFileForm.value.fizKelt == "" ||
+      this.fixFileForm.value.fizTeljesites == "" || this.fixFileForm.value.fizMod == "" || this.fixFileForm.value.brutto == "")
       alert("Kérlek tölts ki minden mezőt!");
-    else{
-      let seged:Bills={
+    else {
+      let seged: Bills = {
         email: this.fixFileForm.value.email as string,
         fajlNev: this.fixFileForm.value.fajlNev as string,
         szamlaszam: this.fixFileForm.value.szamlaszam as string,
@@ -79,5 +81,4 @@ export class FixFileDataComponent {
       this.fileService.updateFile(seged)
     }
   }
-
 }

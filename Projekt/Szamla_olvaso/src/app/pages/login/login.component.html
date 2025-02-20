@@ -1,45 +1,42 @@
-<div class="login-container">
-    <div class="login-content">
+<div class="register-login-container">
+    <div class="register-login-content">
         <form [formGroup]="loginForm" (submit)="loginWithEmailAndPassword()">
+            <p class="title">Bejelentkezés</p>
+            <p class="title-intro">Üdvözöllek újra!</p>
 
-        <p class="title">Bejelentkezés</p>
-        <p class="title-intro">Üdvözöllek újra!</p>
+            <!-- Email mező -->
+            <mat-form-field appearance="outline">
+                <mat-label>Email</mat-label>
+                <input formControlName="email" matInput type="text">
+                <mat-error *ngIf="loginForm.controls['email'].hasError('required')">
+                    Nem adtál meg email címet!
+                </mat-error>
+                <mat-error *ngIf="loginForm.controls['email'].hasError('email')">
+                    Hibás email cím!
+                </mat-error>
+            </mat-form-field>
 
-        <!-- Email mező -->
-        <mat-form-field appearance="outline">
-            <mat-label>Email</mat-label>
-            <input formControlName="email" matInput type="text">
+            <!-- Jelszó mező -->
+            <mat-form-field appearance="outline">
+                <mat-label>Jelszó</mat-label>
+                <input formControlName="password" matInput>
+                <mat-icon (click)="hidePassword=!hidePassword" matSuffix>{{hidePassword
+                    ?'visibility_off':'visibility_on'}}</mat-icon>
+                <mat-error *ngIf="loginForm.controls['password'].hasError('required')">
+                    Nem adtál meg jelszót!
+                </mat-error>
+            </mat-form-field>
 
-            <mat-error *ngIf="loginForm.controls['email'].hasError('required')">
-                Nem adtál meg email címet!
-            </mat-error>
-            <mat-error *ngIf="loginForm.controls['email'].hasError('email')">
-                Hibás email cím!
-            </mat-error>
-        </mat-form-field>
-
-        <!-- Jelszó mező -->
-        <mat-form-field appearance="outline" >
-            <mat-label>Jelszó</mat-label>
-            <input formControlName="password" matInput >
-            <mat-icon (click)="hidePassword=!hidePassword" matSuffix>{{hidePassword
-                ?'visibility_off':'visibility_on'}}</mat-icon>
-
-            <mat-error *ngIf="loginForm.controls['password'].hasError('required')">
-                Nem adtál meg jelszót!
-            </mat-error>
-
-        </mat-form-field>
-
-         <!--Bejelentkezés gomb-->
-         <button mat-raised-button color="primary" type="submit">Bejelentkezés</button>
+            <!--Bejelentkezés gomb-->
+            <button mat-raised-button color="primary" type="submit">Bejelentkezés</button>
         </form>
+
         <!-- Elfelejtett jelszó link -->
         <p class="forgot-label" (click)="ForgotPassword()">Elfelejtett jelszó?</p>
 
         <!-- Regisztráció -->
         <p class="alternative">Még nincs felhasználód? <span [routerLink]="['/regisztracio']">Regisztráció</span></p>
-       
+
         <!-- Vagy -->
         <div class="or-line-divider">
             <p>Vagy</p>

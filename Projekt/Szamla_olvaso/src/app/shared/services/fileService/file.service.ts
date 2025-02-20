@@ -1,16 +1,14 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { Router } from '@angular/router';
-import { UploadedFile } from '../classes/uploaded-file';
-import { Bills } from '../classes/Bill';
-import { Users } from '../classes/Users';
+import { Bills } from '../../classes/Bill';
+import { Users } from '../../classes/Users';
 import { MatDialog } from '@angular/material/dialog';
-import { FixFileDataComponent } from '../../component/fix-file-data/fix-file-data.component';
 
 @Injectable({
   providedIn: 'root'
 })
-export class FileServiceService {
+export class FileService {
 
   constructor(private angularFirestore: AngularFirestore, private router: Router, private dialog: MatDialog) { }
 
@@ -20,7 +18,7 @@ export class FileServiceService {
   }
 
   //File lekérése
-  getFileByName(fileName: string,email:string) {
+  getFileByName(fileName: string, email: string) {
     return this.angularFirestore.collection<Bills>('/Files', ref => ref.where('fajlNev', '==', fileName).where('email', '==', email)).valueChanges();
   }
 
@@ -36,7 +34,7 @@ export class FileServiceService {
   }
 
   //Fajl feldolgozasa
-  processingImage(szoveg: string, user: Users, fileName: string):Bills {
+  processingImage(szoveg: string, user: Users, fileName: string): Bills {
     console.log(szoveg);
     let seged: Bills = {
       email: user.email,
@@ -246,7 +244,7 @@ export class FileServiceService {
     seged.szallitoEgybe = szallitoAdatok;
     console.log(seged)
     this.addFiles(seged)
-    
+
     return seged;
   }
 

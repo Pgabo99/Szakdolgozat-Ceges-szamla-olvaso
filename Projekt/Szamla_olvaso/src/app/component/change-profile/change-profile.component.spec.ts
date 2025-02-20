@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { ChangeProfileComponent } from './change-profile.component';
 
 describe('ChangeProfileComponent', () => {
@@ -10,7 +9,7 @@ describe('ChangeProfileComponent', () => {
     await TestBed.configureTestingModule({
       declarations: [ChangeProfileComponent]
     })
-    .compileComponents();
+      .compileComponents();
 
     fixture = TestBed.createComponent(ChangeProfileComponent);
     component = fixture.componentInstance;

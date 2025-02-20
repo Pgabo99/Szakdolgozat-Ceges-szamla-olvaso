@@ -1,23 +1,24 @@
 import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { AuthService } from '../../shared/services/auth.service';
+import { AuthService } from '../../shared/services/userService/auth.service';
 import { MatDialog } from '@angular/material/dialog';
-import { UserInfoService } from '../../shared/services/user-info.service';
+import { UserInfoService } from '../../shared/services/userService/user-info.service';
 import { Observable, Subscription } from 'rxjs';
 import { Users } from '../../shared/classes/Users';
 import * as Bill from '../../shared/classes/Bill';
 import { UploadedFile } from '../../shared/classes/uploaded-file';
-import { FileServiceService } from '../../shared/services/file-service.service';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSort } from '@angular/material/sort';
 import { TableColumnsComponent } from '../../component/table-columns/table-columns.component';
 import { FixFileDataComponent } from '../../component/fix-file-data/fix-file-data.component';
 import { ExportService } from '../../shared/services/exportService/export.service';
+import { FileService } from '../../shared/services/fileService/file.service';
 
 @Component({
   selector: 'app-tables',
   templateUrl: './tables.component.html',
   styleUrl: './tables.component.scss'
 })
+
 export class TablesComponent implements OnInit, OnDestroy, AfterViewInit {
 
   private subscriptions = new Subscription();
@@ -48,7 +49,7 @@ export class TablesComponent implements OnInit, OnDestroy, AfterViewInit {
 
   @ViewChild(MatSort) sort!: MatSort;
 
-  constructor(private authService: AuthService, private dialog: MatDialog, private userService: UserInfoService, private fileService: FileServiceService, private exportService:ExportService) {
+  constructor(private authService: AuthService, private dialog: MatDialog, private userService: UserInfoService, private fileService: FileService, private exportService: ExportService) {
     this.user$ = this.authService.currentUser$;
 
     this.subscriptions.add(this.userService.getUserByEmail(this.authService.getUserEmail() as string).subscribe(data => {
@@ -68,18 +69,17 @@ export class TablesComponent implements OnInit, OnDestroy, AfterViewInit {
                 }
                 count--;
                 this.dataSourceFiles[count] = (seged);
-                this.getFileByFileName(seged.fileName,this.loggenUser.email, count)
+                this.getFileByFileName(seged.fileName, this.loggenUser.email, count)
               }
             }
           }
         }
       }
     }))
-
   }
 
-  getFileByFileName(fileName: string,email:string, count: number) {
-    (this.fileService.getFileByName(fileName,email)).subscribe(data2 => {
+  getFileByFileName(fileName: string, email: string, count: number) {
+    (this.fileService.getFileByName(fileName, email)).subscribe(data2 => {
       const seged2 = {
         email: data2[0].email,
         fajlNev: data2[0].fajlNev,
@@ -104,7 +104,6 @@ export class TablesComponent implements OnInit, OnDestroy, AfterViewInit {
       this.dataSource2[count] = seged2;
       this.dataSource.data = this.dataSource2;
     })
-
   }
 
   exportToXLSX() {
@@ -112,21 +111,20 @@ export class TablesComponent implements OnInit, OnDestroy, AfterViewInit {
       console.error("Hiba: dataSource2 nem tömb!");
       return;
     }
-  
     this.exportService.exportToExcel(this.dataSource2);
   }
-  exportToText(){
+
+  exportToText() {
     if (!Array.isArray(this.dataSource2)) {
       console.error("Hiba: dataSource2 nem tömb!");
       return;
     }
-  
     this.exportService.exportToText(this.dataSource2);
   }
 
-  fileSzerkesztes(bill:Bill.Bills) {
+  fileSzerkesztes(bill: Bill.Bills) {
     const dialogRef = this.dialog.open(FixFileDataComponent, {
-      data: { fileData: bill as Bill.Bills},
+      data: { fileData: bill as Bill.Bills },
       width: '95%',
       height: '95%'
     });
@@ -146,12 +144,10 @@ export class TablesComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    // Beállítjuk a MatSort-ot a dataSource-ra
     this.dataSource.sort = this.sort;
   }
+
   ngOnDestroy(): void {
     this.subscriptions.unsubscribe();
   }
-
-
 }

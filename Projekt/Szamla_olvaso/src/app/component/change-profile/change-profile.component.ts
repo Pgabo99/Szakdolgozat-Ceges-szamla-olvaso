@@ -1,19 +1,17 @@
 import { Component, Inject } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
-import { User } from 'firebase/auth';
-import { AuthService } from '../../shared/services/auth.service';
 import { Router } from '@angular/router';
 import { Users } from '../../shared/classes/Users';
-import { UserInfoService } from '../../shared/services/user-info.service';
+import { UserInfoService } from '../../shared/services/userService/user-info.service';
 
 @Component({
   selector: 'app-change-profile',
   templateUrl: './change-profile.component.html',
   styleUrl: './change-profile.component.scss'
 })
-export class ChangeProfileComponent {
 
+export class ChangeProfileComponent {
 
   updateProfileForm = new FormGroup({
     email: new FormControl('', [Validators.required, Validators.email]),
@@ -27,22 +25,7 @@ export class ChangeProfileComponent {
     site: new FormControl('', [Validators.required])
   });
 
-  profile: Users = {
-    email: '',
-    name: '',
-    companyName: '',
-    phoneNumber: '',
-    taxNumber: '',
-    country: '',
-    zipCode: 0,
-    city: '',
-    site: '',
-    files: {}
-
-  }
-
   constructor(@Inject(MAT_DIALOG_DATA) public data: { user: Users }, private userService: UserInfoService, private router: Router) {
-    console.log(this.data.user)
     this.updateProfileForm.setValue({
       email: this.data.user.email as string,
       name: this.data.user.name,
@@ -57,19 +40,19 @@ export class ChangeProfileComponent {
   }
 
   updateUser() {
-    if(this.updateProfileForm.value.companyName==''||this.updateProfileForm.value.taxNumber==''||this.updateProfileForm.value.country==''||this.updateProfileForm.value.zipCode=='0'||this.updateProfileForm.value.city==''||this.updateProfileForm.value.site==''){
-      alert('Nem adtál meg minden adatot' );
+    if (this.updateProfileForm.value.companyName == '' || this.updateProfileForm.value.taxNumber == '' || this.updateProfileForm.value.country == '' || this.updateProfileForm.value.zipCode == '0' || this.updateProfileForm.value.city == '' || this.updateProfileForm.value.site == '') {
+      alert('Nem adtál meg minden adatot');
       return;
     }
+
     this.data.user.name = this.updateProfileForm.value.name as string;
     this.data.user.companyName = this.updateProfileForm.value.companyName as string;
     this.data.user.phoneNumber = this.updateProfileForm.value.phoneNumber as string;
     this.data.user.taxNumber = this.updateProfileForm.value.taxNumber as string;
     this.data.user.country = this.updateProfileForm.value.country as string;
     this.data.user.zipCode = this.updateProfileForm.value.zipCode as unknown as number;
-    this.data.user.city=this.updateProfileForm.value.city as string;
+    this.data.user.city = this.updateProfileForm.value.city as string;
     this.data.user.site = this.updateProfileForm.value.site as string;
     this.userService.updateUser(this.data.user);
   }
-
 }

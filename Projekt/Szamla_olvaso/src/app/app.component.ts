@@ -2,7 +2,7 @@ import { Component, computed, signal } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { Router } from '@angular/router';
 import firebase from 'firebase/compat/app';
-import { AuthService } from './shared/services/auth.service';
+import { AuthService } from './shared/services/userService/auth.service';
 
 @Component({
   selector: 'app-root',
@@ -12,9 +12,9 @@ import { AuthService } from './shared/services/auth.service';
 export class AppComponent {
   title = 'Szamla_olvaso';
   user: firebase.User | null = null;
-  collapsed=signal(true);
-  sidenavWidth=computed(()=>this.collapsed()?'65px':'250px');
-  constructor(public afAuth: AngularFireAuth,private authService:AuthService, private router:Router ) {
+  collapsed = signal(true);
+  sidenavWidth = computed(() => this.collapsed() ? '65px' : '250px');
+  constructor(public afAuth: AngularFireAuth, private authService: AuthService, private router: Router) {
     this.afAuth.authState.subscribe(user => {
       this.user = user;
     });

@@ -5,13 +5,10 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 
-//import { initializeApp } from "firebase/app";
-//import { getAnalytics } from "firebase/analytics";
-
 import { AngularFireModule } from '@angular/fire/compat';
 import { AngularFireAuthModule } from '@angular/fire/compat/auth';
 import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
-import { AngularFireStorageModule } from '@angular/fire/compat/storage';  // Importing AngularFireStorageModule
+import { AngularFireStorageModule } from '@angular/fire/compat/storage'; 
 
 import { environment } from '../environments/environment';
 import { LoginComponent } from './pages/login/login.component';
@@ -64,10 +61,9 @@ import { TableColumnsComponent } from './component/table-columns/table-columns.c
     AppRoutingModule,
     HttpClientModule,
     AngularFireModule.initializeApp(environment.firebase),
-    //provideStorage(() => getStorage()),
     AngularFireAuthModule,
     AngularFirestoreModule,
-    AngularFireStorageModule,  // Ensure you include the storage module
+    AngularFireStorageModule,
     ReactiveFormsModule,
     MatInputModule,
     FormsModule,
