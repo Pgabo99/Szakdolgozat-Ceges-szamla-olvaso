@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { GoogleLoginCardComponent } from './google-login-card.component';
 
 describe('GoogleLoginCardComponent', () => {
@@ -10,7 +9,7 @@ describe('GoogleLoginCardComponent', () => {
     await TestBed.configureTestingModule({
       declarations: [GoogleLoginCardComponent]
     })
-    .compileComponents();
+      .compileComponents();
 
     fixture = TestBed.createComponent(GoogleLoginCardComponent);
     component = fixture.componentInstance;

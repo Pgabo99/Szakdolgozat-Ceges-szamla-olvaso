@@ -3,7 +3,6 @@ import { AuthService } from '../../shared/services/userService/auth.service';
 import { Observable } from 'rxjs';
 import { ProfileUploadService } from '../../shared/services/userService/profile-upload.service';
 
-
 export type MenuItem = {
   icon: string;
   label: string;
@@ -18,6 +17,7 @@ export type MenuItem = {
 })
 export class SidenavComponent implements OnInit, OnChanges {
   sideNavCollapsed = signal(false);
+  profilePicSize = computed(() => this.sideNavCollapsed() ? '32' : '100')
 
   user$: Observable<any>;
   email;
@@ -85,36 +85,36 @@ export class SidenavComponent implements OnInit, OnChanges {
     this.user$ = this.authService.currentUser$;
     this.downloadURL = ""
     this.email = this.authService.getUserEmail();
+  }
 
-  }
   ngOnChanges(changes: SimpleChanges): void {
-    this.fetchDownloadURL()
+    this.fetchDownloadURL();
   }
+
   ngOnInit(): void {
-    this.fetchDownloadURL()
+    this.fetchDownloadURL();
   }
 
   logout() {
     this.authService.logout();
   }
+
   nothing() { }
+
   loggenIn() {
     return this.authService.IsLoggenIn();
   }
 
-  profilePicSize = computed(() => this.sideNavCollapsed() ? '32' : '100')
-
   fetchDownloadURL() {
-      this.user$.subscribe(user => {
-        if (user) {
-          const filePath = `images/profile/${user.uid}`;
-          this.imageUploadService.getFileDownloadURL(filePath).subscribe(url => {
-            this.downloadURL = url;
-          });
-        } else {
-          console.log('A felhasználó nem elérhető.');
-        }
-      });
-   
+    this.user$.subscribe(user => {
+      if (user) {
+        const filePath = `images/profile/${user.uid}`;
+        this.imageUploadService.getFileDownloadURL(filePath).subscribe(url => {
+          this.downloadURL = url;
+        });
+      } else {
+        console.log('A felhasználó nem elérhető.');
+      }
+    });
   }
 }

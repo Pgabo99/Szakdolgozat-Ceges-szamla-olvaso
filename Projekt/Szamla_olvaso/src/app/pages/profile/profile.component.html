@@ -18,7 +18,6 @@
                         <input formControlName="email" matInput type="email" [readonly]="true">
                     </mat-form-field>
                 </div>
-
                 <p class="forgot-label" (click)="ResetPassword()">Jelszó váltás</p>
             </div>
         </form>
@@ -48,20 +47,17 @@
                     <input formControlName="companyName" matInput type="text" [readonly]="true">
                 </mat-form-field>
 
-
                 <!-- Telefonszám mező -->
                 <mat-form-field appearance="outline">
                     <mat-label>Telefonszám</mat-label>
                     <input formControlName="phoneNumber" matInput type="tel" [readonly]="true">
                 </mat-form-field>
 
-
                 <!-- Adószám mező -->
                 <mat-form-field appearance="outline">
                     <mat-label>Adószám</mat-label>
                     <input formControlName="taxNumber" matInput type="text" [readonly]="true">
                 </mat-form-field>
-
 
                 <!-- Ország mező -->
                 <mat-form-field appearance="outline">
@@ -91,11 +87,6 @@
             <div class="profile-change" *ngIf="loggenUser==null">
                 <h2 (click)="hozzaad()">Adatok hozzáadása</h2>
             </div>
-
-
         </form>
-
-
-
     </div>
 </div>

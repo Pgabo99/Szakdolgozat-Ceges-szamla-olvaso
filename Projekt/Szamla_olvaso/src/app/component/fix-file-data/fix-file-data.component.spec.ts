@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { FixFileDataComponent } from './fix-file-data.component';
 
 describe('FixFileDataComponent', () => {
@@ -10,7 +9,7 @@ describe('FixFileDataComponent', () => {
     await TestBed.configureTestingModule({
       declarations: [FixFileDataComponent]
     })
-    .compileComponents();
+      .compileComponents();
 
     fixture = TestBed.createComponent(FixFileDataComponent);
     component = fixture.componentInstance;

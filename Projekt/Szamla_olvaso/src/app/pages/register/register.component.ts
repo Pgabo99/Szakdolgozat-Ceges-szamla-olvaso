@@ -8,6 +8,7 @@ import { AuthService } from '../../shared/services/userService/auth.service';
   templateUrl: './register.component.html',
   styleUrl: './register.component.scss'
 })
+
 export class RegisterComponent {
   hidePassword: boolean = true;
   hidePasswordAgain: boolean = true;

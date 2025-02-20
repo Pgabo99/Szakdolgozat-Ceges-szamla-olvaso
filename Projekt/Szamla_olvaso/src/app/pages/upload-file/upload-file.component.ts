@@ -13,15 +13,11 @@ import { Bills } from '../../shared/classes/Bill';
 import { FixFileDataComponent } from '../../component/fix-file-data/fix-file-data.component';
 import { FileService } from '../../shared/services/fileService/file.service';
 
-
-
-
 @Component({
   selector: 'app-upload-file',
   templateUrl: './upload-file.component.html',
   styleUrl: './upload-file.component.scss'
 })
-
 
 export class UploadFileComponent implements OnInit, OnDestroy {
 
@@ -67,6 +63,7 @@ export class UploadFileComponent implements OnInit, OnDestroy {
       }
     }));
   }
+
   ngOnInit(): void {
 
   }
@@ -121,7 +118,7 @@ export class UploadFileComponent implements OnInit, OnDestroy {
                 this.fileService.processingImage(response["text"] as string, this.loggenUser!, input.name)
               } else if ('images' in response && Array.isArray(response['images']) && 'path' in response['images'][0]) {
                 const imagePath = response['images'][0]['path'];
-                const uploadTask =this.imageUploadService.uploadBill(imagePath, path)
+                const uploadTask = this.imageUploadService.uploadBill(imagePath, path)
                 console.log('Kép elérési út:', imagePath);
                 // event.target.files[0]=path;
                 this.http.get(`http://localhost:3000/images/${imagePath}`, { responseType: 'blob' }).subscribe({
@@ -160,7 +157,6 @@ export class UploadFileComponent implements OnInit, OnDestroy {
   }
 
   processImage(image: File) {
-
     Tesseract.recognize(image, 'hun', {
       logger: (progress) => {
       }
@@ -179,5 +175,4 @@ export class UploadFileComponent implements OnInit, OnDestroy {
         console.error(err);
       });
   }
-
 }

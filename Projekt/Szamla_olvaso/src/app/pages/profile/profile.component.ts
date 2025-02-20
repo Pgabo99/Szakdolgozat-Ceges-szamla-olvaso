@@ -24,6 +24,7 @@ import { AddProfileComponent } from '../../component/add-profile/add-profile.com
     ]),
   ]
 })
+
 export class ProfileComponent implements OnInit, OnDestroy, OnChanges {
 
   private subscriptions = new Subscription();
@@ -67,7 +68,7 @@ export class ProfileComponent implements OnInit, OnDestroy, OnChanges {
     }))
   }
   ngOnChanges(changes: SimpleChanges): void {
-    this.fetchDownloadURL()
+    this.fetchDownloadURL();
   }
 
   ngOnInit(): void {
@@ -86,7 +87,6 @@ export class ProfileComponent implements OnInit, OnDestroy, OnChanges {
         concatMap((photoURL: string) => this.authService.updateProfileData(user.displayName!, photoURL))
       ).subscribe({
         next: () => location.reload(),
-        //this.router.navigateByUrl('/kezooldal', { skipLocationChange: true }).then(()=>this.router.navigateByUrl('/profil')),
         error: (err) => console.error('Error updating profile:', err)
       });
     }
@@ -122,7 +122,6 @@ export class ProfileComponent implements OnInit, OnDestroy, OnChanges {
     alert('Nézd meg az email fiókodat');
     this.authService.passwordReset(this.profileForm.value.email);
   }
-
 
   szerkeszt() {
     const dialogRef = this.dialog.open(ChangeProfileComponent, {

@@ -3,27 +3,28 @@
     <img [src]="downloadURL" [width]="profilePicSize()" [height]="profilePicSize()" *ngIf="!!downloadURL">
     <div class="header-text" [class.hide-header-text]="sideNavCollapsed()">
         <h2>
-            Cégnév  
+            Cégnév
         </h2>
         <p>Neved:</p>
     </div>
 </div>
+
 <mat-nav-list *ngIf="loggenIn()">
-    <a class="menu-item" mat-list-item *ngFor="let item of menuItemsLoggedIn()" [routerLink]="item.route" 
-    routerLinkActive="selected-menu-item"
-    #rla="routerLinkActive"
-    [activated]="rla.isActive" (click)="item.click=='logout'?logout():nothing()">
-        <mat-icon [fontSet]="rla.isActive? 'material-icons':'material-icons-outlined'" matListItemIcon>{{item.icon}}</mat-icon>
+    <a class="menu-item" mat-list-item *ngFor="let item of menuItemsLoggedIn()" [routerLink]="item.route"
+        routerLinkActive="selected-menu-item" #rla="routerLinkActive" [activated]="rla.isActive"
+        (click)="item.click=='logout'?logout():nothing()">
+        <mat-icon [fontSet]="rla.isActive? 'material-icons':'material-icons-outlined'"
+            matListItemIcon>{{item.icon}}</mat-icon>
         <span matListItemTitle *ngIf="!sideNavCollapsed()">{{item.label}}</span>
     </a>
 </mat-nav-list>
 
 <mat-nav-list *ngIf="!loggenIn()">
-    <a class="menu-item" mat-list-item *ngFor="let item of menuItemsNotLoggedIn()" [routerLink]="item.route" 
-    routerLinkActive="selected-menu-item"
-    #rla="routerLinkActive"
-    [activated]="rla.isActive" (click)="item.click=='logout'?logout():nothing()">
-        <mat-icon [fontSet]="rla.isActive? 'material-icons':'material-icons-outlined'" matListItemIcon>{{item.icon}}</mat-icon>
+    <a class="menu-item" mat-list-item *ngFor="let item of menuItemsNotLoggedIn()" [routerLink]="item.route"
+        routerLinkActive="selected-menu-item" #rla="routerLinkActive" [activated]="rla.isActive"
+        (click)="item.click=='logout'?logout():nothing()">
+        <mat-icon [fontSet]="rla.isActive? 'material-icons':'material-icons-outlined'"
+            matListItemIcon>{{item.icon}}</mat-icon>
         <span matListItemTitle *ngIf="!sideNavCollapsed()">{{item.label}}</span>
     </a>
 </mat-nav-list>

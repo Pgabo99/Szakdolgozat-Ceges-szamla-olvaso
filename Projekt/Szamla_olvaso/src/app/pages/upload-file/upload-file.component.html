@@ -1,13 +1,13 @@
 <div>
     <div *ngIf="megjelenitheto">
         <h2>
-            Fájl feltöltése 
-        <button mat-mini-fab (click)="inputField.click()">
-            <mat-icon>add</mat-icon>
-        </button>
-        <input #inputField type="file" hidden (change)="uploadImage($event)" />
-        <mat-progress-bar mode="indeterminate" *ngIf="feltolt"></mat-progress-bar>
-    </h2>
+            Fájl feltöltése
+            <button mat-mini-fab (click)="inputField.click()">
+                <mat-icon>add</mat-icon>
+            </button>
+            <input #inputField type="file" hidden (change)="uploadImage($event)" />
+            <mat-progress-bar mode="indeterminate" *ngIf="feltolt"></mat-progress-bar>
+        </h2>
     </div>
     <div>
         <h2>Eddig feltöltött fájljaid</h2>
@@ -16,7 +16,8 @@
             <!-- Files Column -->
             <ng-container matColumnDef="fileName">
                 <th mat-header-cell *matHeaderCellDef> Fájl neve (megtekintéshez kattints a nevére) </th>
-                <td mat-cell *matCellDef="let element"><a [href]="element.url" target="_blank"> {{element.fileName}} </a></td>
+                <td mat-cell *matCellDef="let element"><a [href]="element.url" target="_blank"> {{element.fileName}}
+                    </a></td>
             </ng-container>
 
             <!-- Upload date Column -->

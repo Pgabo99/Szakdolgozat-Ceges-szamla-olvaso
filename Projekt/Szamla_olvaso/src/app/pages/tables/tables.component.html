@@ -89,7 +89,6 @@
             <th mat-header-cell *matHeaderCellDef> Áfa </th>
             <td mat-cell *matCellDef="let element"> {{element.afa}} </td>
         </ng-container>
-         
 
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
         <tr mat-row *matRowDef="let row; columns: displayedColumns;" (click)="fileSzerkesztes(row)"></tr>
