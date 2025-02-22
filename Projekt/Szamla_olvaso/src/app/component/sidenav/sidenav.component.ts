@@ -2,6 +2,7 @@ import { Component, computed, Input, OnChanges, OnInit, signal, SimpleChanges } 
 import { AuthService } from '../../shared/services/userService/auth.service';
 import { Observable } from 'rxjs';
 import { ProfileUploadService } from '../../shared/services/userService/profile-upload.service';
+import { Router } from '@angular/router';
 
 export type MenuItem = {
   icon: string;
@@ -81,7 +82,7 @@ export class SidenavComponent implements OnInit, OnChanges {
     }
   ])
 
-  constructor(private authService: AuthService, private imageUploadService: ProfileUploadService) {
+  constructor(private authService: AuthService, private imageUploadService: ProfileUploadService, private router: Router) {
     this.user$ = this.authService.currentUser$;
     this.downloadURL = ""
     this.email = this.authService.getUserEmail();
@@ -96,7 +97,9 @@ export class SidenavComponent implements OnInit, OnChanges {
   }
 
   logout() {
-    this.authService.logout();
+    if (confirm("Biztosan kijelentkezel?")) {
+      this.authService.logout();
+    }
   }
 
   nothing() { }
@@ -112,9 +115,11 @@ export class SidenavComponent implements OnInit, OnChanges {
         this.imageUploadService.getFileDownloadURL(filePath).subscribe(url => {
           this.downloadURL = url;
         });
-      } else {
-        console.log('A felhasználó nem elérhető.');
       }
     });
+  }
+
+  toProfile() {
+      this.router.navigateByUrl('profil')
   }
 }

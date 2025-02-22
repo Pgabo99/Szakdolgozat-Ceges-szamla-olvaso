@@ -18,17 +18,23 @@ export class AuthService {
       if (auth) {
         this.userEmail$ = auth.email;
       }
-    })
+    });
   }
 
   signInWithGoogle() {
     return this.afs.signInWithPopup(new GoogleAuthProvider()).then((result) => {
       localStorage.setItem('token', 'true');
       this.currentUser$ = this.afs.authState;
-
+      this.afs.authState.subscribe(auth => {
+        if (auth) {
+          this.userEmail$ = auth.email;
+        }
+      });
     }).catch(error => {
       console.error('Google sign-in error:', error);
       alert('Google bejelentkezés sikertelen: ' + error.message);
+      this.afs.signOut();
+      localStorage.clear();
     });
   }
 
@@ -48,6 +54,11 @@ export class AuthService {
       .then(() => {
         this.currentUser$ = this.afs.authState;
         localStorage.setItem('token', 'true');
+        this.afs.authState.subscribe(auth => {
+          if (auth) {
+            this.userEmail$ = auth.email;
+          }
+        });
       })
       .catch((error) => {
         console.error('Sign-in error:', error);
@@ -59,6 +70,7 @@ export class AuthService {
     this.afs.signOut();
     return this.afs.signOut().then(() => {
       localStorage.clear();
+      this.currentUser$;
       location.reload()
       alert('Sikeres kijelentkezés!');
     }).catch((err) => {
@@ -67,7 +79,7 @@ export class AuthService {
   }
 
   IsLoggenIn() {
-    return !!localStorage.getItem('token');
+    return this.userEmail$ !== undefined || this.userEmail$ !== undefined;
   }
 
   deleteUser() {

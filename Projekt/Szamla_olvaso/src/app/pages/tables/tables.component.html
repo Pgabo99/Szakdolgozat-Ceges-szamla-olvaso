@@ -1,96 +1,104 @@
 <div>
     <h2>Eddig feltöltött számlák</h2>
-    <h3>Szerkesztéshez kattints a szerkesztendő sorba</h3>
-    <button mat-button (click)="openDialog()">Oszlopok</button>
-    <button mat-button (click)="exportToXLSX()">Exportálás XLXS</button>
-    <button mat-button (click)="exportToText()">Exportálás text</button>
-    <table mat-table [dataSource]="dataSource" class="mat-elevation-z8" matSort>
+    <div class="dropdown">
+        <button mat-button (click)="openDialog()">Oszlopok</button>
+        <button mat-button class="dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Exportálás
+        </button>
+        <ul class="dropdown-menu">
+            <li><a class="dropdown-item" (click)="exportToXLSX()">EXCEL - XLSX</a></li>
+            <li><a class="dropdown-item" (click)="exportToText()">Szöveg - txt</a></li>
+        </ul>
+    </div>
+    <div class="table-container mat-elevation-z8">
+        <table mat-table [dataSource]="dataSource" class=" table-responsive" matSort>
+            <caption style="caption-side:bottom">Szerkesztéshez kattints a szerkesztendő sorba</caption>
+            <!-- Fájlneve Column -->
+            <ng-container matColumnDef="fajlNev">
+                <th mat-header-cell *matHeaderCellDef> Fájl neve </th>
+                <td mat-cell *matCellDef="let element"> {{element.fajlNev}} </td>
+            </ng-container>
 
-        <!-- Fájlneve Column -->
-        <ng-container matColumnDef="fajlNev">
-            <th mat-header-cell *matHeaderCellDef> Fájl neve </th>
-            <td mat-cell *matCellDef="let element"> {{element.fajlNev}} </td>
-        </ng-container>
+            <!-- Számlaszám Column -->
+            <ng-container matColumnDef="szamlaszam">
+                <th mat-header-cell *matHeaderCellDef> Számlaszám </th>
+                <td mat-cell *matCellDef="let element"> {{element.szamlaszam}} </td>
+            </ng-container>
 
-        <!-- Számlaszám Column -->
-        <ng-container matColumnDef="szamlaszam">
-            <th mat-header-cell *matHeaderCellDef> Számlaszám </th>
-            <td mat-cell *matCellDef="let element"> {{element.szamlaszam}} </td>
-        </ng-container>
+            <!-- Szállító Név Column -->
+            <ng-container matColumnDef="szallitoNev">
+                <th mat-header-cell *matHeaderCellDef> Szállító név </th>
+                <td mat-cell *matCellDef="let element"> {{element.szallitoNev}} </td>
+            </ng-container>
 
-        <!-- Szállító Név Column -->
-        <ng-container matColumnDef="szallitoNev">
-            <th mat-header-cell *matHeaderCellDef> Szállító név </th>
-            <td mat-cell *matCellDef="let element"> {{element.szallitoNev}} </td>
-        </ng-container>
+            <!-- Szállító Adó Column -->
+            <ng-container matColumnDef="szallitoAdo">
+                <th mat-header-cell *matHeaderCellDef> Szállító Adószám </th>
+                <td mat-cell *matCellDef="let element"> {{element.szallitoAdo}} </td>
+            </ng-container>
 
-        <!-- Szállító Adó Column -->
-        <ng-container matColumnDef="szallitoAdo">
-            <th mat-header-cell *matHeaderCellDef> Szállító Adószám </th>
-            <td mat-cell *matCellDef="let element"> {{element.szallitoAdo}} </td>
-        </ng-container>
+            <!-- Szallito Irsz Column -->
+            <ng-container matColumnDef="szallitoIrsz">
+                <th mat-header-cell *matHeaderCellDef> Szállító Irsz </th>
+                <td mat-cell *matCellDef="let element"> {{element.szallitoIrsz}} </td>
+            </ng-container>
 
-        <!-- Szallito Irsz Column -->
-        <ng-container matColumnDef="szallitoIrsz">
-            <th mat-header-cell *matHeaderCellDef> Szállító Irsz </th>
-            <td mat-cell *matCellDef="let element"> {{element.szallitoIrsz}} </td>
-        </ng-container>
+            <!-- Szallito Település Column -->
+            <ng-container matColumnDef="szallitoTelepules">
+                <th mat-header-cell *matHeaderCellDef> Szállító Település </th>
+                <td mat-cell *matCellDef="let element"> {{element.szallitoTelepules}} </td>
+            </ng-container>
 
-        <!-- Szallito Település Column -->
-        <ng-container matColumnDef="szallitoTelepules">
-            <th mat-header-cell *matHeaderCellDef> Szállító Település </th>
-            <td mat-cell *matCellDef="let element"> {{element.szallitoTelepules}} </td>
-        </ng-container>
+            <!-- Szallito Cím Column -->
+            <ng-container matColumnDef="szallitoCim">
+                <th mat-header-cell *matHeaderCellDef> Szállító Cím </th>
+                <td mat-cell *matCellDef="let element"> {{element.szallitoCim}} </td>
+            </ng-container>
 
-        <!-- Szallito Cím Column -->
-        <ng-container matColumnDef="szallitoCim">
-            <th mat-header-cell *matHeaderCellDef> Szállító Cím </th>
-            <td mat-cell *matCellDef="let element"> {{element.szallitoCim}} </td>
-        </ng-container>
+            <!-- Számla kelte Column -->
+            <ng-container matColumnDef="fizKelt">
+                <th mat-header-cell *matHeaderCellDef> Számla kelte </th>
+                <td mat-cell *matCellDef="let element"> {{element.fizKelt}} </td>
+            </ng-container>
 
-        <!-- Számla kelte Column -->
-        <ng-container matColumnDef="fizKelt">
-            <th mat-header-cell *matHeaderCellDef> Számla kelte </th>
-            <td mat-cell *matCellDef="let element"> {{element.fizKelt}} </td>
-        </ng-container>
+            <!-- Fizetési Teljesítés Column -->
+            <ng-container matColumnDef="fizTeljesites">
+                <th mat-header-cell *matHeaderCellDef> Fizetési Teljesítés </th>
+                <td mat-cell *matCellDef="let element"> {{element.fizTeljesites}} </td>
+            </ng-container>
 
-        <!-- Fizetési Teljesítés Column -->
-        <ng-container matColumnDef="fizTeljesites">
-            <th mat-header-cell *matHeaderCellDef> Fizetési Teljesítés </th>
-            <td mat-cell *matCellDef="let element"> {{element.fizTeljesites}} </td>
-        </ng-container>
+            <!-- Fizetési Határidő Column -->
+            <ng-container matColumnDef="fizHatarido">
+                <th mat-header-cell *matHeaderCellDef> Fizetési Határidő </th>
+                <td mat-cell *matCellDef="let element"> {{element.fizHatarido}} </td>
+            </ng-container>
 
-        <!-- Fizetési Határidő Column -->
-        <ng-container matColumnDef="fizHatarido">
-            <th mat-header-cell *matHeaderCellDef> Fizetési Határidő </th>
-            <td mat-cell *matCellDef="let element"> {{element.fizHatarido}} </td>
-        </ng-container>
+            <!-- Fizetési Mód Column -->
+            <ng-container matColumnDef="fizMod">
+                <th mat-header-cell *matHeaderCellDef> Fizetési Mód </th>
+                <td mat-cell *matCellDef="let element"> {{element.fizMod}} </td>
+            </ng-container>
 
-        <!-- Fizetési Mód Column -->
-        <ng-container matColumnDef="fizMod">
-            <th mat-header-cell *matHeaderCellDef> Fizetési Mód </th>
-            <td mat-cell *matCellDef="let element"> {{element.fizMod}} </td>
-        </ng-container>
+            <!-- Nettó Column -->
+            <ng-container matColumnDef="netto">
+                <th mat-header-cell *matHeaderCellDef> Nettó </th>
+                <td mat-cell *matCellDef="let element"> {{element.netto}} </td>
+            </ng-container>
 
-        <!-- Nettó Column -->
-        <ng-container matColumnDef="netto">
-            <th mat-header-cell *matHeaderCellDef> Nettó </th>
-            <td mat-cell *matCellDef="let element"> {{element.netto}} </td>
-        </ng-container>
+            <!-- Bruttó Column -->
+            <ng-container matColumnDef="brutto">
+                <th mat-header-cell *matHeaderCellDef> Bruttó </th>
+                <td mat-cell *matCellDef="let element"> {{element.brutto}} </td>
+            </ng-container>
 
-        <!-- Bruttó Column -->
-        <ng-container matColumnDef="brutto">
-            <th mat-header-cell *matHeaderCellDef> Bruttó </th>
-            <td mat-cell *matCellDef="let element"> {{element.brutto}} </td>
-        </ng-container>
+            <!-- Áfa Column -->
+            <ng-container matColumnDef="afa">
+                <th mat-header-cell *matHeaderCellDef> Áfa </th>
+                <td mat-cell *matCellDef="let element"> {{element.afa}} </td>
+            </ng-container>
 
-        <!-- Áfa Column -->
-        <ng-container matColumnDef="afa">
-            <th mat-header-cell *matHeaderCellDef> Áfa </th>
-            <td mat-cell *matCellDef="let element"> {{element.afa}} </td>
-        </ng-container>
-
-        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedColumns;" (click)="fileSzerkesztes(row)"></tr>
-    </table>
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;" (click)="fileSzerkesztes(row)"></tr>
+        </table>
+    </div>
 </div>

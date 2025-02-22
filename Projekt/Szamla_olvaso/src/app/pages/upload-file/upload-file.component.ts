@@ -106,7 +106,6 @@ export class UploadFileComponent implements OnInit, OnDestroy {
         const uploadTask = await this.imageUploadService.uploadBill(input, path)
         const url = await uploadTask.ref.getDownloadURL();
         if (fileExtension === 'pdf') {
-          console.log(event.target.files[0])
 
           const formData = new FormData();
           formData.append('file', event.target.files[0]);
@@ -131,7 +130,6 @@ export class UploadFileComponent implements OnInit, OnDestroy {
                   error: (error) => console.error('Hiba a kép letöltésekor:', error)
                 });
               }
-              console.log(response)
             },
             error: (error) => console.error('Hiba történt:', error)
           });

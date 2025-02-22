@@ -1,4 +1,4 @@
-<div class="sidenav-header">
+<div class="sidenav-header cursor-pointer" *ngIf="loggenIn()" (click)="toProfile()">
     <img src="/assets/user.png" [width]="profilePicSize()" [height]="profilePicSize()" *ngIf="!downloadURL">
     <img [src]="downloadURL" [width]="profilePicSize()" [height]="profilePicSize()" *ngIf="!!downloadURL">
     <div class="header-text" [class.hide-header-text]="sideNavCollapsed()">
