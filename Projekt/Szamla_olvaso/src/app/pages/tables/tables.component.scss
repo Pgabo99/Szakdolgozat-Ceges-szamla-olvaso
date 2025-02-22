@@ -1,7 +1,31 @@
-.mat-header-cell.mat-sort-header-sorted {
-  color: black;
-}
-
 td {
   cursor: pointer;
+}
+
+h2 {
+  font-size: 3vh;
+}
+
+h3 {
+  font-size: 2vh;
+}
+
+.table-container {
+  overflow-y: auto;
+  width: 100%;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+thead th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+th, td {
+  padding: 10px;
+  text-align: left;
 }

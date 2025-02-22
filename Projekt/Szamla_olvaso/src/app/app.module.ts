@@ -39,7 +39,6 @@ import { TablesComponent } from './pages/tables/tables.component';
 import { FixFileDataComponent } from './component/fix-file-data/fix-file-data.component';
 import { TableColumnsComponent } from './component/table-columns/table-columns.component';
 
-
 @NgModule({
   declarations: [
     AppComponent,

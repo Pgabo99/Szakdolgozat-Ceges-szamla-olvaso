@@ -23,7 +23,6 @@ export class LoginComponent {
   loginWithGoogle() {
     this.authService.signInWithGoogle().then((res: any) => {
       localStorage.setItem('token', 'true');
-      this.router.navigateByUrl('kezdooldal');
     })
       .catch((error: any) => { console.error(error); })
   }

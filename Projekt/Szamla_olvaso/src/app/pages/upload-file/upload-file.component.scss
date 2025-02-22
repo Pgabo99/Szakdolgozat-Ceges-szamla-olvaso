@@ -3,5 +3,10 @@ table {
 }
 
 h2 {
-  font-size: 30px;
+  font-size: 3vh;
+}
+
+td {
+  text-overflow: ellipsis;
+  max-width: 2vw;
 }

@@ -10,12 +10,11 @@
         </h2>
     </div>
     <div>
-        <h2>Eddig feltöltött fájljaid</h2>
         <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
-
+            <caption style="caption-side:bottom">Megtekintéshez kattints a nevére</caption>
             <!-- Files Column -->
             <ng-container matColumnDef="fileName">
-                <th mat-header-cell *matHeaderCellDef> Fájl neve (megtekintéshez kattints a nevére) </th>
+                <th mat-header-cell *matHeaderCellDef> Feltöltött fájl</th>
                 <td mat-cell *matCellDef="let element"><a [href]="element.url" target="_blank"> {{element.fileName}}
                     </a></td>
             </ng-container>
