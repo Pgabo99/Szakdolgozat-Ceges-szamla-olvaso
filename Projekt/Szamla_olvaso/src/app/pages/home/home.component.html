@@ -1,5 +1,121 @@
-<div class="home-container">
-    <div class="construction-container">
-        
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+        <p class="fs-1 text-center">Számla olvasó</p>
+        </div>
     </div>
+    <div class="row">
+        <div class="col-12 col-sm-4">
+            <div class="list-group" id="list-tab" role="tablist">
+                <a class="list-group-item list-group-item-action active" id="list-home-list" data-bs-toggle="list"
+                    href="#list-home" role="tab" aria-controls="list-home">Kezdőoldal</a>
+                <a class="list-group-item list-group-item-action" id="list-profile-list" data-bs-toggle="list"
+                    href="#list-profile" role="tab" aria-controls="list-profile">Profil oldal</a>
+                <a class="list-group-item list-group-item-action" id="list-upload-list" data-bs-toggle="list"
+                    href="#list-upload" role="tab" aria-controls="list-upload">Fájl feltöltése</a>
+                <a class="list-group-item list-group-item-action" id="list-table-list" data-bs-toggle="list"
+                    href="#list-table" role="tab" aria-controls="list-table">Táblázat</a>
+                <a class="list-group-item list-group-item-action" id="list-export-list" data-bs-toggle="list"
+                    href="#list-export" role="tab" aria-controls="list-export">Exportálás</a>
+            </div>
+        </div>
+        <div class="col-12 col-sm-8">
+            <div class="tab-content" id="nav-tabContent">
+                <div class="tab-pane fade show active" id="list-home" role="tabpanel" aria-labelledby="list-home-list">
+                    Az webalkalmazás célja egy olyan weboldal fejlesztése, amely kisvállalkozások számára segít a
+                    kiadásaik és számláik nyilvántartásában. <br>
+                    A látogatók regisztráció, a cégük adatainak feltöltése után tudnak számlákat feltölteni, és
+                    elmenteni az alkalmazásban. Táblázatos formában meg is tudják őket tekinteni, és kiexportálni
+                    excelbe, vagy szöveges formátumban.
+                </div>
+                <div class="tab-pane fade" id="list-profile" role="tabpanel" aria-labelledby="list-profile-list">
+                    <div class="row">
+                        <div class="col-12 col-md-4">
+                            <div class="list-group" id="list-tab" role="tablist">
+                                <a class="list-group-item list-group-item-action active" id="list-pic-list"
+                                    data-bs-toggle="list" href="#list-pic" role="tab" aria-controls="list-pic">Profilkép
+                                    választása</a>
+                                <a class="list-group-item list-group-item-action" id="list-password-list"
+                                    data-bs-toggle="list" href="#list-password" role="tab"
+                                    aria-controls="list-password">Jelszó változtatás</a>
+                                <a class="list-group-item list-group-item-action" id="list-messages-list"
+                                    data-bs-toggle="list" href="#list-messages" role="tab"
+                                    aria-controls="list-messages">Adatok feltöltése</a>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-8">
+                            <div class="tab-content" id="nav-tabContent">
+                                <div class="tab-pane fade show active" id="list-pic" role="tabpanel"
+                                    aria-labelledby="list-pic-list">
+                                    <ol class="list-group list-group-numbered">
+                                        <li class="list-group-item">A menüben válaszd ki a <b><i>Profilom</i></b>
+                                            menüpontot</li>
+                                        <li class="list-group-item">Kattints a kép jobb alsó sarkában levő szerkesztés
+                                            gombra</li>
+                                        <li class="list-group-item">Válassz egy képet</li>
+                                    </ol>
+                                </div>
+                                <div class="tab-pane fade" id="list-password" role="tabpanel"
+                                    aria-labelledby="list-password-list">
+                                    <ol class="list-group list-group-numbered">
+                                        <li class="list-group-item">A menüben válaszd ki a <b><i>Profilom</i></b>
+                                            menüpontot</li>
+                                        <li class="list-group-item">Kattints a <b><i>Jelszó váltás</i></b> szövegre</li>
+                                        <li class="list-group-item">Nézd meg az email fiókodat</li>
+                                        <li class="list-group-item">Kattints az emailben kapott linkre</li>
+                                        <li class="list-group-item">Írd be az új jelszót</li>
+                                    </ol>
+                                </div>
+                                <div class="tab-pane fade" id="list-messages" role="tabpanel"
+                                    aria-labelledby="list-messages-list">
+                                    <ol class="list-group list-group-numbered">
+                                        <li class="list-group-item">A menüben válaszd ki a <b><i>Profilom</i></b>
+                                            menüpontot</li>
+                                        <li class="list-group-item">Kattints a <b><i>Szerkesztés</i></b> szöveg melett
+                                            levő szerkesztés
+                                            gombra</li>
+                                        <li class="list-group-item">Töltsd ki a csillaggal jelölt mezőket</li>
+                                        <li class="list-group-item">Kattints az <b><i>Adatok mentése gombra</i></b></li>
+                                    </ol>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tab-pane fade" id="list-upload" role="tabpanel" aria-labelledby="list-upload-list">
+                    <ol class="list-group list-group-numbered">
+                        <li class="list-group-item">A menüben válaszd ki a <b><i>Fájfeltöltése</i></b>
+                            menüpontot</li>
+                        <li class="list-group-item">Kattints a <b><i>Fejlfeltöltése</i></b> melett levő <b><i>+</i></b>
+                            gombra</li>
+                        <li class="list-group-item">Válaszd ki a feltöltendő fájlt</li>
+                        <li class="list-group-item list-group-item-action list-group-item-warning">PDF, JPG, JPEG, PNG
+                            kiterjesztésű lehet a fájl</li>
+                        <li class="list-group-item">Ellenőrizd az adatokat</li>
+                    </ol>
+                </div>
+                <div class="tab-pane fade" id="list-table" role="tabpanel" aria-labelledby="list-table-list">
+                    <ol class="list-group list-group-numbered">
+                        <li class="list-group-item">A menüben válaszd ki a <b><i>Táblázatok</i></b>
+                            menüpontot</li>
+                        <li class="list-group-item">Kattints az <b><i>Oszlopokra</i></b>,és válaszd ki a megjelenítendő oszlopokat</li>
+                        <li class="list-group-item">Kattints egy sorra, hogy szerkezd az adott sort</li>
+                    </ol>
+                </div>
+                <div class="tab-pane fade" id="list-export" role="tabpanel" aria-labelledby="list-export-list">
+                    <ol class="list-group list-group-numbered">
+                        <li class="list-group-item">A menüben válaszd ki a <b><i>Táblázatok</i></b>
+                            menüpontot</li>
+                        <li class="list-group-item">Kattints az <b><i>Exportálásra</i></b>,és válaszd ki hogy mibe szeretnéd exportálni</li>
+                        <li class="list-group-item">Nyisd meg a letöltött fájlt, és ellenőrizd tartalmát</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container-fluid">
+
 </div>
