@@ -13,10 +13,8 @@ export class authGuardGuard implements CanActivate {
   canActivate() {
     if (this.auth.IsLoggenIn()) {
       return true;
-    }
-
-    alert("Hoppá! Nem vagy bejelentkezve!");
-    this.router.navigate(['/bejelentkezes'])
+    } else {
     return false;
+    }
   }
 }

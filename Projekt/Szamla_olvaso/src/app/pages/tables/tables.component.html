@@ -10,8 +10,8 @@
             <li><a class="dropdown-item" (click)="exportToText()">Szöveg - txt</a></li>
         </ul>
     </div>
-    <div class="table-container mat-elevation-z8">
-        <table mat-table [dataSource]="dataSource" class=" table-responsive" matSort>
+    <div class="table-container">
+        <table mat-table [dataSource]="dataSource" class="mat-elevation-z8 table-responsive" matSort>
             <caption style="caption-side:bottom">Szerkesztéshez kattints a szerkesztendő sorba</caption>
             <!-- Fájlneve Column -->
             <ng-container matColumnDef="fajlNev">

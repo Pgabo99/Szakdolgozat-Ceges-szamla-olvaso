@@ -31,6 +31,8 @@ export class FixFileDataComponent {
     afa: new FormControl('')
   });
 
+  editing:Boolean;
+
   constructor(@Inject(MAT_DIALOG_DATA) public data: { fileData: Bills }, private fileService: FileService) {
     this.fixFileForm.setValue({
       email: data.fileData.email as string,
@@ -50,6 +52,7 @@ export class FixFileDataComponent {
       brutto: data.fileData.brutto as string,
       afa: data.fileData.afa as string
     });
+    this.editing = false;
   }
 
   fixFile() {
@@ -80,5 +83,9 @@ export class FixFileDataComponent {
       }
       this.fileService.updateFile(seged)
     }
+  }
+
+  changeEdit() {
+    this.editing = !this.editing;
   }
 }

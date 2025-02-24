@@ -18,89 +18,91 @@
         <!-- Számlaszám mező -->
         <mat-form-field appearance="outline">
             <mat-label>Számlaszám</mat-label>
-            <input formControlName="szamlaszam" matInput type="text">
+            <input formControlName="szamlaszam" matInput type="text" [readonly]="!editing">
         </mat-form-field>
 
         <!-- Szállitó Név mező -->
         <mat-form-field appearance="outline">
             <mat-label>Szállitó Név</mat-label>
-            <input formControlName="szallitoNev" matInput type="text">
+            <input formControlName="szallitoNev" matInput type="text" [readonly]="!editing">
         </mat-form-field>
 
         <!--Szállító Adószám mező -->
         <mat-form-field appearance="outline">
             <mat-label>Szállító Adószám</mat-label>
-            <input formControlName="szallitoAdo" matInput type="text">
+            <input formControlName="szallitoAdo" matInput type="text" [readonly]="!editing">
         </mat-form-field>
 
         <!--Szállító Irányítószám mező -->
         <mat-form-field appearance="outline">
             <mat-label>Szállító Irányítószám</mat-label>
-            <input formControlName="szallitoIrsz" matInput type="number">
+            <input formControlName="szallitoIrsz" matInput type="number" [readonly]="!editing">
         </mat-form-field>
 
         <!-- Szállító Település mező -->
         <mat-form-field appearance="outline">
             <mat-label>Szállító Település</mat-label>
-            <input formControlName="szallitoTelepules" matInput type="text">
+            <input formControlName="szallitoTelepules" matInput type="text" [readonly]="!editing">
         </mat-form-field>
 
         <!-- Szállitó Cim mező -->
         <mat-form-field appearance="outline">
             <mat-label>Szállitó Cím</mat-label>
-            <input formControlName="szallitoCim" matInput type="text">
+            <input formControlName="szallitoCim" matInput type="text" [readonly]="!editing">
         </mat-form-field>
 
         <!-- Szállitó egybe mező -->
         <mat-form-field appearance="outline">
             <mat-label>Szállitó egybe</mat-label>
-            <input formControlName="szallitoEgybe" matInput type="text">
+            <input formControlName="szallitoEgybe" matInput type="text" [readonly]="!editing">
         </mat-form-field>
 
         <!-- Számla Kelte mező -->
         <mat-form-field appearance="outline">
             <mat-label>Számla Kelte</mat-label>
-            <input formControlName="fizKelt" matInput type="text">
+            <input formControlName="fizKelt" matInput type="text" [readonly]="!editing">
         </mat-form-field>
 
         <!-- Fizetés Teljesítése mező -->
         <mat-form-field appearance="outline">
             <mat-label>Fizetés Teljesítése</mat-label>
-            <input formControlName="fizTeljesites" matInput type="text">
+            <input formControlName="fizTeljesites" matInput type="text" [readonly]="!editing">
         </mat-form-field>
 
         <!-- Fizetési Határidő mező -->
         <mat-form-field appearance="outline">
             <mat-label>Fizetési Határidő</mat-label>
-            <input formControlName="fizHatarido" matInput type="text">
+            <input formControlName="fizHatarido" matInput type="text" [readonly]="!editing">
         </mat-form-field>
 
         <!-- Fizetési Mód mező -->
         <mat-form-field appearance="outline">
             <mat-label>Fizetési Mód</mat-label>
-            <input formControlName="fizMod" matInput type="text">
+            <input formControlName="fizMod" matInput type="text" [readonly]="!editing">
         </mat-form-field>
 
         <!-- Nettó mező -->
         <mat-form-field appearance="outline">
             <mat-label>Nettó</mat-label>
-            <input formControlName="netto" matInput type="text">
+            <input formControlName="netto" matInput type="text" [readonly]="!editing">
         </mat-form-field>
 
         <!-- Bruttó mező -->
         <mat-form-field appearance="outline">
             <mat-label>Bruttó</mat-label>
-            <input formControlName="brutto" matInput type="text">
+            <input formControlName="brutto" matInput type="text" [readonly]="!editing">
         </mat-form-field>
 
         <!-- Áfa mező -->
         <mat-form-field appearance="outline">
             <mat-label>Áfa</mat-label>
-            <input formControlName="afa" matInput type="text">
+            <input formControlName="afa" matInput type="text" [readonly]="!editing">
         </mat-form-field>
 
         <!--Mentés gomb-->
-        <button mat-raised-button color="primary" type="submit">Adatok módosítása</button>
-        <button mat-raised-button color="secondary" mat-dialog-close>Bezárás</button>
+        <button mat-raised-button color="primary" type="button" (click)="changeEdit()" *ngIf='!editing'>Adatok módosítása</button>
+        <button mat-raised-button color="primary" type="submit" *ngIf='editing'>Mentés</button>
+        <button mat-raised-button color="secondary" type="button" (click)="changeEdit()" *ngIf='editing'>Mégse</button>
+        <button mat-raised-button color="primary" mat-dialog-close>Bezárás</button>
     </form>
 </div>
