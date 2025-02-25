@@ -66,7 +66,7 @@ export class FileService {
     let indexek: { word: string; index: number; }[];
     darabok.forEach(element => {
       let vizsgal = element.toLowerCase();
-      if (seged.szamlaszam == "" && legelejeB && vizsgal.indexOf("számla") == -1)
+      if (seged.szamlaszam == "" && legelejeB && vizsgal.indexOf("számla") == -1 && vizsgal.indexOf("szállító") == -1 && vizsgal.indexOf("vevó") == -1)
         seged.szamlaszam = element
       if (fizEgysor) {
         fizEgysor = false;
@@ -171,8 +171,10 @@ export class FileService {
         eleje = true;
         legelejeB = false;
       }
-      if (vizsgal.indexOf("összes") != -1 || vizsgal.indexOf("Összes") != -1 || vizsgal.indexOf("értékesítés") != -1) {
+      if (vizsgal.indexOf("összes") != -1 || vizsgal.indexOf("Összes") != -1 || vizsgal.indexOf("értékesítés") != -1 || vizsgal.indexOf("érték") != -1) {
         let result = element.replaceAll(" ", "").replaceAll("-", "").replace(/^[^0-9]+/, "");
+
+        console.log("itt"+vizsgal);
         if (vizsgal.indexOf("27") != -1) {
           result = element.replaceAll(" ", "").replaceAll("-", "").replace(/[^0-9]+/, "").replace(/^[^0-9]+/, "");
         }
@@ -197,6 +199,9 @@ export class FileService {
             }
             index++;
           }
+          console.log("itteeeen"+resultFt2);
+          console.log("resultFt"+resultFt);
+          console.log("result"+result);
           seged.brutto = resultFt2[0];
           seged.afa = resultFt2[1]
           seged.netto = resultFt2[2]
