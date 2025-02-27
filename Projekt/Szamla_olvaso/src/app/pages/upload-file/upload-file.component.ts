@@ -109,13 +109,10 @@ export class UploadFileComponent implements OnInit, OnDestroy {
 
           const formData = new FormData();
           formData.append('file', event.target.files[0]);
-          console.log(formData);
           this.http.post('http://localhost:3000/processPDF', formData).subscribe({
             next: (response) => {
-              console.log(response);
               if ('type' in response) {
                 if (response.type === 'text' && 'content' in response && typeof response.content === 'string' && response.content.replaceAll(' ', '').replaceAll("\n", "").replaceAll("\t", "").replaceAll("\v", "") !== "") {
-                  console.log('Sikeres feltöltés:', response.content.replaceAll(' ', '').replaceAll("/n", ""));
                   const bill: Bills = this.fileService.processingImage(response.content as string, this.loggenUser!, input.name)
                   const dialogRef = this.dialog.open(FixFileDataComponent, {
                     data: { fileData: bill as Bills },
@@ -124,7 +121,6 @@ export class UploadFileComponent implements OnInit, OnDestroy {
                   });
                 } else if (response.type === 'path' && 'images' in response && Array.isArray(response.images)) {
                   const imagePath = response.images[0]['path'];
-                  console.log(imagePath);
                   this.http.get(`http://localhost:3000/images/${imagePath}`, { responseType: 'blob' }).subscribe({
                     next: (blob) => {
                       const file = new File([blob], event.target.files[0].name, { type: "image/png" });

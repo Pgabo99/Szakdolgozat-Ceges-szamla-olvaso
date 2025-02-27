@@ -91,7 +91,6 @@ export class TablesComponent implements OnInit, OnDestroy, AfterViewInit {
         szallitoIrsz: data2[0].szallitoIrsz,
         szallitoTelepules: data2[0].szallitoTelepules,
         szallitoCim: data2[0].szallitoCim,
-        szallitoEgybe: data2[0].szallitoEgybe,
         fizKelt: data2[0].fizKelt,
         fizTeljesites: data2[0].fizTeljesites,
         fizHatarido: data2[0].fizHatarido,

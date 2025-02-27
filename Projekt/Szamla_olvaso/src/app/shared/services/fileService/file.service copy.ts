@@ -64,8 +64,8 @@ export class FileService {
 
     let indexek: { word: string; index: number; }[];
     darabok.forEach(element => {
-      let vizsgal = element.toLowerCase();
-      if (seged.szamlaszam == "" && legelejeB && vizsgal.indexOf("számla") == -1 && vizsgal.indexOf("szállító") == -1 && vizsgal.indexOf("vevó") == -1)
+      let vizsgal = element.normalize("NFD").toLowerCase();
+      if (seged.szamlaszam == "" && legelejeB && vizsgal.indexOf("szamla") == -1 && vizsgal.indexOf("szallito") == -1 && vizsgal.indexOf("vevo") == -1)
         seged.szamlaszam = element
       if (fizEgysor) {
         fizEgysor = false;
@@ -92,20 +92,20 @@ export class FileService {
             seged.fizKelt = match![index]
         });
       }
-      if (vizsgal.indexOf("fizetés") != -1 && vizsgal.indexOf("mód") != -1 && seged.fizMod == "") {
+      if (vizsgal.indexOf("fizetes") != -1 && vizsgal.indexOf("mod") != -1 && seged.fizMod == "") {
         eleje = false;
-        if (vizsgal.indexOf("teljesít") != -1 && vizsgal.indexOf("kelt") != -1 && (vizsgal.indexOf("esedékesség") != -1 || vizsgal.indexOf("határidő") != -1)) {
+        if (vizsgal.indexOf("teljesot") != -1 && vizsgal.indexOf("kelt") != -1 && (vizsgal.indexOf("esedekesseg") != -1 || vizsgal.indexOf("hatarido") != -1)) {
           fizEgysor = true;
           let segedVizsgal = vizsgal.replaceAll(' ', '');
           let kelt = segedVizsgal.indexOf("kelt");
-          let telj = segedVizsgal.indexOf("teljesít");
-          let hat = segedVizsgal.indexOf("esedékesség");
-          let mod = segedVizsgal.indexOf("mód");
+          let telj = segedVizsgal.indexOf("teljesot");
+          let hat = segedVizsgal.indexOf("esedekesseg");
+          let mod = segedVizsgal.indexOf("mod");
           indexek = [
             { word: "kelt", index: kelt },
-            { word: "teljesít", index: telj },
-            { word: "esedékesség", index: hat },
-            { word: "mód", index: mod }
+            { word: "teljesit", index: telj },
+            { word: "esedekesseg", index: hat },
+            { word: "mod", index: mod }
           ];
           indexek.sort((a, b) => b.index - a.index);
         } else {
@@ -117,7 +117,7 @@ export class FileService {
               seged.fizMod = modDarabok[index];
               index = modDarabok.length;
             }
-            if (index != modDarabok.length && modDarabok[index].toLowerCase().indexOf("mód") != -1) {
+            if (index != modDarabok.length && modDarabok[index].toLowerCase().indexOf("mod") != -1) {
               megvan = true;
             }
             index++;
@@ -141,7 +141,7 @@ export class FileService {
           index++;
         }
       }
-      if (vizsgal.indexOf("teljesít") != -1 && seged.fizTeljesites == "") {
+      if (vizsgal.indexOf("teljesit") != -1 && seged.fizTeljesites == "") {
         let modDarabok = element.split(" ");
         let megvan = false;
         let index = 0;
@@ -150,7 +150,7 @@ export class FileService {
             seged.fizTeljesites = modDarabok[index];
             index = modDarabok.length;
           }
-          if (index != modDarabok.length && modDarabok[index].toLowerCase().indexOf("teljesít") != -1) {
+          if (index != modDarabok.length && modDarabok[index].toLowerCase().indexOf("teljesit") != -1) {
             megvan = true;
           }
 
@@ -158,11 +158,11 @@ export class FileService {
         }
       }
 
-      if (vizsgal.indexOf("sorszám") != -1 && seged.szamlaszam == "") {
-        seged.szamlaszam = element.substring(vizsgal.indexOf("sorszám") + 8).trim();
+      if (vizsgal.indexOf("sorszam") != -1 && seged.szamlaszam == "") {
+        seged.szamlaszam = element.substring(vizsgal.indexOf("sorszam") + 8).trim();
         legelejeB = false;
-      } else if (vizsgal.indexOf("számlaszám") != -1 && seged.szamlaszam == "") {
-        seged.szamlaszam = element.substring(vizsgal.indexOf("számlaszám") + 11).trim();
+      } else if (vizsgal.indexOf("szamlaszam") != -1 && seged.szamlaszam == "") {
+        seged.szamlaszam = element.substring(vizsgal.indexOf("szamlaszam") + 11).trim();
       }
       else if (eleje || vizsgal.indexOf(user.companyName.toLowerCase()) != -1) {
         var eredmeny = this.szallitoAdatokFeld(user, element, vizsgal);
@@ -170,7 +170,7 @@ export class FileService {
         eleje = true;
         legelejeB = false;
       }
-      if (vizsgal.indexOf("összes") != -1 || vizsgal.indexOf("Összes") != -1 || vizsgal.indexOf("értékesítés") != -1 || vizsgal.indexOf("érték") != -1) {
+      if (vizsgal.indexOf("osszes") != -1 || vizsgal.indexOf("Osszes") != -1 || vizsgal.indexOf("ertekesites") != -1 || vizsgal.indexOf("ertek") != -1) {
         let result = element.replaceAll(" ", "").replaceAll("-", "").replace(/^[^0-9]+/, "");
 
         console.log("itt" + vizsgal);
@@ -206,26 +206,26 @@ export class FileService {
           seged.netto = resultFt2[2]
         }
       }
-      if (vizsgal.indexOf("fizetendő") != -1 || (vizsgal.indexOf("végösszeg") != -1) && seged.brutto == "") {
+      if (vizsgal.indexOf("fizetendo") != -1 || (vizsgal.indexOf("vegosszeg") != -1) && seged.brutto == "") {
         let result = element.replaceAll(" ", "").replace(/^[^0-9]+/, "").replaceAll("Ft", "");
         seged.brutto = result;
       }
-      if (vizsgal.indexOf('megnevezés') != -1 || vizsgal.indexOf('kód') != -1 || vizsgal.indexOf('mennyiség') != -1 || vizsgal.indexOf('bruttó') != -1) {
+      if (vizsgal.indexOf('megnevezes') != -1 || vizsgal.indexOf('kod') != -1 || vizsgal.indexOf('mennyiseg') != -1 || vizsgal.indexOf('brutto') != -1) {
         tartalomBool = true;
       }
-      if (tartalomBool)
+      if (tartalomBool) {
         seged.tartalom += element + '\n';
-      seged = this.szallitoAdatokFeld2(user, element, vizsgal, seged);
-
+      }
+      
     });
     let szallitoDarabok = szallitoAdatok.split('\n');
     seged.szallitoNev = szallitoDarabok[0];
     szallitoDarabok.forEach(element => {
       let vizsgal = element.toLowerCase();
-      if (vizsgal.indexOf("adószám") != -1 && seged.szallitoAdo == "" && vizsgal.indexOf("eu") == -1 && vizsgal.indexOf("hu") == -1) {
+      if (vizsgal.indexOf("adoszam") != -1 && seged.szallitoAdo == "" && vizsgal.indexOf("eu") == -1 && vizsgal.indexOf("hu") == -1) {
         seged.szallitoAdo = element.substring(element.search(/\d/), element.length).trim().split(' ')[0];
       }
-      if (seged.szallitoIrsz != 0 && seged.szallitoCim == "") {
+      if (seged.szallitoIrsz !== 0 && seged.szallitoCim === "") {
         seged.szallitoCim = element;
       }
       if (seged.szallitoIrsz == 0 && /\d/.test(element.charAt(0)) && /\d/.test(element.charAt(1)) && /\d/.test(element.charAt(2)) && /\d/.test(element.charAt(3))) {
@@ -263,7 +263,7 @@ export class FileService {
     }
     if (vizsgal.indexOf(user.taxNumber) != -1 && meddig == szoveg.length) {
       meddig = vizsgal.indexOf(user.taxNumber.toLowerCase());
-      let adoszamhely = vizsgal.lastIndexOf("adoszam");
+      let adoszamhely = vizsgal.lastIndexOf("adószám");
       if (adoszamhely != -1 && meddig - adoszamhely - 7 < 3) {
         meddig = adoszamhely;
       }
@@ -293,59 +293,67 @@ export class FileService {
       }
     }
 
+    // if (siteRegex.test(szoveg)) {
+    //   let irszam = szoveg.match(/\d{4}\s/g);
+    //   let varos = szoveg.split(irszam + "")[1].match(/[A-Za-z]+,/g);
+    //   let cim = szoveg.split(varos + "")[1];
+    //   returnString += "Irányítószám: " + irszam![0].replaceAll(" ", "").trim() + '\n';
+    //   returnString += "Város: " + varos![0].replaceAll(" ", "").replaceAll(",", "").trim() + '\n';
+    //   returnString += "Cím: " + cim.trim() + '\n';
+    //   console.log("returnString: " + returnString);
+    // }
+
     if (returnString === "")
       returnString += szoveg.substring(0, meddig);
     return returnString;
   }
 
   szallitoAdatokFeld2(user: Users, szoveg: string, vizsgal: string, returnObject: Bills): Bills {
-    vizsgal = vizsgal.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+    console.log("NFD: "+vizsgal.normalize("NFD"));
     // Adószám
-    const taxNumberRegex = /\b\d{8}-\d-\d{2}\b/;
-    if (returnObject.szallitoAdo === '' && taxNumberRegex.test(szoveg.replace(/\s+/g, ""))) {
+    const taxNumberRegex = /\d\d\d\d\s+[A-Za-z]+, ([A-Za-z0-9]+( [A-Za-z0-9]+)+)\./i;
+    if (returnObject.szallitoAdo !== '' && taxNumberRegex.test(szoveg)) {
       let taxNumber = szoveg.match(taxNumberRegex);
       if (taxNumber && taxNumber[0].replaceAll(" ", "").trim() !== user.taxNumber) {
         returnObject.szallitoAdo = taxNumber[0].replaceAll(" ", "").trim();
       }
     }
 
-    if (!returnObject.szallitoCim) {
-      // Cím, ha már megvan az irányítószám és a város
-      if (returnObject.szallitoIrsz !== 0 && returnObject.szallitoTelepules !== '') {
-        let cim = szoveg;
-        if (cim.trim() !== user.site) {
-          returnObject.szallitoCim = cim.trim();
-        }
+    // Cím, ha már megvan az irányítószám és a város
+    if (returnObject.szallitoIrsz && returnObject.szallitoTelepules && !returnObject.szallitoCim) {
+      let cim = szoveg;
+      if (cim !== user.site) {
+        returnObject.szallitoCim = cim.trim();
       }
+    }
 
-      // Irányítószám Város, Irányítószám Város, Cím
-      const irszVarosSiteRegex = /\d\d\d8\s+[A-Za-z]+/i;
-      const fullSiteRegex = /\d\d\d\d\s+[A-Za-z]+, ([A-Za-z0-9]+( [A-Za-z0-9]+)+)\./i;
-      if (fullSiteRegex.test(vizsgal)) {
-        let irszam = szoveg.match(/\d{4}\s/g);
-        let varosFromTo = this.fromToString(vizsgal.split(irszam + "")[1].match(/[A-Za-z]+,/g)![0], vizsgal);
-        let cim = szoveg.split(szoveg.substring(varosFromTo[0], varosFromTo[1]) + "")[1].trim();
-        if (!cim.includes(user.site)) {
-          returnObject.szallitoIrsz = irszam![0].replaceAll(" ", "").trim() as unknown as number;
-          returnObject.szallitoTelepules = szoveg.substring(varosFromTo[0], varosFromTo[1]).replaceAll(" ", "").replaceAll(",", "").trim();
-          returnObject.szallitoCim = cim;
-        }
-      } else if (irszVarosSiteRegex.test(szoveg)) {
-        let irszam = szoveg.match(/\d{4}\s/g);
-        let varosFromTo = this.fromToString(szoveg.split(irszam + "")[1].match(/[A-Za-z]/g)![0], vizsgal);
+    // Irányítószám Város, Irányítószám Város, Cím
+    const irszVarosSiteRegex = /\d\d\d8\s+[A-Za-z]+/i;
+    const fullSiteRegex = /\d\d\d\d\s+[A-Za-z]+, ([A-Za-z0-9]+( [A-Za-z0-9]+)+)\./i;
+    if (fullSiteRegex.test(szoveg)) {
+      let irszam = szoveg.match(/\d{4}\s/g);
+      let varos = szoveg.split(irszam + "")[1].match(/[A-Za-z]+,/g);
+      let cim = szoveg.split(varos + "")[1];
+      if (cim.trim() !== user.site) {
         returnObject.szallitoCim = irszam![0].replaceAll(" ", "").trim();
-        returnObject.szallitoTelepules = szoveg.substring(varosFromTo[0], varosFromTo[1]).replaceAll(" ", "").replaceAll(",", "").trim();
+        returnObject.szallitoTelepules = varos![0].replaceAll(" ", "").replaceAll(",", "").trim();
+        returnObject.szallitoCim = cim.trim();
       }
+    } else if (irszVarosSiteRegex.test(szoveg)) {
+      let irszam = szoveg.match(/\d{4}\s/g);
+      let varos = szoveg.split(irszam + "")[1].match(/[A-Za-z]+,/g);
+      returnObject.szallitoCim = irszam![0].replaceAll(" ", "").trim();
+      returnObject.szallitoTelepules = varos![0].replaceAll(" ", "").replaceAll(",", "").trim();
+    }
 
+    // Cím, ha már megvan az irányítószám és a város
+    if (returnObject.szallitoIrsz && returnObject.szallitoTelepules && !returnObject.szallitoCim) {
+      let cim = szoveg;
+      if (cim.trim() !== user.site) {
+        returnObject.szallitoCim = cim.trim();
+      }
     }
 
     return returnObject;
-  }
-
-  fromToString(keres: string, vizsgal: string): number[] {
-    let returnArray = [0, 0];
-    returnArray[0] = vizsgal.indexOf(keres);
-    returnArray[1] = returnArray[0] + keres.length;
-    return returnArray;
   }
 }
