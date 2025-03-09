@@ -14,7 +14,6 @@ export class loginRegisterGuard implements CanActivate {
     if (!this.auth.IsLoggenIn()) {
       return true;
     }
-    this.router.navigate(['/kezooldal'])
     return false;
   }
 }

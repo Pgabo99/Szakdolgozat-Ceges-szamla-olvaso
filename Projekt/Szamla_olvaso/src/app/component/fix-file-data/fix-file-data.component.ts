@@ -21,7 +21,6 @@ export class FixFileDataComponent {
     szallitoIrsz: new FormControl(0),
     szallitoTelepules: new FormControl(''),
     szallitoCim: new FormControl(''),
-    szallitoEgybe: new FormControl(''),
     fizKelt: new FormControl('', [Validators.required]),
     fizTeljesites: new FormControl('', [Validators.required]),
     fizHatarido: new FormControl(''),
@@ -30,6 +29,8 @@ export class FixFileDataComponent {
     brutto: new FormControl('', [Validators.required]),
     afa: new FormControl('')
   });
+
+  editing:Boolean;
 
   constructor(@Inject(MAT_DIALOG_DATA) public data: { fileData: Bills }, private fileService: FileService) {
     this.fixFileForm.setValue({
@@ -41,7 +42,6 @@ export class FixFileDataComponent {
       szallitoIrsz: data.fileData.szallitoIrsz as number,
       szallitoTelepules: data.fileData.szallitoTelepules as string,
       szallitoCim: data.fileData.szallitoCim as string,
-      szallitoEgybe: data.fileData.szallitoEgybe as string,
       fizKelt: data.fileData.fizKelt as string,
       fizTeljesites: data.fileData.fizTeljesites as string,
       fizHatarido: data.fileData.fizHatarido as string,
@@ -50,6 +50,7 @@ export class FixFileDataComponent {
       brutto: data.fileData.brutto as string,
       afa: data.fileData.afa as string
     });
+    this.editing = false;
   }
 
   fixFile() {
@@ -68,7 +69,6 @@ export class FixFileDataComponent {
         szallitoIrsz: this.fixFileForm.value.szallitoIrsz as number,
         szallitoTelepules: this.fixFileForm.value.szallitoTelepules as string,
         szallitoCim: this.fixFileForm.value.szallitoCim as string,
-        szallitoEgybe: this.data.fileData.szallitoEgybe,
         fizKelt: this.fixFileForm.value.fizKelt as string,
         fizTeljesites: this.fixFileForm.value.fizTeljesites as string,
         fizHatarido: this.fixFileForm.value.fizHatarido as string,
@@ -80,5 +80,9 @@ export class FixFileDataComponent {
       }
       this.fileService.updateFile(seged)
     }
+  }
+
+  changeEdit() {
+    this.editing = !this.editing;
   }
 }

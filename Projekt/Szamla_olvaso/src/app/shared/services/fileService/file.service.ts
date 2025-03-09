@@ -35,7 +35,6 @@ export class FileService {
 
   //Fajl feldolgozasa
   processingImage(szoveg: string, user: Users, fileName: string): Bills {
-    console.log(szoveg);
     let seged: Bills = {
       email: user.email,
       fajlNev: fileName,
@@ -46,7 +45,6 @@ export class FileService {
       szallitoIrsz: 0,
       szallitoTelepules: '',
       szallitoCim: '',
-      szallitoEgybe: '',
       fizKelt: '',
       fizTeljesites: '',
       fizHatarido: '',
@@ -62,11 +60,12 @@ export class FileService {
     let fizEgysor = false;
     let tartalomBool = false;
     let legelejeB = true;
+    let legelejeString = "";
 
     let indexek: { word: string; index: number; }[];
     darabok.forEach(element => {
       let vizsgal = element.toLowerCase();
-      if (seged.szamlaszam == "" && legelejeB && vizsgal.indexOf("számla") == -1)
+      if (seged.szamlaszam == "" && legelejeB && vizsgal.indexOf("számla") == -1 && vizsgal.indexOf("szállító") == -1 && vizsgal.indexOf("vevó") == -1)
         seged.szamlaszam = element
       if (fizEgysor) {
         fizEgysor = false;
@@ -171,8 +170,9 @@ export class FileService {
         eleje = true;
         legelejeB = false;
       }
-      if (vizsgal.indexOf("összes") != -1 || vizsgal.indexOf("Összes") != -1 || vizsgal.indexOf("értékesítés") != -1) {
+      if (vizsgal.indexOf("összes") != -1 || vizsgal.indexOf("Összes") != -1 || vizsgal.indexOf("értékesítés") != -1 || vizsgal.indexOf("érték") != -1) {
         let result = element.replaceAll(" ", "").replaceAll("-", "").replace(/^[^0-9]+/, "");
+
         if (vizsgal.indexOf("27") != -1) {
           result = element.replaceAll(" ", "").replaceAll("-", "").replace(/[^0-9]+/, "").replace(/^[^0-9]+/, "");
         }
@@ -211,10 +211,22 @@ export class FileService {
       }
       if (tartalomBool)
         seged.tartalom += element + '\n';
+      seged = this.szallitoAdatokFeld2(user, element, vizsgal, seged);
 
+      if (seged.szallitoNev === "") {
+        if (seged.szallitoAdo !== "" || seged.szallitoCim !== "" || seged.szallitoIrsz !== 0 || seged.szallitoTelepules !== "") {
+          seged.szallitoNev = legelejeString.split('\n')[legelejeString.split('\n').length - 2];
+        } else {
+          legelejeString += element + '\n';
+        }
+      }
+      seged = this.fizmod(vizsgal, seged);
+      seged = this.fizIdo(vizsgal, seged);
     });
     let szallitoDarabok = szallitoAdatok.split('\n');
-    seged.szallitoNev = szallitoDarabok[0];
+    if (seged.szallitoNev === '' || seged.szallitoNev.toLocaleLowerCase().includes(user.companyName.toLocaleLowerCase())) {
+      seged.szallitoNev = szallitoDarabok[0];
+    }
     szallitoDarabok.forEach(element => {
       let vizsgal = element.toLowerCase();
       if (vizsgal.indexOf("adószám") != -1 && seged.szallitoAdo == "" && vizsgal.indexOf("eu") == -1 && vizsgal.indexOf("hu") == -1) {
@@ -232,31 +244,33 @@ export class FileService {
           else
             seged.szallitoTelepules = cimDarabok[1].trim();
           let index = 2;
-          while (index < cimDarabok.length) {
-            seged.szallitoCim += cimDarabok[index] + ' '
-            index++;
+          if (seged.szallitoCim === '') {
+            while (index < cimDarabok.length) {
+              seged.szallitoCim += cimDarabok[index] + ' '
+              index++;
+            }
+            seged.szallitoCim = seged.szallitoCim.trim();
           }
-          seged.szallitoCim = seged.szallitoCim.trim();
         }
       }
-
     })
-    seged.szallitoEgybe = szallitoAdatok;
-    console.log(seged)
+    seged = this.penzFeld(seged);
+    seged = this.fizIdoNotFound(seged);
     this.addFiles(seged)
 
     return seged;
   }
 
   szallitoAdatokFeld(user: Users, szoveg: string, vizsgal: string): string {
-    let returnsString = "";
+    let returnString = "";
     var meddig = szoveg.length;
+    let siteRegex = /\d\d\d\d\s+[A-Za-z]+, ([A-Za-z0-9]+( [A-Za-z0-9]+)+)\./i;
     if (vizsgal.indexOf(user.companyName.toLowerCase()) != -1 && meddig == szoveg.length) {
       meddig = vizsgal.indexOf(user.companyName.toLowerCase());
     }
     if (vizsgal.indexOf(user.taxNumber) != -1 && meddig == szoveg.length) {
       meddig = vizsgal.indexOf(user.taxNumber.toLowerCase());
-      let adoszamhely = vizsgal.lastIndexOf("adószám");
+      let adoszamhely = vizsgal.lastIndexOf("adoszam");
       if (adoszamhely != -1 && meddig - adoszamhely - 7 < 3) {
         meddig = adoszamhely;
       }
@@ -286,7 +300,173 @@ export class FileService {
       }
     }
 
-    returnsString += szoveg.substring(0, meddig);
-    return returnsString;
+    if (returnString === "")
+      returnString += szoveg.substring(0, meddig);
+    return returnString;
+  }
+
+  szallitoAdatokFeld2(user: Users, szoveg: string, vizsgal: string, returnObject: Bills): Bills {
+    vizsgal = vizsgal.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+    // Adószám
+    const taxNumberRegex = /\b\d{8}-\d-\d{2}\b/;
+    if (returnObject.szallitoAdo === '' && taxNumberRegex.test(szoveg.replace(/\s+/g, ""))) {
+      let taxNumber = szoveg.match(taxNumberRegex);
+      if (taxNumber && taxNumber[0].replaceAll(" ", "").trim() !== user.taxNumber) {
+        returnObject.szallitoAdo = taxNumber[0].replaceAll(" ", "").trim();
+      }
+    }
+
+    if (!returnObject.szallitoCim) {
+      // Cím, ha már megvan az irányítószám és a város
+      if (returnObject.szallitoIrsz !== 0 && returnObject.szallitoTelepules !== '') {
+        let cim = szoveg;
+        if (cim.trim() !== user.site) {
+          returnObject.szallitoCim = cim.trim();
+        }
+      }
+
+      // Irányítószám Város, Irányítószám Város, Cím
+      const irszVarosSiteRegex = /\d\d\d8\s+[A-Za-z]+/i;
+      const fullSiteRegex = /\d\d\d\d\s+[A-Za-z]+, ([A-Za-z0-9]+( [A-Za-z0-9]+)+)\./i;
+      if (fullSiteRegex.test(vizsgal)) {
+        let irszam = szoveg.match(/\d{4}\s/g);
+        let varosFromTo = this.fromToString(vizsgal.split(irszam + "")[1].match(/[A-Za-z]+,/g)![0], vizsgal);
+        let cim = szoveg.split(szoveg.substring(varosFromTo[0], varosFromTo[1]) + "")[1].trim();
+        if (!cim.includes(user.site)) {
+          returnObject.szallitoIrsz = irszam![0].replaceAll(" ", "").trim() as unknown as number;
+          returnObject.szallitoTelepules = szoveg.substring(varosFromTo[0], varosFromTo[1]).replaceAll(" ", "").replaceAll(",", "").trim();
+          returnObject.szallitoCim = cim;
+        }
+      } else if (irszVarosSiteRegex.test(szoveg)) {
+        let irszam = szoveg.match(/\d{4}\s/g);
+        let varosFromTo = this.fromToString(szoveg.split(irszam + "")[1].match(/[A-Za-z]/g)![0], vizsgal);
+        returnObject.szallitoCim = irszam![0].replaceAll(" ", "").trim();
+        returnObject.szallitoTelepules = szoveg.substring(varosFromTo[0], varosFromTo[1]).replaceAll(" ", "").replaceAll(",", "").trim();
+      }
+
+    }
+
+    return returnObject;
+  }
+
+  penzFeld(returnObject: Bills): Bills {
+    returnObject.brutto = returnObject.brutto.replace(/\D/g, '');
+    returnObject.netto = returnObject.netto.replace(/\D/g, '');
+    returnObject.afa = returnObject.afa.replace(/\D/g, '');
+    if (returnObject.netto !== '') {
+      if (returnObject.afa === '') {
+        returnObject.afa = Math.round(parseInt(returnObject.netto, 10) * 0.27) as unknown as string;
+      }
+      if (returnObject.brutto === '') {
+        returnObject.brutto = Math.round(parseInt(returnObject.netto, 10) + parseInt(returnObject.afa, 10)) as unknown as string;
+      }
+    }
+    if (returnObject.brutto !== '') {
+      if (returnObject.netto === '') {
+        returnObject.netto = Math.round(parseInt(returnObject.brutto, 10) / 1.27) as unknown as string;
+      }
+      if (returnObject.afa === '') {
+        returnObject.afa = Math.round(parseInt(returnObject.brutto, 10) - parseInt(returnObject.netto, 10)) as unknown as string;
+      }
+    }
+
+    if (returnObject.afa !== '') {
+      if (returnObject.netto === '') {
+        returnObject.netto = Math.round(parseInt(returnObject.afa, 10) / 0.27) as unknown as string;
+      }
+      if (returnObject.brutto === '') {
+        returnObject.afa = Math.round(parseInt(returnObject.netto, 10) + parseInt(returnObject.afa, 10)) as unknown as string;
+      }
+    }
+    return returnObject;
+  }
+
+  fromToString(keres: string, vizsgal: string): number[] {
+    let returnArray = [0, 0];
+    returnArray[0] = vizsgal.indexOf(keres);
+    returnArray[1] = returnArray[0] + keres.length;
+    return returnArray;
+  }
+
+  fizmod(vizsgal: string, returnObject: Bills): Bills {
+    vizsgal = vizsgal.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+    if (vizsgal.includes('keszpenz')) {
+      returnObject.fizMod = 'Készpénz';
+    }
+    if (vizsgal.includes('atutalas')) {
+      returnObject.fizMod = 'Átutalás';
+    }
+    if (vizsgal.includes('bankkartya')) {
+      returnObject.fizMod = 'Bankkártya';
+    }
+    if (vizsgal.includes('csekk')) {
+      returnObject.fizMod = 'Csekk';
+    }
+    if (vizsgal.includes('utanvet')) {
+      returnObject.fizMod = 'Utánvét';
+    }
+    return returnObject;
+  }
+
+  fizIdo(vizsgal: string, returnObject: Bills): Bills {
+    vizsgal = vizsgal.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replaceAll(' ', '').replaceAll(',', '.');
+
+    const dateRegex = /\d\d\d\d\.\d\d\.\d\d\./;
+    if (dateRegex.test(vizsgal.replace(/\s+/g, ""))) {
+      let dates = vizsgal.match(dateRegex);
+      if (dates) {
+        if (dates[0]) {
+          returnObject.fizTeljesites = dates[0];
+        }
+        if (dates[1]) {
+          returnObject.fizKelt = dates[1];
+        }
+        if (dates[2]) {
+          returnObject.fizHatarido = dates[2];
+        }
+      }
+    }
+
+    return returnObject;
+  }
+
+  fizIdoNotFound(returnObject: Bills): Bills {
+    if (returnObject.fizTeljesites) {
+      returnObject.fizTeljesites = returnObject.fizTeljesites.replaceAll(',', '.').trim();
+      if (returnObject.fizTeljesites[returnObject.fizTeljesites.length-1] !== '.') {
+        returnObject.fizTeljesites += '.'
+      }
+      if (!returnObject.fizHatarido) {
+        returnObject.fizHatarido = returnObject.fizTeljesites;
+      }
+      if (!returnObject.fizKelt) {
+        returnObject.fizKelt = returnObject.fizTeljesites;
+      }
+    }
+    if (returnObject.fizHatarido) {
+      returnObject.fizHatarido = returnObject.fizHatarido.replaceAll(',', '.').trim();
+      if (returnObject.fizHatarido[returnObject.fizHatarido.length-1] !== '.') {
+        returnObject.fizHatarido += '.'
+      }
+      if (!returnObject.fizTeljesites) {
+        returnObject.fizTeljesites = returnObject.fizHatarido;
+      }
+      if (!returnObject.fizKelt) {
+        returnObject.fizKelt = returnObject.fizHatarido;
+      }
+    }
+    if (returnObject.fizKelt) {
+      returnObject.fizKelt = returnObject.fizKelt.replaceAll(',', '.').trim();
+      if (returnObject.fizKelt[returnObject.fizKelt.length-1] !== '.') {
+        returnObject.fizKelt += '.'
+      }
+      if (!returnObject.fizTeljesites) {
+        returnObject.fizTeljesites = returnObject.fizKelt;
+      }
+      if (!returnObject.fizHatarido) {
+        returnObject.fizHatarido = returnObject.fizKelt;
+      }
+    }
+    return returnObject;
   }
 }

@@ -109,31 +109,33 @@ export class UploadFileComponent implements OnInit, OnDestroy {
 
           const formData = new FormData();
           formData.append('file', event.target.files[0]);
-
           this.http.post('http://localhost:3000/processPDF', formData).subscribe({
             next: (response) => {
-              if ('text' in response && typeof (response["text"]) === "string" && response["text"].replaceAll(' ', '').replaceAll("\n", "").replaceAll("\t", "").replaceAll("\v", "") !== "") {
-                console.log('Sikeres feltöltés:', response["text"].replaceAll(' ', '').replaceAll("/n", ""));
-                this.fileService.processingImage(response["text"] as string, this.loggenUser!, input.name)
-              } else if ('images' in response && Array.isArray(response['images']) && 'path' in response['images'][0]) {
-                const imagePath = response['images'][0]['path'];
-                const uploadTask = this.imageUploadService.uploadBill(imagePath, path)
-                console.log('Kép elérési út:', imagePath);
-                // event.target.files[0]=path;
-                this.http.get(`http://localhost:3000/images/${imagePath}`, { responseType: 'blob' }).subscribe({
-                  next: (blob) => {
-                    const file = new File([blob], event.target.files[0].name, { type: "image/png" });
+              if ('type' in response) {
+                if (response.type === 'text' && 'content' in response && typeof response.content === 'string' && response.content.replaceAll(' ', '').replaceAll("\n", "").replaceAll("\t", "").replaceAll("\v", "") !== "") {
+                  const bill: Bills = this.fileService.processingImage(response.content as string, this.loggenUser!, input.name)
+                  const dialogRef = this.dialog.open(FixFileDataComponent, {
+                    data: { fileData: bill as Bills },
+                    width: '95%',
+                    height: '95%'
+                  });
+                } else if (response.type === 'path' && 'images' in response && Array.isArray(response.images)) {
+                  const imagePath = response.images[0]['path'];
+                  this.http.get(`http://localhost:3000/images/${imagePath}`, { responseType: 'blob' }).subscribe({
+                    next: (blob) => {
+                      const file = new File([blob], event.target.files[0].name, { type: "image/png" });
 
-                    // Meghívjuk a processImage függvényt a letöltött fájllal
-                    this.processImage(file);
-                  },
-                  error: (error) => console.error('Hiba a kép letöltésekor:', error)
-                });
+                      // Meghívjuk a processImage függvényt a letöltött fájllal
+
+                      this.processImage(file);
+                    },
+                    error: (error) => console.error('Hiba a kép letöltésekor:', error)
+                  });
+                }
               }
             },
             error: (error) => console.error('Hiba történt:', error)
           });
-          this.feltolt = false;
 
         } else {
           this.processImage(event.target.files[0]);
@@ -152,6 +154,7 @@ export class UploadFileComponent implements OnInit, OnDestroy {
         this.feltolt = false;
       }
     }
+    this.feltolt = false;
   }
 
   processImage(image: File) {

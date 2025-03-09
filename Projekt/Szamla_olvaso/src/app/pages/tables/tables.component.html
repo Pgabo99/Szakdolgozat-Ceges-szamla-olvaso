@@ -10,90 +10,103 @@
             <li><a class="dropdown-item" (click)="exportToText()">Szöveg - txt</a></li>
         </ul>
     </div>
-    <div class="table-container mat-elevation-z8">
-        <table mat-table [dataSource]="dataSource" class=" table-responsive" matSort>
+    <div class="table-container">
+        <table mat-table [dataSource]="dataSource" matSort (matSortChange)="announceSortChange($event)"
+            class="mat-elevation-z8 table-responsive">
             <caption style="caption-side:bottom">Szerkesztéshez kattints a szerkesztendő sorba</caption>
             <!-- Fájlneve Column -->
             <ng-container matColumnDef="fajlNev">
-                <th mat-header-cell *matHeaderCellDef> Fájl neve </th>
+                <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by fajlNev"> Fájl neve
+                </th>
                 <td mat-cell *matCellDef="let element"> {{element.fajlNev}} </td>
             </ng-container>
 
             <!-- Számlaszám Column -->
             <ng-container matColumnDef="szamlaszam">
-                <th mat-header-cell *matHeaderCellDef> Számlaszám </th>
+                <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by szamlaszam">
+                    Számlaszám </th>
                 <td mat-cell *matCellDef="let element"> {{element.szamlaszam}} </td>
             </ng-container>
 
             <!-- Szállító Név Column -->
             <ng-container matColumnDef="szallitoNev">
-                <th mat-header-cell *matHeaderCellDef> Szállító név </th>
+                <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by szallitoNev">
+                    Szállító név </th>
                 <td mat-cell *matCellDef="let element"> {{element.szallitoNev}} </td>
             </ng-container>
 
             <!-- Szállító Adó Column -->
             <ng-container matColumnDef="szallitoAdo">
-                <th mat-header-cell *matHeaderCellDef> Szállító Adószám </th>
+                <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by szallitoAdo">
+                    Szállító Adószám </th>
                 <td mat-cell *matCellDef="let element"> {{element.szallitoAdo}} </td>
             </ng-container>
 
             <!-- Szallito Irsz Column -->
             <ng-container matColumnDef="szallitoIrsz">
-                <th mat-header-cell *matHeaderCellDef> Szállító Irsz </th>
+                <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by szallitoIrsz">
+                    Szállító Irsz </th>
                 <td mat-cell *matCellDef="let element"> {{element.szallitoIrsz}} </td>
             </ng-container>
 
             <!-- Szallito Település Column -->
             <ng-container matColumnDef="szallitoTelepules">
-                <th mat-header-cell *matHeaderCellDef> Szállító Település </th>
+                <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by szallitoTelepules">
+                    Szállító Település </th>
                 <td mat-cell *matCellDef="let element"> {{element.szallitoTelepules}} </td>
             </ng-container>
 
             <!-- Szallito Cím Column -->
             <ng-container matColumnDef="szallitoCim">
-                <th mat-header-cell *matHeaderCellDef> Szállító Cím </th>
+                <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by szallitoCim">
+                    Szállító Cím </th>
                 <td mat-cell *matCellDef="let element"> {{element.szallitoCim}} </td>
             </ng-container>
 
             <!-- Számla kelte Column -->
             <ng-container matColumnDef="fizKelt">
-                <th mat-header-cell *matHeaderCellDef> Számla kelte </th>
+                <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by fizKelt"> Számla
+                    kelte </th>
                 <td mat-cell *matCellDef="let element"> {{element.fizKelt}} </td>
             </ng-container>
 
             <!-- Fizetési Teljesítés Column -->
             <ng-container matColumnDef="fizTeljesites">
-                <th mat-header-cell *matHeaderCellDef> Fizetési Teljesítés </th>
+                <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by fizTeljesites">
+                    Fizetési Teljesítés </th>
                 <td mat-cell *matCellDef="let element"> {{element.fizTeljesites}} </td>
             </ng-container>
 
             <!-- Fizetési Határidő Column -->
             <ng-container matColumnDef="fizHatarido">
-                <th mat-header-cell *matHeaderCellDef> Fizetési Határidő </th>
+                <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by fizHatarido">
+                    Fizetési Határidő </th>
                 <td mat-cell *matCellDef="let element"> {{element.fizHatarido}} </td>
             </ng-container>
 
             <!-- Fizetési Mód Column -->
             <ng-container matColumnDef="fizMod">
-                <th mat-header-cell *matHeaderCellDef> Fizetési Mód </th>
+                <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by fizMod"> Fizetési
+                    Mód </th>
                 <td mat-cell *matCellDef="let element"> {{element.fizMod}} </td>
             </ng-container>
 
             <!-- Nettó Column -->
             <ng-container matColumnDef="netto">
-                <th mat-header-cell *matHeaderCellDef> Nettó </th>
+                <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by netto"> Nettó </th>
                 <td mat-cell *matCellDef="let element"> {{element.netto}} </td>
             </ng-container>
 
             <!-- Bruttó Column -->
             <ng-container matColumnDef="brutto">
-                <th mat-header-cell *matHeaderCellDef> Bruttó </th>
+                <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by brutto"> Bruttó
+                </th>
                 <td mat-cell *matCellDef="let element"> {{element.brutto}} </td>
             </ng-container>
 
             <!-- Áfa Column -->
             <ng-container matColumnDef="afa">
-                <th mat-header-cell *matHeaderCellDef> Áfa </th>
+                <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by afa"> Áfa </th>
                 <td mat-cell *matCellDef="let element"> {{element.afa}} </td>
             </ng-container>
 

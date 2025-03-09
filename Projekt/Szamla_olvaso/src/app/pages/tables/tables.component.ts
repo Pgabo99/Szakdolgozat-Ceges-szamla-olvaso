@@ -1,26 +1,27 @@
-import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { AuthService } from '../../shared/services/userService/auth.service';
 import { MatDialog } from '@angular/material/dialog';
+import { MatSort, Sort, MatSortModule } from '@angular/material/sort';
 import { UserInfoService } from '../../shared/services/userService/user-info.service';
 import { Observable, Subscription } from 'rxjs';
 import { Users } from '../../shared/classes/Users';
 import * as Bill from '../../shared/classes/Bill';
 import { UploadedFile } from '../../shared/classes/uploaded-file';
-import { MatTableDataSource } from '@angular/material/table';
-import { MatSort } from '@angular/material/sort';
+import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { TableColumnsComponent } from '../../component/table-columns/table-columns.component';
 import { FixFileDataComponent } from '../../component/fix-file-data/fix-file-data.component';
 import { ExportService } from '../../shared/services/exportService/export.service';
 import { FileService } from '../../shared/services/fileService/file.service';
+import { LiveAnnouncer } from '@angular/cdk/a11y';
 
 @Component({
   selector: 'app-tables',
   templateUrl: './tables.component.html',
-  styleUrl: './tables.component.scss'
+  styleUrl: './tables.component.scss',
 })
 
 export class TablesComponent implements OnInit, OnDestroy, AfterViewInit {
-
+  private _liveAnnouncer = inject(LiveAnnouncer);
   private subscriptions = new Subscription();
   user$: Observable<any>;
   loggenUser?: Users;
@@ -90,7 +91,6 @@ export class TablesComponent implements OnInit, OnDestroy, AfterViewInit {
         szallitoIrsz: data2[0].szallitoIrsz,
         szallitoTelepules: data2[0].szallitoTelepules,
         szallitoCim: data2[0].szallitoCim,
-        szallitoEgybe: data2[0].szallitoEgybe,
         fizKelt: data2[0].fizKelt,
         fizTeljesites: data2[0].fizTeljesites,
         fizHatarido: data2[0].fizHatarido,
@@ -143,11 +143,19 @@ export class TablesComponent implements OnInit, OnDestroy, AfterViewInit {
   ngOnInit(): void {
   }
 
-  ngAfterViewInit(): void {
+  ngOnDestroy(): void {
+    this.subscriptions.unsubscribe();
+  }
+
+  ngAfterViewInit() {
     this.dataSource.sort = this.sort;
   }
 
-  ngOnDestroy(): void {
-    this.subscriptions.unsubscribe();
+  announceSortChange(sortState: Sort) {
+    if (sortState.direction) {
+      this._liveAnnouncer.announce(`Sorted ${sortState.direction}ending`);
+    } else {
+      this._liveAnnouncer.announce('Sorting cleared');
+    }
   }
 }

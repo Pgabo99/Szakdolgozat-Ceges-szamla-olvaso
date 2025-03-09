@@ -13,7 +13,6 @@ export interface Bills {
     szallitoIrsz: number,
     szallitoTelepules: string,
     szallitoCim: string,
-    szallitoEgybe: string,
     fizKelt: string,
     fizTeljesites: string,
     fizHatarido: string,
