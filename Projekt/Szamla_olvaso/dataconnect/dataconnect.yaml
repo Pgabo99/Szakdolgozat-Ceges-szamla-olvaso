@@ -1,5 +1,5 @@
 specVersion: "v1beta"
-serviceId: "Szamla_olvaso"
+serviceId: "szamlaolvaso"
 location: "us-central1"
 schema:
   source: "./schema"
@@ -7,6 +7,6 @@ schema:
     postgresql:
       database: "fdcdb"
       cloudSql:
-        instanceId: "Szamla_olvaso-fdc"
+        instanceId: "szamlaolvaso-fdc"
       # schemaValidation: "COMPATIBLE"
 connectorDirs: ["./connector"]

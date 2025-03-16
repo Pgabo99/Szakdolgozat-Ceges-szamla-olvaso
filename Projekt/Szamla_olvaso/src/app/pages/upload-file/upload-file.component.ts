@@ -109,7 +109,7 @@ export class UploadFileComponent implements OnInit, OnDestroy {
 
           const formData = new FormData();
           formData.append('file', event.target.files[0]);
-          this.http.post('http://localhost:3000/processPDF', formData).subscribe({
+          this.http.post('https://szakdolgozat-ceges-szamla-olvaso-backend.onrender.com/processPDF', formData).subscribe({
             next: (response) => {
               if ('type' in response) {
                 if (response.type === 'text' && 'content' in response && typeof response.content === 'string' && response.content.replaceAll(' ', '').replaceAll("\n", "").replaceAll("\t", "").replaceAll("\v", "") !== "") {
@@ -121,7 +121,7 @@ export class UploadFileComponent implements OnInit, OnDestroy {
                   });
                 } else if (response.type === 'path' && 'images' in response && Array.isArray(response.images)) {
                   const imagePath = response.images[0]['path'];
-                  this.http.get(`http://localhost:3000/images/${imagePath}`, { responseType: 'blob' }).subscribe({
+                  this.http.get(`https://szakdolgozat-ceges-szamla-olvaso-backend.onrender.com/images/${imagePath}`, { responseType: 'blob' }).subscribe({
                     next: (blob) => {
                       const file = new File([blob], event.target.files[0].name, { type: "image/png" });
 

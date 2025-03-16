@@ -10,9 +10,16 @@
     "rules": "storage.rules"
   },
   "hosting": {
-    "public": "dist/szamla-olvaso/browser",
+    "public": "dist/szamla-olvaso",
     "ignore": [
-      "**/.*"
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
     ]
+  },
+  "emulators": {
+    "dataconnect": {
+      "dataDir": "dataconnect/.dataconnect/pgliteData"
+    }
   }
 }

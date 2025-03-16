@@ -22,6 +22,7 @@
     "@angular/platform-browser-dynamic": "^18.2.9",
     "@angular/router": "^18.2.9",
     "@firebasegen/default": "file:generated/javascript/default",
+    "@firebasegen/default-connector": "file:dataconnect-generated/js/default-connector",
     "bootstrap": "^5.3.3",
     "firebase": "^10.14.1",
     "gulp": "^5.0.0",
