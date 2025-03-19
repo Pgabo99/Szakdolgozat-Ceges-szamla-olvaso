@@ -16,5 +16,8 @@
         transform: translateY(-50%);
         width: 40px;
         height: auto;
+        @media screen and (max-width: 400px) {
+            width: 9vw;
+        }
     }
 }

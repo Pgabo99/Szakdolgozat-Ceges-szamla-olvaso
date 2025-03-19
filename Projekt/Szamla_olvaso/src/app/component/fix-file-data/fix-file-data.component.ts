@@ -1,5 +1,5 @@
 import { Component, Inject } from '@angular/core';
-import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Bills } from '../../shared/classes/Bill';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { FileService } from '../../shared/services/fileService/file.service';
@@ -32,7 +32,7 @@ export class FixFileDataComponent {
 
   editing:Boolean;
 
-  constructor(@Inject(MAT_DIALOG_DATA) public data: { fileData: Bills }, private fileService: FileService) {
+  constructor(@Inject(MAT_DIALOG_DATA) public data: { fileData: Bills }, private fileService: FileService, private dialogRef: MatDialogRef<FixFileDataComponent>) {
     this.fixFileForm.setValue({
       email: data.fileData.email as string,
       fajlNev: data.fileData.fajlNev as string,
@@ -54,9 +54,7 @@ export class FixFileDataComponent {
   }
 
   fixFile() {
-    if (this.fixFileForm.value.email == "" || this.fixFileForm.value.fajlNev == "" || this.fixFileForm.value.szamlaszam == "" ||
-      this.fixFileForm.value.szallitoNev == "" || this.fixFileForm.value.szallitoAdo == "" || this.fixFileForm.value.fizKelt == "" ||
-      this.fixFileForm.value.fizTeljesites == "" || this.fixFileForm.value.fizMod == "" || this.fixFileForm.value.brutto == "")
+    if (!this.fixFileForm.valid)
       alert("Kérlek tölts ki minden mezőt!");
     else {
       let seged: Bills = {
@@ -78,7 +76,8 @@ export class FixFileDataComponent {
         afa: this.fixFileForm.value.afa as string,
         tartalom: this.data.fileData.tartalom
       }
-      this.fileService.updateFile(seged)
+      this.fileService.updateFile(seged);
+      this.dialogRef.close();
     }
   }
 

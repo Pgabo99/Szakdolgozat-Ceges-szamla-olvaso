@@ -19,8 +19,8 @@
             <!-- Jelszó mező -->
             <mat-form-field appearance="outline">
                 <mat-label>Jelszó</mat-label>
-                <input formControlName="password" matInput>
-                <mat-icon (click)="hidePassword=!hidePassword" matSuffix>{{hidePassword
+                <input formControlName="password" matInput [type]="hidePasswordLogin?'password':'text'">
+                <mat-icon (click)="hidePasswordLogin=!hidePasswordLogin" matSuffix>{{hidePasswordLogin
                     ?'visibility_off':'visibility_on'}}</mat-icon>
                 <mat-error *ngIf="loginForm.controls['password'].hasError('required')">
                     Nem adtál meg jelszót!

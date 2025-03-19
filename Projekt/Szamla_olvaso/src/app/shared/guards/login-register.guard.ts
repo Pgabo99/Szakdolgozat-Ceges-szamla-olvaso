@@ -11,9 +11,11 @@ export class loginRegisterGuard implements CanActivate {
   constructor(private auth: AuthService, private router: Router) { }
 
   canActivate() {
-    if (!this.auth.IsLoggenIn()) {
-      return true;
+    if (this.auth.IsLoggenIn().valueOf()) {
+      this.router.navigate(['/kezdooldal']);
+      return false;
     }
-    return false;
+    return true;
   }
+
 }

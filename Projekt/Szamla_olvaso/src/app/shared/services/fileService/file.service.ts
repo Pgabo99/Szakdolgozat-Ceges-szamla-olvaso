@@ -22,6 +22,11 @@ export class FileService {
     return this.angularFirestore.collection<Bills>('/Files', ref => ref.where('fajlNev', '==', fileName).where('email', '==', email)).valueChanges();
   }
 
+  //File lekérése
+  getFileByEmail(email: string) {
+    return this.angularFirestore.collection<Bills>('/Files', ref => ref.where('email', '==', email)).valueChanges();
+  }
+
   //File adatainak frissítése
   updateFile(file: Bills) {
     return this.angularFirestore.collection('Files', (ref) => ref.where('fajlNev', '==', file.fajlNev).where('email', '==', file.email)).get().subscribe(

@@ -1,6 +1,6 @@
 import { Component, Inject } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { UserInfoService } from '../../shared/services/userService/user-info.service';
 import { Users } from '../../shared/classes/Users';
 
@@ -24,29 +24,26 @@ export class AddProfileComponent {
     site: new FormControl('', [Validators.required])
   });
 
-  constructor(@Inject(MAT_DIALOG_DATA) public data: { userEmail: string }, private userService: UserInfoService) {
+  constructor(@Inject(MAT_DIALOG_DATA) public data: { userEmail: string }, private userService: UserInfoService, private dialogRef: MatDialogRef<AddProfileComponent>) {
     this.addProfileForm.setValue({ email: this.data.userEmail as string, name: '', companyName: '', phoneNumber: '', taxNumber: '', country: '', zipCode: '0', city: '', site: '' });
   }
 
   addUser() {
-    if (this.addProfileForm.value.companyName == '' || this.addProfileForm.value.taxNumber == '' || this.addProfileForm.value.country == '' || this.addProfileForm.value.zipCode == '0' || this.addProfileForm.value.city == '' || this.addProfileForm.value.site == '') {
-      alert('Nem adtál meg minden adatot');
-      return;
+    if (this.addProfileForm.valid) {
+      let profile: Users = {
+        email: this.addProfileForm.value.email as string,
+        name: this.addProfileForm.value.name as string,
+        companyName: this.addProfileForm.value.companyName as string,
+        phoneNumber: this.addProfileForm.value.phoneNumber as string,
+        taxNumber: this.addProfileForm.value.taxNumber as string,
+        country: this.addProfileForm.value.country as string,
+        zipCode: this.addProfileForm.value.zipCode as unknown as number,
+        city: this.addProfileForm.value.city as string,
+        site: this.addProfileForm.value.site as string,
+        files: {}
+      }
+      this.userService.addUser(profile);
+      this.dialogRef.close();
     }
-
-    let profile: Users = {
-      email: this.addProfileForm.value.email as string,
-      name: this.addProfileForm.value.name as string,
-      companyName: this.addProfileForm.value.companyName as string,
-      phoneNumber: this.addProfileForm.value.phoneNumber as string,
-      taxNumber: this.addProfileForm.value.taxNumber as string,
-      country: this.addProfileForm.value.country as string,
-      zipCode: this.addProfileForm.value.zipCode as unknown as number,
-      city: this.addProfileForm.value.city as string,
-      site: this.addProfileForm.value.site as string,
-      files: {}
-    }
-
-    this.userService.addUser(profile);
   }
 }

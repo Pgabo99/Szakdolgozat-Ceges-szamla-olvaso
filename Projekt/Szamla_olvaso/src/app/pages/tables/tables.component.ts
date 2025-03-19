@@ -46,63 +46,44 @@ export class TablesComponent implements OnInit, OnDestroy, AfterViewInit {
   displayedColumns = this.columns.filter((c) => c.show).map((c) => c.name);
   dataSource = new MatTableDataSource<Bill.Bills>();
   dataSourceFiles!: UploadedFile[];
-  dataSource2!: Bill.Bills[];
+  dataSource2: Bill.Bills[] = [];
 
   @ViewChild(MatSort) sort!: MatSort;
 
   constructor(private authService: AuthService, private dialog: MatDialog, private userService: UserInfoService, private fileService: FileService, private exportService: ExportService) {
     this.user$ = this.authService.currentUser$;
-
-    this.subscriptions.add(this.userService.getUserByEmail(this.authService.getUserEmail() as string).subscribe(data => {
-      if (data[0] != null) {
-        this.loggenUser = data[0];
-        if (this.loggenUser.files) {
-          let count = Object.keys(this.loggenUser.files).length;
-          this.dataSourceFiles = new Array(count);
-          this.dataSource2 = new Array(count);
-          for (let key in this.loggenUser.files) {
-            if (count != 0) {
-              if (this.loggenUser.files.hasOwnProperty(key)) {
-                const seged = {
-                  url: key || 'default-url',
-                  fileName: this.loggenUser.files[key].fileName,
-                  uploadDate: this.loggenUser.files[key].uploadDate
-                }
-                count--;
-                this.dataSourceFiles[count] = (seged);
-                this.getFileByFileName(seged.fileName, this.loggenUser.email, count)
-              }
-            }
-          }
-        }
-      }
-    }))
+    this.getFileByFileName(this.authService.getUserEmail() as string);
   }
 
-  getFileByFileName(fileName: string, email: string, count: number) {
-    (this.fileService.getFileByName(fileName, email)).subscribe(data2 => {
-      const seged2 = {
-        email: data2[0].email,
-        fajlNev: data2[0].fajlNev,
-        szamlaszam: data2[0].szamlaszam,
-        tipus: data2[0].tipus,
-        szallitoNev: data2[0].szallitoNev,
-        szallitoAdo: data2[0].szallitoAdo,
-        szallitoIrsz: data2[0].szallitoIrsz,
-        szallitoTelepules: data2[0].szallitoTelepules,
-        szallitoCim: data2[0].szallitoCim,
-        fizKelt: data2[0].fizKelt,
-        fizTeljesites: data2[0].fizTeljesites,
-        fizHatarido: data2[0].fizHatarido,
-        fizMod: data2[0].fizMod,
-        netto: data2[0].netto,
-        brutto: data2[0].brutto,
-        afa: data2[0].afa,
-        tartalom: data2[0].tartalom
-      }
-
-      this.dataSource2[count] = seged2;
+  getFileByFileName(email: string) {
+   
+    console.log(this.dataSource2);
+    (this.fileService.getFileByEmail(email)).subscribe(data2 => {
+      this.dataSource2 = [];
+      data2.forEach(element => {
+        const seged2 = {
+          email: element.email,
+          fajlNev: element.fajlNev,
+          szamlaszam: element.szamlaszam,
+          tipus: element.tipus,
+          szallitoNev: element.szallitoNev,
+          szallitoAdo: element.szallitoAdo,
+          szallitoIrsz: element.szallitoIrsz,
+          szallitoTelepules: element.szallitoTelepules,
+          szallitoCim: element.szallitoCim,
+          fizKelt: element.fizKelt,
+          fizTeljesites: element.fizTeljesites,
+          fizHatarido: element.fizHatarido,
+          fizMod: element.fizMod,
+          netto: element.netto,
+          brutto: element.brutto,
+          afa: element.afa,
+          tartalom: element.tartalom
+        }
+        this.dataSource2.push(seged2);
+      });
       this.dataSource.data = this.dataSource2;
+      this.dataSource._updateChangeSubscription();
     })
   }
 

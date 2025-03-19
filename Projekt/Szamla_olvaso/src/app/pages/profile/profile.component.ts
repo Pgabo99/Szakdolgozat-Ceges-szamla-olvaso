@@ -11,6 +11,7 @@ import { ChangeProfileComponent } from '../../component/change-profile/change-pr
 import { Users } from '../../shared/classes/Users';
 import { UserInfoService } from '../../shared/services/userService/user-info.service';
 import { AddProfileComponent } from '../../component/add-profile/add-profile.component';
+import { catchError } from 'rxjs/operators';
 
 @Component({
   selector: 'app-profile',
@@ -93,17 +94,18 @@ export class ProfileComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   fetchDownloadURL() {
-    this.user$.subscribe(user => {
-      if (user) {
-        const filePath = `images/profile/${user.uid}`; // A fájl tárolási útvonala
-
-        this.imageUploadService.getFileDownloadURL(filePath).subscribe(url => {
-          this.downloadURL = url; // A letöltési URL tárolása
-        });
-      } else {
-        console.log('A felhasználó nem elérhető.');
-      }
-    });
+   this.user$.subscribe(user => {
+         if (user) {
+           const filePath = `images/profile/${user.uid}`;
+           this.imageUploadService.getFileDownloadURL(filePath).pipe(
+             catchError(error => {
+               return this.imageUploadService.getFileDownloadURL('background2.png');
+             })
+           ).subscribe(url => {
+             this.downloadURL = url;
+           });
+         }
+       });
   }
   async resetPassword() {
     if (this.profileForm.value.email == '') {

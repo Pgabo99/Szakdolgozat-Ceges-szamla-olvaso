@@ -10,7 +10,7 @@
             <li><a class="dropdown-item" (click)="exportToText()">Szöveg - txt</a></li>
         </ul>
     </div>
-    <div class="table-container">
+    <div class="table-container" *ngIf="!!dataSource.data">
         <table mat-table [dataSource]="dataSource" matSort (matSortChange)="announceSortChange($event)"
             class="mat-elevation-z8 table-responsive">
             <caption style="caption-side:bottom">Szerkesztéshez kattints a szerkesztendő sorba</caption>

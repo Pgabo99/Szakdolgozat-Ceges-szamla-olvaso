@@ -11,20 +11,22 @@ import { Router } from '@angular/router';
 
 export class LoginComponent {
 
-  hidePassword: boolean = true;
+  hidePasswordLogin: boolean = true;
   loginForm: FormGroup = new FormGroup({
     email: new FormControl('', [Validators.required, Validators.email]),
     password: new FormControl('', Validators.required)
   });
 
   constructor(private authService: AuthService, private router: Router) {
+    if (this.authService.IsLoggenIn()) {
+      this.router.navigate(['/kezdooldal']);
+    }
   }
 
   loginWithGoogle() {
     this.authService.signInWithGoogle().then((res: any) => {
-      localStorage.setItem('token', 'true');
     })
-      .catch((error: any) => { console.error(error); })
+      .catch((error: any) => { alert('Sikertelen bejelentkezés') })
   }
 
   loginWithEmailAndPassword() {
@@ -38,9 +40,12 @@ export class LoginComponent {
     }
     const userData = Object.assign(this.loginForm.value);
     this.authService.signInWithEmailAndPassword(userData).then((res: any) => {
-      this.router.navigateByUrl('regisztracio');
+      if (res) {
+        localStorage.setItem('token', 'true');
+        this.router.navigateByUrl('/kezdooldal');
+      }
     })
-      .catch((error: any) => { alert("Sikertelen bejelentkezés"); })
+      .catch((error: any) => { alert('Sikertelen bejelentkezés') })
   }
 
   async ForgotPassword() {

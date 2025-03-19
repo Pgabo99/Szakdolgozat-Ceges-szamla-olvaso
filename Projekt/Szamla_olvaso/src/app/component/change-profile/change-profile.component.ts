@@ -1,6 +1,6 @@
 import { Component, Inject } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { Users } from '../../shared/classes/Users';
 import { UserInfoService } from '../../shared/services/userService/user-info.service';
@@ -25,7 +25,7 @@ export class ChangeProfileComponent {
     site: new FormControl('', [Validators.required])
   });
 
-  constructor(@Inject(MAT_DIALOG_DATA) public data: { user: Users }, private userService: UserInfoService, private router: Router) {
+  constructor(@Inject(MAT_DIALOG_DATA) public data: { user: Users }, private userService: UserInfoService, private router: Router, private dialogRef: MatDialogRef<ChangeProfileComponent>) {
     this.updateProfileForm.setValue({
       email: this.data.user.email as string,
       name: this.data.user.name,
@@ -40,19 +40,17 @@ export class ChangeProfileComponent {
   }
 
   updateUser() {
-    if (this.updateProfileForm.value.companyName == '' || this.updateProfileForm.value.taxNumber == '' || this.updateProfileForm.value.country == '' || this.updateProfileForm.value.zipCode == '0' || this.updateProfileForm.value.city == '' || this.updateProfileForm.value.site == '') {
-      alert('Nem adtál meg minden adatot');
-      return;
+    if (this.updateProfileForm.valid) {
+      this.data.user.name = this.updateProfileForm.value.name as string;
+      this.data.user.companyName = this.updateProfileForm.value.companyName as string;
+      this.data.user.phoneNumber = this.updateProfileForm.value.phoneNumber as string;
+      this.data.user.taxNumber = this.updateProfileForm.value.taxNumber as string;
+      this.data.user.country = this.updateProfileForm.value.country as string;
+      this.data.user.zipCode = this.updateProfileForm.value.zipCode as unknown as number;
+      this.data.user.city = this.updateProfileForm.value.city as string;
+      this.data.user.site = this.updateProfileForm.value.site as string;
+      this.userService.updateUser(this.data.user);
+      this.dialogRef.close()
     }
-
-    this.data.user.name = this.updateProfileForm.value.name as string;
-    this.data.user.companyName = this.updateProfileForm.value.companyName as string;
-    this.data.user.phoneNumber = this.updateProfileForm.value.phoneNumber as string;
-    this.data.user.taxNumber = this.updateProfileForm.value.taxNumber as string;
-    this.data.user.country = this.updateProfileForm.value.country as string;
-    this.data.user.zipCode = this.updateProfileForm.value.zipCode as unknown as number;
-    this.data.user.city = this.updateProfileForm.value.city as string;
-    this.data.user.site = this.updateProfileForm.value.site as string;
-    this.userService.updateUser(this.data.user);
   }
 }

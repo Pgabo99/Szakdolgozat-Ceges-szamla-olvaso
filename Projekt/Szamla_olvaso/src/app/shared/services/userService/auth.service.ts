@@ -28,11 +28,11 @@ export class AuthService {
       this.afs.authState.subscribe(auth => {
         if (auth) {
           this.userEmail$ = auth.email;
+          this.router.navigateByUrl('/kezdooldal');
         }
       });
     }).catch(error => {
-      console.error('Google sign-in error:', error);
-      alert('Google bejelentkezés sikertelen: ' + error.message);
+      alert('Google bejelentkezés sikertelen...');
       this.afs.signOut();
       localStorage.clear();
     });
@@ -41,11 +41,16 @@ export class AuthService {
   registerWithEmailAndPassword(user: { email: string, password: string }) {
     return this.afs.createUserWithEmailAndPassword(user.email, user.password)
       .then(() => {
-        alert('Regisztráció sikeres!');
+        this.afs.authState.subscribe(auth => {
+          if (auth) {
+            this.userEmail$ = auth.email;
+          }
+        });
+        localStorage.setItem('token', 'true');
+        this.router.navigateByUrl('/kezdooldal');
       })
       .catch((error) => {
-        console.error('Registration error:', error);
-        alert('Regisztráció sikertelen: ' + error.message);
+        alert('Regisztráció sikertelen... ');
       });
   }
 
@@ -59,10 +64,10 @@ export class AuthService {
             this.userEmail$ = auth.email;
           }
         });
+        this.router.navigateByUrl('/kezdooldal');
       })
       .catch((error) => {
-        console.error('Sign-in error:', error);
-        alert('Bejelentkezés sikertelen: ' + error.message);
+        alert('Bejelentkezés sikertelen...');
       });
   }
 
@@ -79,7 +84,7 @@ export class AuthService {
   }
 
   IsLoggenIn() {
-    return this.userEmail$ !== undefined || this.userEmail$ !== undefined;
+    return !!this.userEmail$ || !!localStorage.getItem('token');
   }
 
   deleteUser() {

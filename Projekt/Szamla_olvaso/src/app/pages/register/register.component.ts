@@ -20,14 +20,15 @@ export class RegisterComponent {
   });
 
   constructor(private authService: AuthService, private router: Router) {
+    if (this.authService.IsLoggenIn()) {
+      this.router.navigate(['/kezdooldal']);
+    }
   }
 
   loginWithGoogle() {
     this.authService.signInWithGoogle().then((res: any) => {
-      localStorage.setItem('token', 'true');
-      this.router.navigateByUrl('kezdooldal');
     })
-      .catch((error: any) => { console.error(error); })
+      .catch((error: any) => { alert('Sikertelen bejelentkezés')})
   }
 
   registerWithEmailAndPassword() {
@@ -50,8 +51,6 @@ export class RegisterComponent {
     else {
       const userData = Object.assign(this.registerForm.value);
       this.authService.registerWithEmailAndPassword(userData).then((res: any) => {
-        alert('Sikeres regisztráció!');
-        this.router.navigateByUrl('/bejelentkezes');
       })
         .catch((error: any) => { alert('Sikertelen regisztráció, próbálj meg másik emailt!'); })
     }

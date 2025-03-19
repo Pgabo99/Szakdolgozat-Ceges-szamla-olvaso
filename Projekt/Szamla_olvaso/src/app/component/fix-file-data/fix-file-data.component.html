@@ -1,7 +1,6 @@
 <div class="formClass">
     <form [formGroup]="fixFileForm" (submit)="fixFile()">
         <p class="title">Adatok áttekintése</p>
-        <p class="title-intro">Kérlek nézd át hogy jók e</p>
 
         <!-- Email mező -->
         <mat-form-field appearance="outline">
@@ -97,6 +96,6 @@
         <button mat-raised-button color="primary" type="button" (click)="changeEdit()" *ngIf='!editing'>Adatok módosítása</button>
         <button mat-raised-button color="primary" type="submit" *ngIf='editing'>Mentés</button>
         <button mat-raised-button color="secondary" type="button" (click)="changeEdit()" *ngIf='editing'>Mégse</button>
-        <button mat-raised-button color="primary" mat-dialog-close>Bezárás</button>
+        <button mat-raised-button color="primary" type="button" mat-dialog-close>Bezárás</button>
     </form>
 </div>

@@ -3,6 +3,7 @@ import { AuthService } from '../../shared/services/userService/auth.service';
 import { Observable } from 'rxjs';
 import { ProfileUploadService } from '../../shared/services/userService/profile-upload.service';
 import { Router } from '@angular/router';
+import { catchError } from 'rxjs/operators';
 
 export type MenuItem = {
   icon: string;
@@ -112,7 +113,11 @@ export class SidenavComponent implements OnInit, OnChanges {
     this.user$.subscribe(user => {
       if (user) {
         const filePath = `images/profile/${user.uid}`;
-        this.imageUploadService.getFileDownloadURL(filePath).subscribe(url => {
+        this.imageUploadService.getFileDownloadURL(filePath).pipe(
+          catchError(error => {
+            return this.imageUploadService.getFileDownloadURL('background2.png');
+          })
+        ).subscribe(url => {
           this.downloadURL = url;
         });
       }
@@ -120,6 +125,6 @@ export class SidenavComponent implements OnInit, OnChanges {
   }
 
   toProfile() {
-      this.router.navigateByUrl('profil')
+    this.router.navigateByUrl('profil')
   }
 }
