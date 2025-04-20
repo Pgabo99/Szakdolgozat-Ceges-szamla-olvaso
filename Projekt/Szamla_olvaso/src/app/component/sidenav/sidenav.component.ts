@@ -23,7 +23,7 @@ export class SidenavComponent implements OnInit, OnChanges {
   private subscriptions = new Subscription();
 
   user$: Observable<any>;
-  email;
+  email = '';
   downloadURL: string;
   companyName: string = "";
   fullname: string = "-";
@@ -89,16 +89,19 @@ export class SidenavComponent implements OnInit, OnChanges {
   constructor(private authService: AuthService, private imageUploadService: ProfileUploadService, private router: Router, private userService: UserInfoService) {
     this.user$ = this.authService.currentUser$;
     this.downloadURL = ""
-    this.email = this.authService.getUserEmail();
-
-    if (this.email) {
-      this.subscriptions.add(this.userService.getUserByEmail(this.email as string).subscribe(data => {
-        if (data[0] != null) {
-          this.companyName = data[0].companyName;
-          this.fullname = data[0].name;
-        }
-      }));
-    }
+    this.user$.forEach(data => {
+      this.email = data.email;
+      if (data.email) {
+        this.subscriptions.add(this.userService.getUserByEmail(data.email as string).subscribe(data => {
+          console.log('asd');
+          if (data[0] != null) {
+            console.log(data[0]);
+            this.companyName = data[0].companyName;
+            this.fullname = data[0].name;
+          }
+        }));
+      }
+    });
   }
 
   ngOnChanges(changes: SimpleChanges): void {
