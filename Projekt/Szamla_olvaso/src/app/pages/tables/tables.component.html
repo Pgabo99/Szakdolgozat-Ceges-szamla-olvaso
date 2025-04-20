@@ -1,7 +1,7 @@
 <div>
     <h2>Eddig feltöltött számlák</h2>
     <div class="dropdown">
-        <button mat-button (click)="openDialog()">Oszlopok</button>
+        <button mat-button (click)="showColumns()">Oszlopok</button>
         <button mat-button class="dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
             Exportálás
         </button>
@@ -111,7 +111,7 @@
             </ng-container>
 
             <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-            <tr mat-row *matRowDef="let row; columns: displayedColumns;" (click)="fileSzerkesztes(row)"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;" (click)="fileEdit(row)"></tr>
         </table>
     </div>
 </div>

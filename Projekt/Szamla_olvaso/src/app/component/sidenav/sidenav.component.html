@@ -2,10 +2,9 @@
     <img src="/assets/user.png" [width]="profilePicSize()" [height]="profilePicSize()" *ngIf="!downloadURL">
     <img [src]="downloadURL" [width]="profilePicSize()" [height]="profilePicSize()" *ngIf="!!downloadURL">
     <div class="header-text" [class.hide-header-text]="sideNavCollapsed()">
-        <h2>
-            Cégnév
-        </h2>
-        <p>Neved:</p>
+        <h2 *ngIf="!companyName">Cégnév</h2>
+        <h2 *ngIf="companyName">{{companyName}}</h2>
+        <p>Neved: {{fullname}}</p>
     </div>
 </div>
 

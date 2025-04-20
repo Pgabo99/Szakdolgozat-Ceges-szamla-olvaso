@@ -18,7 +18,7 @@
                         <input formControlName="email" matInput type="email" [readonly]="true">
                     </mat-form-field>
                 </div>
-                <p class="forgot-label" (click)="ResetPassword()">Jelszó váltás</p>
+                <p class="forgot-label" (click)="ResetPassword()">Jelszó módosítása</p>
             </div>
         </form>
 
@@ -85,7 +85,7 @@
             </div>
 
             <div class="profile-change" *ngIf="loggenUser==null">
-                <h2 (click)="hozzaad()">Adatok hozzáadása</h2>
+                <h2 class="cursor-pointer" (click)="hozzaad()">Adatok hozzáadása</h2>
             </div>
         </form>
     </div>

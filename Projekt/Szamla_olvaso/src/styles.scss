@@ -75,14 +75,14 @@ caption {
         }
 
         .title {
-            font-size: 3vh;
+            font-size: 20px;
             font-weight: bold;
             text-align: center;
             margin-bottom: 2rem;
         }
 
         .title-intro {
-            font-size: 3vh;
+            font-size: 20px;
             font-weight: bold;
             text-align: center;
             margin-bottom: 16px;
@@ -115,14 +115,14 @@ caption {
         }
 
         .title {
-            font-size: 3vh;
+            font-size: 20px;
             font-weight: bold;
             text-align: center;
             margin-bottom: 2rem;
         }
 
         .title-intro {
-            font-size: 3vh;
+            font-size: 20px;
             font-weight: bold;
             text-align: center;
             margin-bottom: 16px;
@@ -190,30 +190,20 @@ caption {
 
 @media screen and (min-width: 600px) {
     .register-login-container form .title {
-        font-size: 4vh;
+        font-size: 30px;
     }
 
     .formClass form .title {
-        font-size: 4vh;
+        font-size: 30px;
     }
 }
 
 @media screen and (min-width: 900px) {
     .register-login-container form .title {
-        font-size: 5vh;
+        font-size: 40px;
     }
 
     .formClass form .title {
-        font-size: 5vh;
-    }
-}
-
-@media screen and (min-width: 1300px) {
-    .register-login-container form .title {
-        font-size: 6vh;
-    }
-
-    .formClass form .title {
-        font-size: 6vh
+        font-size: 40px;
     }
 }

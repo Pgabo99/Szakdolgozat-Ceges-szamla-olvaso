@@ -21,29 +21,31 @@ import { LiveAnnouncer } from '@angular/cdk/a11y';
 })
 
 export class TablesComponent implements OnInit, OnDestroy, AfterViewInit {
+  //Az oszlopok rendezéséhez
   private _liveAnnouncer = inject(LiveAnnouncer);
   private subscriptions = new Subscription();
   user$: Observable<any>;
   loggenUser?: Users;
 
+  //Megjelenített oszlopok
   columns = [
-    { name: "fajlNev", show: false },
-    { name: "szamlaszam", show: true },
-    { name: "szallitoNev", show: true },
-    { name: "szallitoAdo", show: true },
-    { name: "szallitoIrsz", show: false },
-    { name: "szallitoTelepules", show: false },
-    { name: "szallitoCim", show: false },
-    { name: "fizKelt", show: true },
-    { name: "fizTeljesites", show: true },
-    { name: "fizHatarido", show: true },
-    { name: "fizMod", show: true },
-    { name: "netto", show: true },
-    { name: "brutto", show: true },
-    { name: "afa", show: true },
+    { name: "Fájl neve", value: "fajlNev", show: false },
+    { name: "Számlaszám", value: "szamlaszam", show: true },
+    { name: "Szállító neve", value: "szallitoNev", show: true },
+    { name: "Szállító adószáma", value: "szallitoAdo", show: true },
+    { name: "Szállító Irányítószáma", value: "szallitoIrsz", show: false },
+    { name: "Szállító Település", value: "szallitoTelepules", show: false },
+    { name: "Szállító Címe", value: "szallitoCim", show: false },
+    { name: "Fizetés Kelte", value: "fizKelt", show: true },
+    { name: "Fizetés Teljesítése", value: "fizTeljesites", show: true },
+    { name: "Fizetési Határidő", value: "fizHatarido", show: true },
+    { name: "Fizetési Mód", value: "fizMod", show: true },
+    { name: "Nettó", value: "netto", show: true },
+    { name: "Bruttó", value: "brutto", show: true },
+    { name: "Áfa", value: "afa", show: true },
   ]
 
-  displayedColumns = this.columns.filter((c) => c.show).map((c) => c.name);
+  displayedColumns = this.columns.filter((c) => c.show).map((c) => c.value);
   dataSource = new MatTableDataSource<Bill.Bills>();
   dataSourceFiles!: UploadedFile[];
   dataSource2: Bill.Bills[] = [];
@@ -52,12 +54,14 @@ export class TablesComponent implements OnInit, OnDestroy, AfterViewInit {
 
   constructor(private authService: AuthService, private dialog: MatDialog, private userService: UserInfoService, private fileService: FileService, private exportService: ExportService) {
     this.user$ = this.authService.currentUser$;
-    this.getFileByFileName(this.authService.getUserEmail() as string);
+    this.getFilesByEmail(this.authService.getUserEmail() as string);
   }
 
-  getFileByFileName(email: string) {
-   
-    console.log(this.dataSource2);
+  /**
+   * Lekéri a felhasználó számláit és feltölti a dataSource, és DataSource2 tömböket azzal
+   * @param email felhasználó email címe
+   */
+  getFilesByEmail(email: string) {
     (this.fileService.getFileByEmail(email)).subscribe(data2 => {
       this.dataSource2 = [];
       data2.forEach(element => {
@@ -87,23 +91,26 @@ export class TablesComponent implements OnInit, OnDestroy, AfterViewInit {
     })
   }
 
+  // XLSX formátumba exportálás
   exportToXLSX() {
     if (!Array.isArray(this.dataSource2)) {
-      console.error("Hiba: dataSource2 nem tömb!");
+      alert("Sikertelen");
       return;
     }
     this.exportService.exportToExcel(this.dataSource2);
   }
 
+  // TXT formátumba exportálás
   exportToText() {
     if (!Array.isArray(this.dataSource2)) {
-      console.error("Hiba: dataSource2 nem tömb!");
+     alert("Sikertelen");
       return;
     }
     this.exportService.exportToText(this.dataSource2);
   }
 
-  fileSzerkesztes(bill: Bill.Bills) {
+  // Számlák szerkesztése dialógus megjelenítése
+  fileEdit(bill: Bill.Bills) {
     const dialogRef = this.dialog.open(FixFileDataComponent, {
       data: { fileData: bill as Bill.Bills },
       width: '95%',
@@ -111,13 +118,14 @@ export class TablesComponent implements OnInit, OnDestroy, AfterViewInit {
     });
   }
 
-  openDialog(): void {
+  // Megjelenített oszlopok dialógus
+  showColumns(): void {
     let dialogRef = this.dialog.open(TableColumnsComponent, {
       data: this.columns
     });
 
     dialogRef.afterClosed().subscribe(() => {
-      this.displayedColumns = this.columns.filter((c) => c.show).map((c) => c.name);
+      this.displayedColumns = this.columns.filter((c) => c.show).map((c) => c.value);
     });
   }
 
@@ -132,6 +140,7 @@ export class TablesComponent implements OnInit, OnDestroy, AfterViewInit {
     this.dataSource.sort = this.sort;
   }
 
+  //Oszlopok rendezése
   announceSortChange(sortState: Sort) {
     if (sortState.direction) {
       this._liveAnnouncer.announce(`Sorted ${sortState.direction}ending`);

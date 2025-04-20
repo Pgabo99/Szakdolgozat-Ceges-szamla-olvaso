@@ -37,30 +37,27 @@ export class UploadFileComponent implements OnInit, OnDestroy {
     this.downloadURL = ""
     this.getUserUid()
 
+    // Lekéri a felhasználó által feltöltött fájlokat
     this.subscriptions.add(this.userService.getUserByEmail(this.authService.getUserEmail() as string).subscribe(data => {
-      if (data[0] != null) {
-        this.loggenUser = data[0];
-        if (this.loggenUser.files) {
-          let count = Object.keys(this.loggenUser.files).length;
-          this.dataSource = new Array(count)
-          for (let key in this.loggenUser.files) {
-            if (count != 0) {
-              if (this.loggenUser.files.hasOwnProperty(key)) {
-                const seged = {
-                  url: key || 'default-url',
-                  fileName: this.loggenUser.files[key].fileName,
-                  uploadDate: this.loggenUser.files[key].uploadDate
-                }
-                count--;
-                this.dataSource[count] = (seged);
-              }
-            }
-          }
-        }
-      } else {
+      // Még nem töltötte ki a profil oldalon a szükséges adatokat
+      if (data[0] === null || data[0] === undefined) {
+        console.log('asd');
         alert("Mielőtt feltöltenél bármit is kérlek töltsd ki a profilodat!")
         this.megjelenitheto = false;
+        return;
       }
+
+      this.loggenUser = data[0];
+      if (!this.loggenUser.files) {
+        return;
+      }
+
+      //Feltöltött fájlok, legújabb legelől
+      this.dataSource = Object.entries(this.loggenUser.files).map(([url, value]) => ({
+        url,
+        fileName: value.fileName,
+        uploadDate: value.uploadDate
+      })).reverse();
     }));
   }
 
@@ -71,6 +68,7 @@ export class UploadFileComponent implements OnInit, OnDestroy {
     this.subscriptions.unsubscribe();
   }
 
+  //Visszaadja a bejelentkezett felhasználó UID-ját
   getUserUid() {
     this.user$.subscribe(user => {
       if (user) {
@@ -81,82 +79,69 @@ export class UploadFileComponent implements OnInit, OnDestroy {
     });
   }
 
+  /**
+   * Feltölti a fájlt a storageba, és frissíti a felhasználónak a feltöltött fájljait
+   * Az alapján, hogy PDF, vagy Kép formátumú a fájl, meghívja a megfelelő függvényt az adatok feldolgozásához
+   * @param event 
+   */
   async uploadImage(event: any) {
     this.feltolt = true;
     const input = event.target.files[0];
-    const allowedExtensions = ['pdf', 'png', 'jpeg', 'jpg'];
-    const fileExtension = input.name.split('.').pop()?.toLowerCase();
+
+    // Ha nem választott ki fájlt.
     if (!input) {
       alert("Nem választottál ki fájlt.")
       this.feltolt = false;
+      return;
     }
-    else if (!fileExtension || !allowedExtensions.includes(fileExtension)) {
+
+    //Rossz fájlformátum
+    const allowedExtensions = ['pdf', 'png', 'jpeg', 'jpg'];
+    const fileExtension = input.name.split('.').pop()?.toLowerCase();
+    if (!fileExtension || !allowedExtensions.includes(fileExtension)) {
       alert("Rossz fájl formátum!")
       this.feltolt = false;
+      return;
     }
-    else {
-      let voltE = false;
-      this.dataSource.forEach(element => {
-        if (element.fileName == input.name) {
-          voltE = true;
-        }
-      });
-      if (voltE === false) {
-        const path = `files/${this.uid}/${input.name}`
-        const uploadTask = await this.imageUploadService.uploadBill(input, path)
-        const url = await uploadTask.ref.getDownloadURL();
-        if (fileExtension === 'pdf') {
 
-          const formData = new FormData();
-          formData.append('file', event.target.files[0]);
-          this.http.post('https://szakdolgozat-ceges-szamla-olvaso-backend.onrender.com/processPDF', formData).subscribe({
-            next: (response) => {
-              if ('type' in response) {
-                if (response.type === 'text' && 'content' in response && typeof response.content === 'string' && response.content.replaceAll(' ', '').replaceAll("\n", "").replaceAll("\t", "").replaceAll("\v", "") !== "") {
-                  const bill: Bills = this.fileService.processingImage(response.content as string, this.loggenUser!, input.name)
-                  const dialogRef = this.dialog.open(FixFileDataComponent, {
-                    data: { fileData: bill as Bills },
-                    width: '95%',
-                    height: '95%'
-                  });
-                } else if (response.type === 'path' && 'images' in response && Array.isArray(response.images)) {
-                  const imagePath = response.images[0]['path'];
-                  this.http.get(`https://szakdolgozat-ceges-szamla-olvaso-backend.onrender.com/images/${imagePath}`, { responseType: 'blob' }).subscribe({
-                    next: (blob) => {
-                      const file = new File([blob], event.target.files[0].name, { type: "image/png" });
-
-                      // Meghívjuk a processImage függvényt a letöltött fájllal
-
-                      this.processImage(file);
-                    },
-                    error: (error) => console.error('Hiba a kép letöltésekor:', error)
-                  });
-                }
-              }
-            },
-            error: (error) => console.error('Hiba történt:', error)
-          });
-
-        } else {
-          this.processImage(event.target.files[0]);
-        }
-
-        if (this.loggenUser?.files) {
-          this.loggenUser.files[url] = {
-            url: url,
-            fileName: input.name,
-            uploadDate: new Date()
-          }
-          this.userService.userUploadFile(this.loggenUser)
-        }
-      } else {
-        alert("Ezt már feltöltötted egyszer!")
-        this.feltolt = false;
+    // Fel lett-e már töltve ilyen nevű fájl
+    let isUploaded = false;
+    this.dataSource.forEach(element => {
+      if (element.fileName === input.name) {
+        isUploaded = true;
       }
+    });
+
+    if (isUploaded) {
+      alert("Ezt már feltöltötted egyszer!");
+      this.feltolt = false;
+      return;
     }
-    this.feltolt = false;
+
+    // Fájlfeltöltése a storageba
+    const path = `files/${this.uid}/${input.name}`
+    const uploadTask = await this.imageUploadService.uploadBill(input, path)
+    const url = await uploadTask.ref.getDownloadURL();
+
+    // Felhasználó feltöltött fájljainak frissítése az adatbázisban
+    if (this.loggenUser?.files) {
+      this.loggenUser.files[url] = {
+        url: url,
+        fileName: input.name,
+        uploadDate: new Date()
+      }
+      this.userService.changeUserFiles(this.loggenUser)
+    }
+
+    // Fájlok feldolgozása
+    if (fileExtension === 'pdf') {
+      this.processPDF(input);
+    } else {
+      this.processImage(event.target.files[0]);
+    }
   }
 
+  //Kinyeri a szöveget a képről, majd átadja azt a FileServicenek
   processImage(image: File) {
     Tesseract.recognize(image, 'hun', {
       logger: (progress) => {
@@ -165,7 +150,7 @@ export class UploadFileComponent implements OnInit, OnDestroy {
       .then(result => {
         this.textResult = result.data.text;
         this.feltolt = false;
-        const bill: Bills = this.fileService.processingImage(this.textResult, this.loggenUser!, image.name);
+        const bill: Bills = this.fileService.processingText(this.textResult, this.loggenUser!, image.name);
         const dialogRef = this.dialog.open(FixFileDataComponent, {
           data: { fileData: bill as Bills },
           width: '95%',
@@ -175,5 +160,41 @@ export class UploadFileComponent implements OnInit, OnDestroy {
       .catch(err => {
         console.error(err);
       });
+  }
+
+  /**
+   * Feldolgozza a PDF-et, hogyha szöveg van a PDF-ben, akkor abból kinyeri a szöveget, azonban hogyha kép, akkor azt átalakítja kép formátumba, és átadja a processImage függvénynek
+   * @param input a feltöltött fájl
+   */
+  processPDF(input: any) {
+    const formData = new FormData();
+    formData.append('file', input);
+    this.http.post('https://szakdolgozat-ceges-szamla-olvaso-backend.onrender.com/processPDF', formData).subscribe({
+      next: (response) => {
+        if ('type' in response) {
+          //Ha szöveg van a PDF-ben
+          if (response.type === 'text' && 'content' in response && typeof response.content === 'string' && response.content.replaceAll(' ', '').replaceAll("\n", "").replaceAll("\t", "").replaceAll("\v", "") !== "") {
+            const bill: Bills = this.fileService.processingText(response.content as string, this.loggenUser!, input.name)
+            const dialogRef = this.dialog.open(FixFileDataComponent, {
+              data: { fileData: bill as Bills },
+              width: '95%',
+              height: '95%'
+            });
+            this.feltolt = false;
+          } else if (response.type === 'path' && 'images' in response && Array.isArray(response.images)) {
+            //Ha kép van a PDF-ben, akkor azt átalakítja kép formátumba
+            const imagePath = response.images[0]['path'];
+            this.http.get(`https://szakdolgozat-ceges-szamla-olvaso-backend.onrender.com/images/${imagePath}`, { responseType: 'blob' }).subscribe({
+              next: (blob) => {
+                const file = new File([blob], input.name, { type: "image/png" });
+                this.processImage(file);
+              },
+              error: (error) => { console.error('Hiba a kép letöltésekor:', error); this.feltolt = false; }
+            });
+          }
+        }
+      },
+      error: (error) => { console.error('Hiba történt:', error); this.feltolt = false; }
+    });
   }
 }

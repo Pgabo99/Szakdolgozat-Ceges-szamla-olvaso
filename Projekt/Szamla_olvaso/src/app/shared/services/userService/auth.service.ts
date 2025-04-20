@@ -3,6 +3,7 @@ import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { Router } from '@angular/router';
 import { GoogleAuthProvider, updateProfile } from 'firebase/auth';
 import { concatMap, from, Observable } from 'rxjs';
+import { ProfileUploadService } from './profile-upload.service';
 
 @Injectable({
   providedIn: 'root'
@@ -12,7 +13,7 @@ export class AuthService {
   currentUser$;
   userEmail$: string | null | undefined;
 
-  constructor(private afs: AngularFireAuth, private router: Router) {
+  constructor(private afs: AngularFireAuth, private router: Router, private imageUploadService: ProfileUploadService,) {
     this.currentUser$ = this.afs.authState;
     this.afs.authState.subscribe(auth => {
       if (auth) {

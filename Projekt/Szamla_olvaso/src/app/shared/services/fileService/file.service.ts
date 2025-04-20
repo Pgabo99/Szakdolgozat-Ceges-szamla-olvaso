@@ -39,7 +39,7 @@ export class FileService {
   }
 
   //Fajl feldolgozasa
-  processingImage(szoveg: string, user: Users, fileName: string): Bills {
+  processingText(szoveg: string, user: Users, fileName: string): Bills {
     let seged: Bills = {
       email: user.email,
       fajlNev: fileName,

@@ -1,6 +1,6 @@
 <div mat-dialog-content>
     <mat-selection-list #list [(ngModel)]="selectedOptions" (ngModelChange)="test()">
-        <mat-list-option *ngFor="let thing of data" [value]="thing.name" [selected]="thing.show">
+        <mat-list-option *ngFor="let thing of data" [value]="thing.value" [selected]="thing.show">
             {{thing.name}}
         </mat-list-option>
     </mat-selection-list>

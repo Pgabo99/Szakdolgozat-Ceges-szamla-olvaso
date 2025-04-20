@@ -27,8 +27,8 @@ export class RegisterComponent {
 
   loginWithGoogle() {
     this.authService.signInWithGoogle().then((res: any) => {
-    })
-      .catch((error: any) => { alert('Sikertelen bejelentkezés')})
+    }).catch((error: any) => { alert('Sikertelen bejelentkezés')});
+    
   }
 
   registerWithEmailAndPassword() {

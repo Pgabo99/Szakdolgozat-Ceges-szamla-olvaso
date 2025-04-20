@@ -1,9 +1,9 @@
 import { Component, computed, Input, OnChanges, OnInit, signal, SimpleChanges } from '@angular/core';
 import { AuthService } from '../../shared/services/userService/auth.service';
-import { Observable } from 'rxjs';
+import { catchError, Observable, Subscription, switchMap, take } from 'rxjs';
 import { ProfileUploadService } from '../../shared/services/userService/profile-upload.service';
 import { Router } from '@angular/router';
-import { catchError } from 'rxjs/operators';
+import { UserInfoService } from '../../shared/services/userService/user-info.service';
 
 export type MenuItem = {
   icon: string;
@@ -19,11 +19,14 @@ export type MenuItem = {
 })
 export class SidenavComponent implements OnInit, OnChanges {
   sideNavCollapsed = signal(false);
-  profilePicSize = computed(() => this.sideNavCollapsed() ? '32' : '100')
+  profilePicSize = computed(() => this.sideNavCollapsed() ? '32' : '100');
+  private subscriptions = new Subscription();
 
   user$: Observable<any>;
   email;
   downloadURL: string;
+  companyName: string = "";
+  fullname: string = "-";
 
   @Input() set collapsed(val: boolean) {
     this.sideNavCollapsed.set(val);
@@ -83,10 +86,19 @@ export class SidenavComponent implements OnInit, OnChanges {
     }
   ])
 
-  constructor(private authService: AuthService, private imageUploadService: ProfileUploadService, private router: Router) {
+  constructor(private authService: AuthService, private imageUploadService: ProfileUploadService, private router: Router, private userService: UserInfoService) {
     this.user$ = this.authService.currentUser$;
     this.downloadURL = ""
     this.email = this.authService.getUserEmail();
+
+    if (this.email) {
+      this.subscriptions.add(this.userService.getUserByEmail(this.email as string).subscribe(data => {
+        if (data[0] != null) {
+          this.companyName = data[0].companyName;
+          this.fullname = data[0].name;
+        }
+      }));
+    }
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -112,7 +124,7 @@ export class SidenavComponent implements OnInit, OnChanges {
   fetchDownloadURL() {
     this.user$.subscribe(user => {
       if (user) {
-        const filePath = `images/profile/${user.uid}`;
+        let filePath = `images/profile/${user.uid}`;
         this.imageUploadService.getFileDownloadURL(filePath).pipe(
           catchError(error => {
             return this.imageUploadService.getFileDownloadURL('background2.png');

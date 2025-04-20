@@ -52,10 +52,10 @@ export class ProfileComponent implements OnInit, OnDestroy, OnChanges {
   constructor(private authService: AuthService, private imageUploadService: ProfileUploadService, private router: Router, private dialog: MatDialog, private userService: UserInfoService) {
     this.user$ = this.authService.currentUser$;
     this.downloadURL = ""
-    this.fetchDownloadURL()
+    this.fetchDownloadURL();
     this.user$.forEach(data => {
       this.profileForm.setValue({ email: data.email });
-    })
+    });
     this.subscriptions.add(this.userService.getUserByEmail(this.authService.getUserEmail() as string).subscribe(data => {
       if (data[0] != null) {
         this.loggenUser = data[0];
@@ -66,7 +66,7 @@ export class ProfileComponent implements OnInit, OnDestroy, OnChanges {
           zipCode: this.loggenUser.zipCode as unknown as string, city: this.loggenUser.city, site: this.loggenUser.site
         })
       }
-    }))
+    }));
   }
   ngOnChanges(changes: SimpleChanges): void {
     this.fetchDownloadURL();

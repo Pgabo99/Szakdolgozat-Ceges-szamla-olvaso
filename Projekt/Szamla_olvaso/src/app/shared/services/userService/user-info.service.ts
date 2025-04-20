@@ -20,7 +20,7 @@ export class UserInfoService {
     return this.angularFirestore.collection<Users>('/Users', ref => ref.where('email', '==', email)).valueChanges();
   }
 
-  //User adatának frissítése
+  //User adatainak frissítése
   updateUser(user: Users) {
     return this.angularFirestore.collection('Users', (ref) => ref.where('email', '==', user.email)).get().subscribe(
       (querySnapshot) => {
@@ -38,7 +38,8 @@ export class UserInfoService {
     );
   }
 
-  userUploadFile(user: Users) {
+  //Felhasználóhoz tartozó fájlok frissítése
+  changeUserFiles(user: Users) {
     return this.angularFirestore.collection('Users', (ref) => ref.where('email', '==', user.email)).get().subscribe(
       (querySnapshot) => {
         querySnapshot.forEach((doc: any) => {
