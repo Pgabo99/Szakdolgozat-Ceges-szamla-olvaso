@@ -61,7 +61,6 @@ export class FixFileDataComponent {
         email: this.fixFileForm.value.email as string,
         fajlNev: this.fixFileForm.value.fajlNev as string,
         szamlaszam: this.fixFileForm.value.szamlaszam as string,
-        tipus: this.data.fileData.tipus,
         szallitoNev: this.fixFileForm.value.szallitoNev as string,
         szallitoAdo: this.fixFileForm.value.szallitoAdo as string,
         szallitoIrsz: this.fixFileForm.value.szallitoIrsz as number,
@@ -74,7 +73,6 @@ export class FixFileDataComponent {
         netto: this.fixFileForm.value.netto as string,
         brutto: this.fixFileForm.value.brutto as string,
         afa: this.fixFileForm.value.afa as string,
-        tartalom: this.data.fileData.tartalom
       }
       this.fileService.updateFile(seged);
       this.dialogRef.close();

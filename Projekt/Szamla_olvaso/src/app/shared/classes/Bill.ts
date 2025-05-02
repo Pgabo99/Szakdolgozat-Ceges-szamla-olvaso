@@ -1,13 +1,7 @@
-export enum companyType {
-    bt = "Betéti Társaság",
-    kft = "Korlátolt Felelősségű Társaság"
-}
-
 export interface Bills {
     email: string,
     fajlNev: string,
     szamlaszam: string;
-    tipus: string;
     szallitoNev: string;
     szallitoAdo: string,
     szallitoIrsz: number,
@@ -20,5 +14,4 @@ export interface Bills {
     netto: string,
     brutto: string,
     afa: string,
-    tartalom: string
 }

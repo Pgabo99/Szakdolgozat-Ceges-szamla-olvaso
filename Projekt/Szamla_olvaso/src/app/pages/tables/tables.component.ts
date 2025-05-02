@@ -69,7 +69,6 @@ export class TablesComponent implements OnInit, OnDestroy, AfterViewInit {
           email: element.email,
           fajlNev: element.fajlNev,
           szamlaszam: element.szamlaszam,
-          tipus: element.tipus,
           szallitoNev: element.szallitoNev,
           szallitoAdo: element.szallitoAdo,
           szallitoIrsz: element.szallitoIrsz,
@@ -82,7 +81,6 @@ export class TablesComponent implements OnInit, OnDestroy, AfterViewInit {
           netto: element.netto,
           brutto: element.brutto,
           afa: element.afa,
-          tartalom: element.tartalom
         }
         this.dataSource2.push(seged2);
       });

@@ -90,12 +90,10 @@ export class SidenavComponent implements OnInit, OnChanges {
     this.user$ = this.authService.currentUser$;
     this.downloadURL = ""
     this.user$.forEach(data => {
-      this.email = data.email;
-      if (data.email) {
+      if (data && data.email) {
+        this.email = data.email;
         this.subscriptions.add(this.userService.getUserByEmail(data.email as string).subscribe(data => {
-          console.log('asd');
           if (data[0] != null) {
-            console.log(data[0]);
             this.companyName = data[0].companyName;
             this.fullname = data[0].name;
           }

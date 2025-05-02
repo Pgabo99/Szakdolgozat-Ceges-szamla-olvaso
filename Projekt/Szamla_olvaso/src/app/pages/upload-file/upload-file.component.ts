@@ -144,8 +144,7 @@ export class UploadFileComponent implements OnInit, OnDestroy {
   //Kinyeri a szöveget a képről, majd átadja azt a FileServicenek
   processImage(image: File) {
     Tesseract.recognize(image, 'hun', {
-      logger: (progress) => {
-      }
+      logger: (progress) => {}
     })
       .then(result => {
         this.textResult = result.data.text;
@@ -182,7 +181,7 @@ export class UploadFileComponent implements OnInit, OnDestroy {
             });
             this.feltolt = false;
           } else if (response.type === 'path' && 'images' in response && Array.isArray(response.images)) {
-            //Ha kép van a PDF-ben, akkor azt átalakítja kép formátumba
+            //Ha kép van a PDF-ben, akkor azt kéri le
             const imagePath = response.images[0]['path'];
             this.http.get(`https://szakdolgozat-ceges-szamla-olvaso-backend.onrender.com/images/${imagePath}`, { responseType: 'blob' }).subscribe({
               next: (blob) => {

@@ -40,11 +40,10 @@ export class FileService {
 
   //Fajl feldolgozasa
   processingText(szoveg: string, user: Users, fileName: string): Bills {
-    let seged: Bills = {
+    let bill: Bills = {
       email: user.email,
       fajlNev: fileName,
       szamlaszam: "",
-      tipus: '',
       szallitoNev: '',
       szallitoAdo: '',
       szallitoIrsz: 0,
@@ -57,21 +56,20 @@ export class FileService {
       netto: "",
       brutto: "",
       afa: "",
-      tartalom: ""
     }
+
     let darabok = szoveg.split("\n");
     let eleje = false;
     let szallitoAdatok = "";
     let fizEgysor = false;
-    let tartalomBool = false;
-    let legelejeB = true;
-    let legelejeString = "";
+    let szallitoadatokB = true;
+    let szallitoadatokString = "";
 
     let indexek: { word: string; index: number; }[];
     darabok.forEach(element => {
       let vizsgal = element.toLowerCase();
-      if (seged.szamlaszam == "" && legelejeB && vizsgal.indexOf("számla") == -1 && vizsgal.indexOf("szállító") == -1 && vizsgal.indexOf("vevó") == -1)
-        seged.szamlaszam = element
+      if (bill.szamlaszam == "" && szallitoadatokB && vizsgal.indexOf("számla") == -1 && vizsgal.indexOf("szállító") == -1 && vizsgal.indexOf("vevó") == -1)
+        bill.szamlaszam = element
       if (fizEgysor) {
         fizEgysor = false;
         let fizDarabok = element.replaceAll(' ', '');
@@ -87,17 +85,17 @@ export class FileService {
             index = 0
           if (item.word == "mód") {
             atutalas = true;
-            seged.fizMod = match2![0]
+            bill.fizMod = match2![0]
           }
           if (item.word == "teljesít")
-            seged.fizTeljesites = match![index]
+            bill.fizTeljesites = match![index]
           if (item.word == "esedékesség")
-            seged.fizHatarido = match![index]
+            bill.fizHatarido = match![index]
           if (item.word == "kelt")
-            seged.fizKelt = match![index]
+            bill.fizKelt = match![index]
         });
       }
-      if (vizsgal.indexOf("fizetés") != -1 && vizsgal.indexOf("mód") != -1 && seged.fizMod == "") {
+      if (vizsgal.indexOf("fizetés") != -1 && vizsgal.indexOf("mód") != -1 && bill.fizMod == "") {
         eleje = false;
         if (vizsgal.indexOf("teljesít") != -1 && vizsgal.indexOf("kelt") != -1 && (vizsgal.indexOf("esedékesség") != -1 || vizsgal.indexOf("határidő") != -1)) {
           fizEgysor = true;
@@ -119,7 +117,7 @@ export class FileService {
           let index = 0;
           while (index < modDarabok.length) {
             if (megvan) {
-              seged.fizMod = modDarabok[index];
+              bill.fizMod = modDarabok[index];
               index = modDarabok.length;
             }
             if (index != modDarabok.length && modDarabok[index].toLowerCase().indexOf("mód") != -1) {
@@ -130,13 +128,13 @@ export class FileService {
         }
 
       }
-      if (vizsgal.indexOf("kelt") != -1 && seged.fizKelt == "") {
+      if (vizsgal.indexOf("kelt") != -1 && bill.fizKelt == "") {
         let modDarabok = element.split(" ");
         let megvan = false;
         let index = 0;
         while (index < modDarabok.length) {
           if (megvan) {
-            seged.fizKelt = modDarabok[index];
+            bill.fizKelt = modDarabok[index];
             index = modDarabok.length;
           }
           if (index != modDarabok.length && modDarabok[index].toLowerCase().indexOf("kelt") != -1) {
@@ -146,13 +144,13 @@ export class FileService {
           index++;
         }
       }
-      if (vizsgal.indexOf("teljesít") != -1 && seged.fizTeljesites == "") {
+      if (vizsgal.indexOf("teljesít") != -1 && bill.fizTeljesites == "") {
         let modDarabok = element.split(" ");
         let megvan = false;
         let index = 0;
         while (index < modDarabok.length) {
           if (megvan) {
-            seged.fizTeljesites = modDarabok[index];
+            bill.fizTeljesites = modDarabok[index];
             index = modDarabok.length;
           }
           if (index != modDarabok.length && modDarabok[index].toLowerCase().indexOf("teljesít") != -1) {
@@ -163,17 +161,17 @@ export class FileService {
         }
       }
 
-      if (vizsgal.indexOf("sorszám") != -1 && seged.szamlaszam == "") {
-        seged.szamlaszam = element.substring(vizsgal.indexOf("sorszám") + 8).trim();
-        legelejeB = false;
-      } else if (vizsgal.indexOf("számlaszám") != -1 && seged.szamlaszam == "") {
-        seged.szamlaszam = element.substring(vizsgal.indexOf("számlaszám") + 11).trim();
+      if (vizsgal.indexOf("sorszám") != -1 && bill.szamlaszam == "") {
+        bill.szamlaszam = element.substring(vizsgal.indexOf("sorszám") + 8).trim();
+        szallitoadatokB = false;
+      } else if (vizsgal.indexOf("számlaszám") != -1 && bill.szamlaszam == "") {
+        bill.szamlaszam = element.substring(vizsgal.indexOf("számlaszám") + 11).trim();
       }
       else if (eleje || vizsgal.indexOf(user.companyName.toLowerCase()) != -1) {
         var eredmeny = this.szallitoAdatokFeld(user, element, vizsgal);
         szallitoAdatok += eredmeny + "\n";
         eleje = true;
-        legelejeB = false;
+        szallitoadatokB = false;
       }
       if (vizsgal.indexOf("összes") != -1 || vizsgal.indexOf("Összes") != -1 || vizsgal.indexOf("értékesítés") != -1 || vizsgal.indexOf("érték") != -1) {
         let result = element.replaceAll(" ", "").replaceAll("-", "").replace(/^[^0-9]+/, "");
@@ -183,9 +181,9 @@ export class FileService {
         }
         let resultFt = result.split("Ft").filter(item => item !== "");
         if (resultFt.length > 2) {
-          seged.brutto = resultFt[resultFt.length - 1];
-          seged.afa = resultFt[resultFt.length - 2]
-          seged.netto = resultFt[resultFt.length - 3]
+          bill.brutto = resultFt[resultFt.length - 1];
+          bill.afa = resultFt[resultFt.length - 2]
+          bill.netto = resultFt[resultFt.length - 3]
         }
         else {
           let result = element.replace(/^[^0-9]+/, "").replaceAll("-", "");
@@ -202,68 +200,64 @@ export class FileService {
             }
             index++;
           }
-          seged.brutto = resultFt2[0];
-          seged.afa = resultFt2[1]
-          seged.netto = resultFt2[2]
+          bill.brutto = resultFt2[0];
+          bill.afa = resultFt2[1]
+          bill.netto = resultFt2[2]
         }
       }
-      if (vizsgal.indexOf("fizetendő") != -1 || (vizsgal.indexOf("végösszeg") != -1) && seged.brutto == "") {
+      if (vizsgal.indexOf("fizetendő") != -1 || (vizsgal.indexOf("végösszeg") != -1) && bill.brutto == "") {
         let result = element.replaceAll(" ", "").replace(/^[^0-9]+/, "").replaceAll("Ft", "");
-        seged.brutto = result;
+        bill.brutto = result;
       }
-      if (vizsgal.indexOf('megnevezés') != -1 || vizsgal.indexOf('kód') != -1 || vizsgal.indexOf('mennyiség') != -1 || vizsgal.indexOf('bruttó') != -1) {
-        tartalomBool = true;
-      }
-      if (tartalomBool)
-        seged.tartalom += element + '\n';
-      seged = this.szallitoAdatokFeld2(user, element, vizsgal, seged);
 
-      if (seged.szallitoNev === "") {
-        if (seged.szallitoAdo !== "" || seged.szallitoCim !== "" || seged.szallitoIrsz !== 0 || seged.szallitoTelepules !== "") {
-          seged.szallitoNev = legelejeString.split('\n')[legelejeString.split('\n').length - 2];
+      bill = this.szallitoAdatokFeld2(user, element, vizsgal, bill);
+
+      if (bill.szallitoNev === "") {
+        if (bill.szallitoAdo !== "" || bill.szallitoCim !== "" || bill.szallitoIrsz !== 0 || bill.szallitoTelepules !== "") {
+          bill.szallitoNev = szallitoadatokString.split('\n')[szallitoadatokString.split('\n').length - 2];
         } else {
-          legelejeString += element + '\n';
+          szallitoadatokString += element + '\n';
         }
       }
-      seged = this.fizmod(vizsgal, seged);
-      seged = this.fizIdo(vizsgal, seged);
+      bill = this.fizmod(vizsgal, bill);
+      bill = this.fizIdo(vizsgal, bill);
     });
     let szallitoDarabok = szallitoAdatok.split('\n');
-    if (seged.szallitoNev === '' || seged.szallitoNev.toLocaleLowerCase().includes(user.companyName.toLocaleLowerCase())) {
-      seged.szallitoNev = szallitoDarabok[0];
+    if (bill.szallitoNev === '' || bill.szallitoNev.toLocaleLowerCase().includes(user.companyName.toLocaleLowerCase())) {
+      bill.szallitoNev = szallitoDarabok[0];
     }
     szallitoDarabok.forEach(element => {
       let vizsgal = element.toLowerCase();
-      if (vizsgal.indexOf("adószám") != -1 && seged.szallitoAdo == "" && vizsgal.indexOf("eu") == -1 && vizsgal.indexOf("hu") == -1) {
-        seged.szallitoAdo = element.substring(element.search(/\d/), element.length).trim().split(' ')[0];
+      if (vizsgal.indexOf("adószám") != -1 && bill.szallitoAdo == "" && vizsgal.indexOf("eu") == -1 && vizsgal.indexOf("hu") == -1) {
+        bill.szallitoAdo = element.substring(element.search(/\d/), element.length).trim().split(' ')[0];
       }
-      if (seged.szallitoIrsz != 0 && seged.szallitoCim == "") {
-        seged.szallitoCim = element;
+      if (bill.szallitoIrsz != 0 && bill.szallitoCim == "") {
+        bill.szallitoCim = element;
       }
-      if (seged.szallitoIrsz == 0 && /\d/.test(element.charAt(0)) && /\d/.test(element.charAt(1)) && /\d/.test(element.charAt(2)) && /\d/.test(element.charAt(3))) {
-        seged.szallitoIrsz = element.substring(0, 4) as unknown as number;
+      if (bill.szallitoIrsz == 0 && /\d/.test(element.charAt(0)) && /\d/.test(element.charAt(1)) && /\d/.test(element.charAt(2)) && /\d/.test(element.charAt(3))) {
+        bill.szallitoIrsz = element.substring(0, 4) as unknown as number;
         if (element.trim().length != 4) {
           let cimDarabok = element.split(' ');
           if (cimDarabok[1].trim().endsWith(','))
-            seged.szallitoTelepules = cimDarabok[1].slice(0, -1).trim();
+            bill.szallitoTelepules = cimDarabok[1].slice(0, -1).trim();
           else
-            seged.szallitoTelepules = cimDarabok[1].trim();
+            bill.szallitoTelepules = cimDarabok[1].trim();
           let index = 2;
-          if (seged.szallitoCim === '') {
+          if (bill.szallitoCim === '') {
             while (index < cimDarabok.length) {
-              seged.szallitoCim += cimDarabok[index] + ' '
+              bill.szallitoCim += cimDarabok[index] + ' '
               index++;
             }
-            seged.szallitoCim = seged.szallitoCim.trim();
+            bill.szallitoCim = bill.szallitoCim.trim();
           }
         }
       }
     })
-    seged = this.penzFeld(seged);
-    seged = this.fizIdoNotFound(seged);
-    this.addFiles(seged)
+    bill = this.penzFeld(bill);
+    bill = this.fizIdoNotFound(bill);
+    this.addFiles(bill)
 
-    return seged;
+    return bill;
   }
 
   szallitoAdatokFeld(user: Users, szoveg: string, vizsgal: string): string {
@@ -354,38 +348,49 @@ export class FileService {
     return returnObject;
   }
 
+  //A bruttó, nettó, áfa értékek vizsgálata, formázása, ha valamelyik nem lett felismerve, akkor azt behelyettesíti
   penzFeld(returnObject: Bills): Bills {
-    returnObject.brutto = returnObject.brutto.replace(/\D/g, '');
-    returnObject.netto = returnObject.netto.replace(/\D/g, '');
-    returnObject.afa = returnObject.afa.replace(/\D/g, '');
+    returnObject.brutto = returnObject.brutto.replaceAll('.00', '').replaceAll(',00', '').replace(/\D/g, '').toString();
+    returnObject.netto = returnObject.netto.replaceAll('.00', '').replaceAll(',00', '').replace(/\D/g, '').toString();
+    returnObject.afa = returnObject.afa.replaceAll('.00', '').replaceAll(',00', '').replace(/\D/g, '').toString();
     if (returnObject.netto !== '') {
       if (returnObject.afa === '') {
-        returnObject.afa = Math.round(parseInt(returnObject.netto, 10) * 0.27) as unknown as string;
+        returnObject.afa = Math.round(parseInt(returnObject.netto, 10) * 0.27).toString();
       }
       if (returnObject.brutto === '') {
-        returnObject.brutto = Math.round(parseInt(returnObject.netto, 10) + parseInt(returnObject.afa, 10)) as unknown as string;
+        returnObject.brutto = Math.round(parseInt(returnObject.netto, 10) * 1.27).toString();
       }
     }
     if (returnObject.brutto !== '') {
       if (returnObject.netto === '') {
-        returnObject.netto = Math.round(parseInt(returnObject.brutto, 10) / 1.27) as unknown as string;
+        returnObject.netto = Math.round(parseInt(returnObject.brutto, 10) / 1.27).toString();
       }
       if (returnObject.afa === '') {
-        returnObject.afa = Math.round(parseInt(returnObject.brutto, 10) - parseInt(returnObject.netto, 10)) as unknown as string;
+        returnObject.afa = Math.round(parseInt(returnObject.brutto, 10) - (parseInt(returnObject.brutto, 10) / 1.27)).toString();
       }
     }
 
     if (returnObject.afa !== '') {
       if (returnObject.netto === '') {
-        returnObject.netto = Math.round(parseInt(returnObject.afa, 10) / 0.27) as unknown as string;
+        returnObject.netto = Math.round(parseInt(returnObject.afa, 10) / 0.27).toString();
       }
       if (returnObject.brutto === '') {
-        returnObject.afa = Math.round(parseInt(returnObject.netto, 10) + parseInt(returnObject.afa, 10)) as unknown as string;
+        returnObject.afa = Math.round(parseInt(returnObject.netto, 10) + parseInt(returnObject.afa, 10)).toString();
       }
     }
+
+    if (returnObject.brutto === returnObject.netto){
+      if (returnObject.afa === Math.round(parseInt(returnObject.brutto, 10) - (parseInt(returnObject.brutto, 10) / 1.27)).toString()) {
+        returnObject.netto = Math.round(parseInt(returnObject.brutto, 10) / 1.27).toString();
+      } else if (returnObject.afa === Math.round(parseInt(returnObject.netto, 10) * 0.27).toString()) {
+        returnObject.brutto = Math.round(parseInt(returnObject.netto, 10) * 1.27).toString();
+      }
+    }
+
     return returnObject;
   }
 
+  //Mettől meddig tartalmazza a keresett stringet
   fromToString(keres: string, vizsgal: string): number[] {
     let returnArray = [0, 0];
     returnArray[0] = vizsgal.indexOf(keres);
@@ -393,6 +398,7 @@ export class FileService {
     return returnArray;
   }
 
+  //Fizetési módok felismerése
   fizmod(vizsgal: string, returnObject: Bills): Bills {
     vizsgal = vizsgal.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
     if (vizsgal.includes('keszpenz')) {
@@ -413,6 +419,7 @@ export class FileService {
     return returnObject;
   }
 
+  //Ha a fizetési idő egysorban van
   fizIdo(vizsgal: string, returnObject: Bills): Bills {
     vizsgal = vizsgal.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replaceAll(' ', '').replaceAll(',', '.');
 
@@ -435,6 +442,7 @@ export class FileService {
     return returnObject;
   }
 
+  //Hogyha valamelyik fizetési idő nem lett felismerve, akkor behelyettesíti azokat, megformázza őket
   fizIdoNotFound(returnObject: Bills): Bills {
     if (returnObject.fizTeljesites) {
       returnObject.fizTeljesites = returnObject.fizTeljesites.replaceAll(',', '.').trim();
@@ -448,6 +456,7 @@ export class FileService {
         returnObject.fizKelt = returnObject.fizTeljesites;
       }
     }
+
     if (returnObject.fizHatarido) {
       returnObject.fizHatarido = returnObject.fizHatarido.replaceAll(',', '.').trim();
       if (returnObject.fizHatarido[returnObject.fizHatarido.length-1] !== '.') {
@@ -460,6 +469,7 @@ export class FileService {
         returnObject.fizKelt = returnObject.fizHatarido;
       }
     }
+
     if (returnObject.fizKelt) {
       returnObject.fizKelt = returnObject.fizKelt.replaceAll(',', '.').trim();
       if (returnObject.fizKelt[returnObject.fizKelt.length-1] !== '.') {
