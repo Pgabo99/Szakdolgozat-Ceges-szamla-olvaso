@@ -59,17 +59,24 @@ export class FileService {
     }
 
     let darabok = szoveg.split("\n");
-    let eleje = false;
-    let szallitoAdatok = "";
+    let fizetesB = false;
     let fizEgysor = false;
+
+    const szamlaszamKulcs = ["szállító", "vevó", "vevő", "sorszám", "számlaszám", "számla"];
     let szallitoadatokB = true;
     let szallitoadatokString = "";
+    let szallitoAdatok = "";
 
     let indexek: { word: string; index: number; }[];
     darabok.forEach(element => {
       let vizsgal = element.toLowerCase();
-      if (bill.szamlaszam == "" && szallitoadatokB && vizsgal.indexOf("számla") == -1 && vizsgal.indexOf("szállító") == -1 && vizsgal.indexOf("vevó") == -1)
-        bill.szamlaszam = element
+
+      //Számlaszám felismerése
+      if (bill.szamlaszam === "" && szallitoadatokB && szamlaszamKulcs.some(kulcsszo => vizsgal.includes(kulcsszo))){
+        const regex = new RegExp(szamlaszamKulcs.join('|'), 'gi');
+        bill.szamlaszam = element.replace(regex, '').trim().replace(/^[\s,:-]+/, '');
+      }
+
       if (fizEgysor) {
         fizEgysor = false;
         let fizDarabok = element.replaceAll(' ', '');
@@ -87,16 +94,17 @@ export class FileService {
             atutalas = true;
             bill.fizMod = match2![0]
           }
-          if (item.word == "teljesít")
+          if (item.word === "teljesít")
             bill.fizTeljesites = match![index]
-          if (item.word == "esedékesség")
+          if (item.word === "esedékesség")
             bill.fizHatarido = match![index]
-          if (item.word == "kelt")
+          if (item.word === "kelt")
             bill.fizKelt = match![index]
         });
       }
-      if (vizsgal.indexOf("fizetés") != -1 && vizsgal.indexOf("mód") != -1 && bill.fizMod == "") {
-        eleje = false;
+
+      if (vizsgal.includes("fizetés") && vizsgal.includes("mód") && bill.fizMod == "") {
+        fizetesB = false;
         if (vizsgal.indexOf("teljesít") != -1 && vizsgal.indexOf("kelt") != -1 && (vizsgal.indexOf("esedékesség") != -1 || vizsgal.indexOf("határidő") != -1)) {
           fizEgysor = true;
           let segedVizsgal = vizsgal.replaceAll(' ', '');
@@ -128,6 +136,7 @@ export class FileService {
         }
 
       }
+
       if (vizsgal.indexOf("kelt") != -1 && bill.fizKelt == "") {
         let modDarabok = element.split(" ");
         let megvan = false;
@@ -144,6 +153,7 @@ export class FileService {
           index++;
         }
       }
+
       if (vizsgal.indexOf("teljesít") != -1 && bill.fizTeljesites == "") {
         let modDarabok = element.split(" ");
         let megvan = false;
@@ -161,16 +171,10 @@ export class FileService {
         }
       }
 
-      if (vizsgal.indexOf("sorszám") != -1 && bill.szamlaszam == "") {
-        bill.szamlaszam = element.substring(vizsgal.indexOf("sorszám") + 8).trim();
-        szallitoadatokB = false;
-      } else if (vizsgal.indexOf("számlaszám") != -1 && bill.szamlaszam == "") {
-        bill.szamlaszam = element.substring(vizsgal.indexOf("számlaszám") + 11).trim();
-      }
-      else if (eleje || vizsgal.indexOf(user.companyName.toLowerCase()) != -1) {
+     if (fizetesB || vizsgal.indexOf(user.companyName.toLowerCase()) != -1) {
         var eredmeny = this.szallitoAdatokFeld(user, element, vizsgal);
         szallitoAdatok += eredmeny + "\n";
-        eleje = true;
+        fizetesB = true;
         szallitoadatokB = false;
       }
       if (vizsgal.indexOf("összes") != -1 || vizsgal.indexOf("Összes") != -1 || vizsgal.indexOf("értékesítés") != -1 || vizsgal.indexOf("érték") != -1) {
