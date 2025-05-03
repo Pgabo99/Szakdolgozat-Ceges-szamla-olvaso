@@ -60,123 +60,25 @@ export class FileService {
 
     let darabok = szoveg.split("\n");
     let fizetesB = false;
-    let fizEgysor = false;
 
     const szamlaszamKulcs = ["szállító", "vevó", "vevő", "sorszám", "számlaszám", "számla"];
     let szallitoadatokB = true;
-    let szallitoadatokString = "";
     let szallitoAdatok = "";
 
-    let indexek: { word: string; index: number; }[];
     darabok.forEach(element => {
       let vizsgal = element.toLowerCase();
 
       //Számlaszám felismerése
-      if (bill.szamlaszam === "" && szallitoadatokB && szamlaszamKulcs.some(kulcsszo => vizsgal.includes(kulcsszo))){
+      if (bill.szamlaszam === "" && szallitoadatokB && szamlaszamKulcs.some(kulcsszo => vizsgal.includes(kulcsszo))) {
         const regex = new RegExp(szamlaszamKulcs.join('|'), 'gi');
         bill.szamlaszam = element.replace(regex, '').trim().replace(/^[\s,:-]+/, '');
       }
 
-      if (fizEgysor) {
-        fizEgysor = false;
-        let fizDarabok = element.replaceAll(' ', '');
-        const match = fizDarabok.match(/\d{4}\.\d{2}\.\d{2}/g);
-        const match2 = fizDarabok.match(/[^\d.]+/g);
-        let atutalas = false;
-        indexek.forEach((item, i) => {
-          let index = 4 - i - 2;
-          if (atutalas) {
-            index = index + 1;
-          }
-          if (index < 0)
-            index = 0
-          if (item.word == "mód") {
-            atutalas = true;
-            bill.fizMod = match2![0]
-          }
-          if (item.word === "teljesít")
-            bill.fizTeljesites = match![index]
-          if (item.word === "esedékesség")
-            bill.fizHatarido = match![index]
-          if (item.word === "kelt")
-            bill.fizKelt = match![index]
-        });
-      }
-
-      if (vizsgal.includes("fizetés") && vizsgal.includes("mód") && bill.fizMod == "") {
+      //Fizetési adatok (a szállítási adatok felismerése miatt fontos itt megvizsgálni) 
+      if (vizsgal.includes("fizetés") && vizsgal.includes("mód") && bill.fizMod === "") {
         fizetesB = false;
-        if (vizsgal.indexOf("teljesít") != -1 && vizsgal.indexOf("kelt") != -1 && (vizsgal.indexOf("esedékesség") != -1 || vizsgal.indexOf("határidő") != -1)) {
-          fizEgysor = true;
-          let segedVizsgal = vizsgal.replaceAll(' ', '');
-          let kelt = segedVizsgal.indexOf("kelt");
-          let telj = segedVizsgal.indexOf("teljesít");
-          let hat = segedVizsgal.indexOf("esedékesség");
-          let mod = segedVizsgal.indexOf("mód");
-          indexek = [
-            { word: "kelt", index: kelt },
-            { word: "teljesít", index: telj },
-            { word: "esedékesség", index: hat },
-            { word: "mód", index: mod }
-          ];
-          indexek.sort((a, b) => b.index - a.index);
-        } else {
-          let modDarabok = element.split(" ");
-          let megvan = false;
-          let index = 0;
-          while (index < modDarabok.length) {
-            if (megvan) {
-              bill.fizMod = modDarabok[index];
-              index = modDarabok.length;
-            }
-            if (index != modDarabok.length && modDarabok[index].toLowerCase().indexOf("mód") != -1) {
-              megvan = true;
-            }
-            index++;
-          }
-        }
-
       }
 
-      if (vizsgal.indexOf("kelt") != -1 && bill.fizKelt == "") {
-        let modDarabok = element.split(" ");
-        let megvan = false;
-        let index = 0;
-        while (index < modDarabok.length) {
-          if (megvan) {
-            bill.fizKelt = modDarabok[index];
-            index = modDarabok.length;
-          }
-          if (index != modDarabok.length && modDarabok[index].toLowerCase().indexOf("kelt") != -1) {
-            megvan = true;
-          }
-
-          index++;
-        }
-      }
-
-      if (vizsgal.indexOf("teljesít") != -1 && bill.fizTeljesites == "") {
-        let modDarabok = element.split(" ");
-        let megvan = false;
-        let index = 0;
-        while (index < modDarabok.length) {
-          if (megvan) {
-            bill.fizTeljesites = modDarabok[index];
-            index = modDarabok.length;
-          }
-          if (index != modDarabok.length && modDarabok[index].toLowerCase().indexOf("teljesít") != -1) {
-            megvan = true;
-          }
-
-          index++;
-        }
-      }
-
-     if (fizetesB || vizsgal.indexOf(user.companyName.toLowerCase()) != -1) {
-        var eredmeny = this.szallitoAdatokFeld(user, element, vizsgal);
-        szallitoAdatok += eredmeny + "\n";
-        fizetesB = true;
-        szallitoadatokB = false;
-      }
       if (vizsgal.indexOf("összes") != -1 || vizsgal.indexOf("Összes") != -1 || vizsgal.indexOf("értékesítés") != -1 || vizsgal.indexOf("érték") != -1) {
         let result = element.replaceAll(" ", "").replaceAll("-", "").replace(/^[^0-9]+/, "");
 
@@ -214,31 +116,44 @@ export class FileService {
         bill.brutto = result;
       }
 
-      bill = this.szallitoAdatokFeld2(user, element, vizsgal, bill);
-
-      if (bill.szallitoNev === "") {
-        if (bill.szallitoAdo !== "" || bill.szallitoCim !== "" || bill.szallitoIrsz !== 0 || bill.szallitoTelepules !== "") {
-          bill.szallitoNev = szallitoadatokString.split('\n')[szallitoadatokString.split('\n').length - 2];
-        } else {
-          szallitoadatokString += element + '\n';
-        }
+      //Szállító adatok felismerése
+      if (fizetesB || vizsgal.includes(user.companyName.toLowerCase())) {
+        szallitoAdatok += this.szallitoAdatokFeld(user, element, vizsgal) + "\n";
+        fizetesB = true;
+        szallitoadatokB = false;
       }
+
+      bill = this.szallitoAdatokFeldRegex(user, element, bill);
+
+      if (bill.szallitoAdo === "" && bill.szallitoCim === "" && bill.szallitoIrsz === 0 && bill.szallitoTelepules === "") {
+        bill.szallitoNev = element;
+      }
+
       bill = this.fizmod(vizsgal, bill);
-      bill = this.fizIdo(vizsgal, bill);
+      if (bill.fizHatarido === '' || bill.fizTeljesites === '' || bill.fizKelt === '') {
+        bill = this.fizIdo(vizsgal, bill);
+      }
     });
+
     let szallitoDarabok = szallitoAdatok.split('\n');
-    if (bill.szallitoNev === '' || bill.szallitoNev.toLocaleLowerCase().includes(user.companyName.toLocaleLowerCase())) {
+    if (bill.szallitoNev === '' || bill.szallitoNev.toLowerCase().includes(user.companyName.toLowerCase())) {
       bill.szallitoNev = szallitoDarabok[0];
     }
+
+    // A szallitoAdatokFeld() függvény által kapott szállító adatok feldolgozása
     szallitoDarabok.forEach(element => {
       let vizsgal = element.toLowerCase();
-      if (vizsgal.indexOf("adószám") != -1 && bill.szallitoAdo == "" && vizsgal.indexOf("eu") == -1 && vizsgal.indexOf("hu") == -1) {
+
+      if (vizsgal.includes("adószám") && bill.szallitoAdo === "" && !vizsgal.includes("eu") && !vizsgal.includes("hu")) {
         bill.szallitoAdo = element.substring(element.search(/\d/), element.length).trim().split(' ')[0];
       }
-      if (bill.szallitoIrsz != 0 && bill.szallitoCim == "") {
+
+      if (bill.szallitoIrsz !== 0 && bill.szallitoCim === "") {
         bill.szallitoCim = element;
       }
-      if (bill.szallitoIrsz == 0 && /\d/.test(element.charAt(0)) && /\d/.test(element.charAt(1)) && /\d/.test(element.charAt(2)) && /\d/.test(element.charAt(3))) {
+
+      //Cím felismerése
+      if (bill.szallitoIrsz === 0 && /^\d{4}/.test(element)) {
         bill.szallitoIrsz = element.substring(0, 4) as unknown as number;
         if (element.trim().length != 4) {
           let cimDarabok = element.split(' ');
@@ -256,7 +171,10 @@ export class FileService {
           }
         }
       }
-    })
+    });
+
+    // Végső ellenőrzés, hogy ne tartalmazzon hibás adatokat a számla
+    bill = this.szallitoMod(bill, user);
     bill = this.penzFeld(bill);
     bill = this.fizIdoNotFound(bill);
     this.addFiles(bill)
@@ -264,39 +182,45 @@ export class FileService {
     return bill;
   }
 
+  //Ha egysorban a vevő és szállító ugyanazon adatai vannak
   szallitoAdatokFeld(user: Users, szoveg: string, vizsgal: string): string {
     let returnString = "";
     var meddig = szoveg.length;
-    let siteRegex = /\d\d\d\d\s+[A-Za-z]+, ([A-Za-z0-9]+( [A-Za-z0-9]+)+)\./i;
-    if (vizsgal.indexOf(user.companyName.toLowerCase()) != -1 && meddig == szoveg.length) {
+
+    if (vizsgal.indexOf(user.companyName.toLowerCase()) !== -1 && meddig === szoveg.length) {
       meddig = vizsgal.indexOf(user.companyName.toLowerCase());
     }
-    if (vizsgal.indexOf(user.taxNumber) != -1 && meddig == szoveg.length) {
+
+    if (vizsgal.indexOf(user.taxNumber) !== -1 && meddig === szoveg.length) {
       meddig = vizsgal.indexOf(user.taxNumber.toLowerCase());
       let adoszamhely = vizsgal.lastIndexOf("adoszam");
-      if (adoszamhely != -1 && meddig - adoszamhely - 7 < 3) {
+      if (adoszamhely !== -1 && meddig - adoszamhely - 7 < 3) {
         meddig = adoszamhely;
       }
     }
-    if (vizsgal.lastIndexOf(user.country.toLowerCase()) != -1 && meddig == szoveg.length) {
+
+    if (vizsgal.lastIndexOf(user.country.toLowerCase()) !== -1 && meddig === szoveg.length) {
       meddig = vizsgal.lastIndexOf(user.country.toLowerCase());
       if (meddig < 2) {
         meddig = szoveg.length;
       }
     }
-    if (vizsgal.lastIndexOf(user.site.split(' ')[0].toLowerCase()) != -1 && meddig == szoveg.length) {
+
+    if (vizsgal.lastIndexOf(user.site.split(' ')[0].toLowerCase()) !== -1 && meddig === szoveg.length) {
       meddig = vizsgal.lastIndexOf(user.site.split(' ')[0].toLowerCase());
       if (meddig < 6) {
         meddig = szoveg.length;
       }
     }
-    if (vizsgal.lastIndexOf(user.zipCode.toString()) != -1 && meddig == szoveg.length) {
+
+    if (vizsgal.lastIndexOf(user.zipCode.toString()) !== -1 && meddig === szoveg.length) {
       meddig = vizsgal.lastIndexOf(user.zipCode.toString());
       if (meddig < 2) {
         meddig = szoveg.length;
       }
     }
-    if (vizsgal.lastIndexOf(user.city.toLowerCase()) != -1 && meddig == szoveg.length) {
+
+    if (vizsgal.lastIndexOf(user.city.toLowerCase()) !== -1 && meddig === szoveg.length) {
       meddig = vizsgal.lastIndexOf(user.city.toLowerCase());
       if (meddig < 6) {
         meddig = szoveg.length;
@@ -308,8 +232,9 @@ export class FileService {
     return returnString;
   }
 
-  szallitoAdatokFeld2(user: Users, szoveg: string, vizsgal: string, returnObject: Bills): Bills {
-    vizsgal = vizsgal.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+  szallitoAdatokFeldRegex(user: Users, szoveg: string, returnObject: Bills): Bills {
+    let vizsgal = szoveg.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+
     // Adószám
     const taxNumberRegex = /\b\d{8}-\d-\d{2}\b/;
     if (returnObject.szallitoAdo === '' && taxNumberRegex.test(szoveg.replace(/\s+/g, ""))) {
@@ -328,25 +253,68 @@ export class FileService {
         }
       }
 
-      // Irányítószám Város, Irányítószám Város, Cím
-      const irszVarosSiteRegex = /\d\d\d8\s+[A-Za-z]+/i;
-      const fullSiteRegex = /\d\d\d\d\s+[A-Za-z]+, ([A-Za-z0-9]+( [A-Za-z0-9]+)+)\./i;
+      // Irányítószám Város/ Irányítószám Város, Cím
+      const irszVarosSiteRegex = /\d\d\d\d\s+[A-Za-z\- ]+/i;
+      const fullSiteRegex = /\d\d\d\d\s+[A-Za-z\- ]+, ([A-Za-z\- ]+( [A-Za-z0-9\- ]+)+)\./i;
       if (fullSiteRegex.test(vizsgal)) {
-        let irszam = szoveg.match(/\d{4}\s/g);
-        let varosFromTo = this.fromToString(vizsgal.split(irszam + "")[1].match(/[A-Za-z]+,/g)![0], vizsgal);
-        let cim = szoveg.split(szoveg.substring(varosFromTo[0], varosFromTo[1]) + "")[1].trim();
+        const siteMatch = vizsgal.match(fullSiteRegex)![0];
+        const irszam = siteMatch.match(/\d{4}\s/g);
+        const varosFromTo = this.fromToString(vizsgal.split(irszam + "")[1].match(/[A-Za-z\- ]+,/g)![0], vizsgal);
+        const cim = szoveg.split(szoveg.substring(varosFromTo[0], varosFromTo[1]) + "")[1].trim();
+
+        // Nem egyezik meg a vevő/felhasználó címével
         if (!cim.includes(user.site)) {
           returnObject.szallitoIrsz = irszam![0].replaceAll(" ", "").trim() as unknown as number;
           returnObject.szallitoTelepules = szoveg.substring(varosFromTo[0], varosFromTo[1]).replaceAll(" ", "").replaceAll(",", "").trim();
           returnObject.szallitoCim = cim;
         }
       } else if (irszVarosSiteRegex.test(szoveg)) {
-        let irszam = szoveg.match(/\d{4}\s/g);
-        let varosFromTo = this.fromToString(szoveg.split(irszam + "")[1].match(/[A-Za-z]/g)![0], vizsgal);
-        returnObject.szallitoCim = irszam![0].replaceAll(" ", "").trim();
-        returnObject.szallitoTelepules = szoveg.substring(varosFromTo[0], varosFromTo[1]).replaceAll(" ", "").replaceAll(",", "").trim();
-      }
+        const siteMatch = szoveg.match(irszVarosSiteRegex) + "";
+        const irszam = siteMatch.match(/\d{4}\s/g);
+        const varosFromTo = this.fromToString(szoveg.split(irszam + "")[1].match(/[A-Za-z\- ]/g)![0], vizsgal);
+        const varos = szoveg.substring(varosFromTo[0], varosFromTo[1]).replaceAll(" ", "").replaceAll(",", "").trim();
 
+        //A legrövidebb település név az minimum 2 betűs, ha ennél kisebb, akkor nem helyes a találat
+        if (varos.length > 1) {
+          returnObject.szallitoIrsz = irszam![0].replaceAll(" ", "").trim() as unknown as number;
+          returnObject.szallitoTelepules = szoveg.substring(varosFromTo[0], varosFromTo[1]).replaceAll(" ", "").replaceAll(",", "").trim();
+        }
+      }
+    }
+
+    return returnObject;
+  }
+
+  //Megnézi, hogy a szállító neve, címében van-e a vevőhöz tartozó adat, ha van, akkor azt törli (csak a szöveg végéről szedi le ezeket)
+  szallitoMod(returnObject: Bills, user: Users): Bills {
+    const userValues = Object.values(user);
+    const filteredValues = userValues.filter(value =>
+      value !== "" && value !== null && value !== undefined &&
+      !(Array.isArray(value) && value.length === 0) && typeof value !== "object");
+
+    const userAdatai = filteredValues.join(' ').normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replaceAll('.', '').split(' ');
+
+    const szallitoNev = returnObject.szallitoNev.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().split(' ');
+    let lastIndex = szallitoNev.length - 1;
+
+    while (lastIndex >= 0) {
+      if (userAdatai.some(kulcsszo => szallitoNev[lastIndex].includes(kulcsszo))) {
+        returnObject.szallitoNev = returnObject.szallitoNev.substring(0, returnObject.szallitoNev.lastIndexOf(' '));
+      } else {
+        lastIndex = -1;
+      }
+      lastIndex--;
+    }
+
+    const szallitoCim = returnObject.szallitoCim.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().split(' ');
+    lastIndex = szallitoCim.length - 1;
+    while (lastIndex >= 0) {
+      if (userAdatai.some(kulcsszo => szallitoCim[lastIndex].includes(kulcsszo))) {
+        returnObject.szallitoCim = returnObject.szallitoCim.substring(0, returnObject.szallitoCim.lastIndexOf(' '));
+      } else {
+        lastIndex = -1;
+      }
+      lastIndex--;
     }
 
     return returnObject;
@@ -383,7 +351,7 @@ export class FileService {
       }
     }
 
-    if (returnObject.brutto === returnObject.netto){
+    if (returnObject.brutto === returnObject.netto) {
       if (returnObject.afa === Math.round(parseInt(returnObject.brutto, 10) - (parseInt(returnObject.brutto, 10) / 1.27)).toString()) {
         returnObject.netto = Math.round(parseInt(returnObject.brutto, 10) / 1.27).toString();
       } else if (returnObject.afa === Math.round(parseInt(returnObject.netto, 10) * 0.27).toString()) {
@@ -427,18 +395,29 @@ export class FileService {
   fizIdo(vizsgal: string, returnObject: Bills): Bills {
     vizsgal = vizsgal.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replaceAll(' ', '').replaceAll(',', '.');
 
-    const dateRegex = /\d\d\d\d\.\d\d\.\d\d\./;
+    const dateRegex = /\d\d\d\d\.\d\d\.\d\d\./g;
     if (dateRegex.test(vizsgal.replace(/\s+/g, ""))) {
       let dates = vizsgal.match(dateRegex);
       if (dates) {
-        if (dates[0]) {
-          returnObject.fizTeljesites = dates[0];
-        }
-        if (dates[1]) {
-          returnObject.fizKelt = dates[1];
-        }
-        if (dates[2]) {
-          returnObject.fizHatarido = dates[2];
+        if (dates.length === 2) {
+          if (dates[0]) {
+            returnObject.fizKelt = dates[0];
+          }
+
+          if (dates[1]) {
+            returnObject.fizTeljesites = dates[1];
+            returnObject.fizHatarido = dates[1];
+          }
+        } else {
+          if (dates[0]) {
+            returnObject.fizTeljesites = dates[0];
+          }
+          if (dates[1]) {
+            returnObject.fizKelt = dates[1];
+          }
+          if (dates[2]) {
+            returnObject.fizHatarido = dates[2];
+          }
         }
       }
     }
@@ -450,7 +429,7 @@ export class FileService {
   fizIdoNotFound(returnObject: Bills): Bills {
     if (returnObject.fizTeljesites) {
       returnObject.fizTeljesites = returnObject.fizTeljesites.replaceAll(',', '.').trim();
-      if (returnObject.fizTeljesites[returnObject.fizTeljesites.length-1] !== '.') {
+      if (returnObject.fizTeljesites[returnObject.fizTeljesites.length - 1] !== '.') {
         returnObject.fizTeljesites += '.'
       }
       if (!returnObject.fizHatarido) {
@@ -463,7 +442,7 @@ export class FileService {
 
     if (returnObject.fizHatarido) {
       returnObject.fizHatarido = returnObject.fizHatarido.replaceAll(',', '.').trim();
-      if (returnObject.fizHatarido[returnObject.fizHatarido.length-1] !== '.') {
+      if (returnObject.fizHatarido[returnObject.fizHatarido.length - 1] !== '.') {
         returnObject.fizHatarido += '.'
       }
       if (!returnObject.fizTeljesites) {
@@ -476,7 +455,7 @@ export class FileService {
 
     if (returnObject.fizKelt) {
       returnObject.fizKelt = returnObject.fizKelt.replaceAll(',', '.').trim();
-      if (returnObject.fizKelt[returnObject.fizKelt.length-1] !== '.') {
+      if (returnObject.fizKelt[returnObject.fizKelt.length - 1] !== '.') {
         returnObject.fizKelt += '.'
       }
       if (!returnObject.fizTeljesites) {
