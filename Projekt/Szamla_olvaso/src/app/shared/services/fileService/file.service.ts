@@ -79,7 +79,7 @@ export class FileService {
         fizetesB = false;
       }
 
-      if (vizsgal.indexOf("összes") != -1 || vizsgal.indexOf("Összes") != -1 || vizsgal.indexOf("értékesítés") != -1 || vizsgal.indexOf("érték") != -1) {
+      if (vizsgal.includes("összes") || vizsgal.includes("Összes") || vizsgal.includes("értékesítés") || vizsgal.includes("érték")) {
         let result = element.replaceAll(" ", "").replaceAll("-", "").replace(/^[^0-9]+/, "");
 
         if (vizsgal.indexOf("27") != -1) {
@@ -93,25 +93,49 @@ export class FileService {
         }
         else {
           let result = element.replace(/^[^0-9]+/, "").replaceAll("-", "");
-          let resultFt = result.split(" ").filter(item => item !== "" && item.toLowerCase() != "ft");
-          let resultFt2: string[] = ["", "", ""];
-          let index = 0;
-          while (index < resultFt.length) {
-            if (resultFt2[0].length < 3)
-              resultFt2[0] += resultFt[index]
-            else if (resultFt2[1].length < 3)
-              resultFt2[1] += resultFt[index]
-            else {
-              resultFt2[2] += resultFt[index]
+          let resultFt: string[] = [];
+          if (vizsgal.match(/ft/g)?.length === 1) {
+            if (vizsgal.match(/[,\.]\d\d\b/g)) {
+              resultFt = result.toLowerCase().split(/[,\.]\d\d\b/);
             }
-            index++;
+          } else {
+            result = result.replaceAll(".", "").replaceAll(",", "").replaceAll(" ", "");
+            resultFt = result.toLowerCase().split('ft');
           }
-          bill.brutto = resultFt2[0];
-          bill.afa = resultFt2[1]
-          bill.netto = resultFt2[2]
+          
+          if (resultFt.length === 0) {
+            resultFt = result.split(" ").filter(item => item !== "" && item.toLowerCase() != "ft");
+            let resultFt2: string[] = ["", "", ""];
+            let index = 0;
+            while (index < resultFt.length) {
+              if (resultFt2[0].length < 3)
+                resultFt2[0] += resultFt[index]
+              else if (resultFt2[1].length < 3)
+                resultFt2[1] += resultFt[index]
+              else {
+                resultFt2[2] += resultFt[index]
+              }
+              index++;
+            }
+            bill.brutto = resultFt2[0];
+            bill.afa = resultFt2[1]
+            bill.netto = resultFt2[2]
+
+          } else {
+            if (resultFt[0]) {
+              bill.brutto = resultFt[0];
+            }
+            if (resultFt[1]) {
+              bill.afa = resultFt[1];
+            }
+            if (resultFt[2]) {
+              bill.netto = resultFt[2];
+            }
+          }
         }
       }
-      if (vizsgal.indexOf("fizetendő") != -1 || (vizsgal.indexOf("végösszeg") != -1) && bill.brutto == "") {
+
+      if (vizsgal.includes("fizetendő") || vizsgal.includes("végösszeg") && bill.brutto == "") {
         let result = element.replaceAll(" ", "").replace(/^[^0-9]+/, "").replaceAll("Ft", "");
         bill.brutto = result;
       }
@@ -129,6 +153,7 @@ export class FileService {
         bill.szallitoNev = element;
       }
 
+      // Fizetési adatok felismerése
       bill = this.fizmod(vizsgal, bill);
       if (bill.fizHatarido === '' || bill.fizTeljesites === '' || bill.fizKelt === '') {
         bill = this.fizIdo(vizsgal, bill);
@@ -322,9 +347,9 @@ export class FileService {
 
   //A bruttó, nettó, áfa értékek vizsgálata, formázása, ha valamelyik nem lett felismerve, akkor azt behelyettesíti
   penzFeld(returnObject: Bills): Bills {
-    returnObject.brutto = returnObject.brutto.replaceAll('.00', '').replaceAll(',00', '').replace(/\D/g, '').toString();
-    returnObject.netto = returnObject.netto.replaceAll('.00', '').replaceAll(',00', '').replace(/\D/g, '').toString();
-    returnObject.afa = returnObject.afa.replaceAll('.00', '').replaceAll(',00', '').replace(/\D/g, '').toString();
+    returnObject.brutto = returnObject.brutto.replace(/[,\.]\d\d\b/g, '').replaceAll(',00', '').replace(/\D/g, '').toString();
+    returnObject.netto = returnObject.netto.replace(/[,\.]\d\d\b/g, '').replace(/\D/g, '').toString();
+    returnObject.afa = returnObject.afa.replace(/[,\.]\d\d\b/g, '').replaceAll(',00', '').replace(/\D/g, '').toString();
     if (returnObject.netto !== '') {
       if (returnObject.afa === '') {
         returnObject.afa = Math.round(parseInt(returnObject.netto, 10) * 0.27).toString();
@@ -333,6 +358,7 @@ export class FileService {
         returnObject.brutto = Math.round(parseInt(returnObject.netto, 10) * 1.27).toString();
       }
     }
+    
     if (returnObject.brutto !== '') {
       if (returnObject.netto === '') {
         returnObject.netto = Math.round(parseInt(returnObject.brutto, 10) / 1.27).toString();
@@ -356,6 +382,8 @@ export class FileService {
         returnObject.netto = Math.round(parseInt(returnObject.brutto, 10) / 1.27).toString();
       } else if (returnObject.afa === Math.round(parseInt(returnObject.netto, 10) * 0.27).toString()) {
         returnObject.brutto = Math.round(parseInt(returnObject.netto, 10) * 1.27).toString();
+      } else {
+        returnObject.netto = (parseInt(returnObject.brutto, 10) - parseInt(returnObject.afa, 10)).toString();
       }
     }
 
@@ -391,7 +419,7 @@ export class FileService {
     return returnObject;
   }
 
-  //Ha a fizetési idő egysorban van
+  //Ha a fizetési idők
   fizIdo(vizsgal: string, returnObject: Bills): Bills {
     vizsgal = vizsgal.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replaceAll(' ', '').replaceAll(',', '.');
 
